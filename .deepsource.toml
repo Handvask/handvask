@@ -3,6 +3,13 @@ version = 1
 exclude_patterns = ["/frontend/dist/*.min.js"]
 
 [[analyzers]]
+name = "go"
+enabled = true
+
+  [analyzers.meta]
+  import_root = "github.com/Handvask/handvask"
+
+[[analyzers]]
 name = "terraform"
 enabled = true
 
@@ -19,4 +26,8 @@ enabled = true
 
 [[transformers]]
 name = "dotnet-format"
+enabled = true
+
+[[transformers]]
+name = "gofumpt"
 enabled = true
