@@ -1,6 +1,7 @@
-from pony.orm import *
-from Models import db, User
 import os
+
+from Models import User, db
+from pony.orm import *
 
 
 @db_session
