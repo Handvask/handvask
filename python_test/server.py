@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from Models import make_conn, UserT, User
+from Models import User, UserT, make_conn
 from pony.orm import db_session, select
 
 app = FastAPI()
