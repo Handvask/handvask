@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import os
 from typing import Optional as OptionalT
 
+
 db = Database()
 
 

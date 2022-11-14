@@ -1,5 +1,5 @@
 from pony.orm import *
-from Models import make_conn, User, db
+from Models import make_conn, User
 
 
 @db_session
