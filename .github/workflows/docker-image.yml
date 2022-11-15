@@ -2,9 +2,7 @@ name: Docker Image CI
 
 on:
   pull_request:
-    branches: [ "main" ]
-    paths:
-    - python_backend
+    branches: [ "pipeline_1" ]
     
 
 jobs:
