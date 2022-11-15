@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends
-from pony.orm import db_session, select
+from fastapi import APIRouter, Depends
+from pony.orm import db_session
 from ..Models import UserT, User
 from ..middleware.auth import get_current_user_id
 

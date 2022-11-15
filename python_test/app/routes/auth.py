@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Form, Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pony.orm import db_session, select
-from ..Models import UserT, User, SuccessT
+from ..Models import User, SuccessT
 from bcrypt import hashpw, gensalt, checkpw
 import jwt
 from os.path import dirname
