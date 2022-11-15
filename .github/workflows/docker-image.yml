@@ -3,9 +3,9 @@ name: Docker Image CI
 on:
   push:
     branches: [ "pipeline_1" ]
-    paths:
-      - "/python_backend/**"
-      - "/.github/workflows/docker-image.yml"
+    # paths:
+    #   - "/python_backend/**"
+    #   - "/.github/workflows/docker-image.yml"
   pull_request:
     branches: [ "pipeline_1" ]
     
