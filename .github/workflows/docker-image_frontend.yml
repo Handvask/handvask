@@ -1,10 +1,10 @@
-name: Docker Image CI
+name: Docker Image frontEnd
 
 on:
   push:
     branches: [ "pipeline_1" ]
     paths:
-      - "/python_backend/**"
+      - "/frontend_handvask/**"
   pull_request:
     branches: [ "pipeline_1" ]
     
@@ -19,4 +19,4 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       run: |
-        docker build ./python_backend --tag handvask_backend_python:$(date +%s)
+        docker build ./frontend_handvask --tag handvask_frontend:$(date +%s)
