@@ -2,12 +2,9 @@ name: Docker python_backend_handvask
 
 on:
   push:
-    branches: [ "pipeline_1" ]
-    # paths:
-    #   - "/python_backend/**"
-    #   - "/.github/workflows/docker-image.yml"
+    branches: [ "main" ]
   pull_request:
-    branches: [ "pipeline_1" ]
+    branches: [ "main" ]
     
 
 jobs:
