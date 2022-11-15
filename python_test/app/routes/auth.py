@@ -1,11 +1,14 @@
-from fastapi import APIRouter, HTTPException, Form, Depends
+from datetime import datetime
+from os.path import dirname
+
+import jwt
+from bcrypt import checkpw, gensalt, hashpw
+from fastapi import APIRouter, Depends, Form, HTTPException
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from pony.orm import db_session, select
-from ..Models import User, SuccessT
-from bcrypt import hashpw, gensalt, checkpw
-import jwt
-from os.path import dirname
-from datetime import datetime
+
+from ..Models import SuccessT, User
+
 
 # Util
 def hash_password(passwd: str) -> str:
