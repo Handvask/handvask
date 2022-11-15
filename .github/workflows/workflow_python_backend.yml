@@ -12,6 +12,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
     - uses: actions/checkout@v3
@@ -25,15 +28,6 @@ jobs:
     - name: Build python_backend image.
       run: |
         docker build ./python_backend --tag handvask_backend_python:$(date +%s)
-        
-  job_id:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: 'read'
-      id-token: 'write'
-
-    steps:
-    - uses: 'actions/checkout@v3'
 
     # Configure Workload Identity Federation via a credentials file.
     - id: 'auth'
