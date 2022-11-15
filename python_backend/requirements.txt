@@ -1,7 +1,8 @@
-sqlalchemy==2.0.0b3
 mysqlclient
 pyOpenSSL==22.1.0
 uvicorn[standard]
 fastapi
 bcrypt
 python-multipart
+pony
+pyjwt
