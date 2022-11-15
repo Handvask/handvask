@@ -5,6 +5,7 @@ on:
     branches: [ "pipeline_1" ]
     paths:
       - "/frontend_handvask/**"
+      - "/.github/workflows/docker-image_frontend.yml"
   pull_request:
     branches: [ "pipeline_1" ]
     
