@@ -2,9 +2,9 @@ name: Docker python_backend_handvask
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "pipeline_1" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "pipeline_1" ]
     
 
 jobs:
@@ -25,4 +25,32 @@ jobs:
     - name: Build python_backend image.
       run: |
         docker build ./python_backend --tag handvask_backend_python:$(date +%s)
+        
+  job_id:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    steps:
+    - uses: 'actions/checkout@v3'
+
+    # Configure Workload Identity Federation via a credentials file.
+    - id: 'auth'
+      name: 'Authenticate to Google Cloud'
+      uses: 'google-github-actions/auth@v1'
+      with:
+        token_format: 'access_token'
+        workload_identity_provider: 'projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+        service_account: 'morten-service@handvask.iam.gserviceaccount.com'
+        access_token_life: '3600s'
+
+    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v1'
+
+    # Now you can run gcloud commands authenticated as the impersonated service account.
+    - id: 'access-secret'
+      run: |-
+        docker push gcr.io/handvask/handvask_backend_python:$(date +%s)
 
