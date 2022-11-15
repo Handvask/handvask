@@ -18,14 +18,14 @@ spec:
         app: go-hello-world
     spec:
       containers:
-      - name: server
-        image: go-hello-world
-        ports:
-        - containerPort: 8080
-        env:
-        - name: PORT
-          value: "8080"
-        readinessProbe:
-          tcpSocket:
-            port: 8080
-          initialDelaySeconds: 5
+        - name: server
+          image: go-hello-world
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+          readinessProbe:
+            tcpSocket:
+              port: 8080
+            initialDelaySeconds: 5
