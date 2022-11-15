@@ -27,7 +27,7 @@ jobs:
         echo "export DB_NAME=${{secrets.DB_NAME}}" >> .env
     - name: Build python_backend image.
       run: |
-        docker build ./python_backend --tag handvask_backend_python:$(date +%s)
+        docker build ./python_backend --tag handvask_backend_python:latest
 
     # Configure Workload Identity Federation via a credentials file.
     - id: 'auth'
@@ -46,6 +46,6 @@ jobs:
     # Now you can run gcloud commands authenticated as the impersonated service account.
     - id: 'access-secret'
       run: |-
-        docker tag handvask_backend_python:$(date +%s) eu.gcr.io/handvask/handvask_backend_python:$(date +%s)
-        docker push eu.gcr.io/handvask/handvask_backend_python:$(date +%s)
+        docker tag handvask_backend_python:latest eu.gcr.io/handvask/handvask_backend_python:latest
+        docker push eu.gcr.io/handvask/handvask_backend_python:latest
 
