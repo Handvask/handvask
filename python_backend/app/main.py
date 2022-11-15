@@ -1,6 +1,7 @@
 from fastapi import FastAPI
+
 from .Models import make_conn
-from .routes import users, auth
+from .routes import auth, users
 
 make_conn()
 
