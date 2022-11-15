@@ -1,6 +1,8 @@
 name: Docker Image CI
 
 on:
+  push:
+    branches: [ "pipeline_1" ]
   pull_request:
     branches: [ "pipeline_1" ]
     
