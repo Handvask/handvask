@@ -1,9 +1,11 @@
+import os
 from datetime import datetime
+from typing import Generic
+from typing import Optional as OptionalT
+from typing import TypeVar
+
 from pony.orm import *
 from pydantic import BaseModel
-import os
-from typing import Optional as OptionalT, TypeVar, Generic
-
 
 db = Database()
 
