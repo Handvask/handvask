@@ -52,5 +52,6 @@ jobs:
     # Now you can run gcloud commands authenticated as the impersonated service account.
     - id: 'access-secret'
       run: |-
-        docker push gcr.io/handvask/handvask_backend_python:$(date +%s)
+        docker tag handvask_backend_python:$(date +%s) eu.gcr.io/handvask/handvask_backend_python:$(date +%s)
+        docker push eu.gcr.io/handvask/handvask_backend_python:$(date +%s)
 
