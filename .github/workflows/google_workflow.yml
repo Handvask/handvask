@@ -31,7 +31,7 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v1'
 
     # Now you can run gcloud commands authenticated as the impersonated service account.
-    - id: 'access-secret'
+    - id: 'gcloud'
+      name: 'gcloud'
       run: |-
-        curl https://secretmanager.googleapis.com/v1/projects/my-project/secrets/my-secret/versions/1:access \
-          --header "Authorization: Bearer ${{ steps.auth.outputs.access_token }}"
+        gcloud secrets versions access "latest" --secret "my-secret"
