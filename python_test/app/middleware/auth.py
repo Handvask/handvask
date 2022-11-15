@@ -1,9 +1,9 @@
-from ..routes.auth import oauth2_scheme
-import jwt
 from os.path import dirname
-from fastapi import HTTPException, Depends
-from pony.orm import select, db_session
-from ..Models import User
+
+import jwt
+from fastapi import Depends, HTTPException
+
+from ..routes.auth import oauth2_scheme
 
 with open(f"{dirname(__file__)}/../../jwtRS256.key.pub", "r") as f:
     public_key = f.read()

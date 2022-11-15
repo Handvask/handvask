@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, Depends
-from pony.orm import db_session, select
-from ..Models import UserT, User
+from fastapi import APIRouter, Depends
+from pony.orm import db_session
+
 from ..middleware.auth import get_current_user_id
+from ..Models import User, UserT
 
 router = APIRouter(
     prefix="/users", tags=["Users"], responses={404: {"Description": "Not found"}}
