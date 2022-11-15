@@ -1,0 +1,21 @@
+name: Handvask frontend docker image
+
+on:
+  push:
+    branches: [ "pipeline_1" ]
+  pull_request:
+    branches: [ "pipeline_1" ]
+    
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build frontend docker image.
+      run: |
+        docker build ./handvask_frontend --tag handvask_backend_python:$(date +%s)
+
