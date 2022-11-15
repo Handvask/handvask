@@ -1,9 +1,9 @@
-import os
 from datetime import datetime
-from typing import Optional as OptionalT
-
 from pony.orm import *
 from pydantic import BaseModel
+import os
+from typing import Optional as OptionalT, TypeVar, Generic
+
 
 db = Database()
 
@@ -78,7 +78,7 @@ class Run(db.Entity):
     result = Optional(str, nullable=True)
     solvers = Set("Solver")
     mzn_instance = Required(Mzn_instance)
-    dzn_instance = Required(Dzn_instance)
+    dzn_instance = Optional(Dzn_instance)
 
 
 class RunT(BaseModel):
@@ -112,6 +112,10 @@ class SolverT(BaseModel):
     id: int
     name: OptionalT[str]
     runs: list[int]
+
+
+class SuccessT(BaseModel):
+    success: bool
 
 
 UserT.update_forward_refs()

@@ -3,3 +3,5 @@ mysqlclient
 pyOpenSSL==22.1.0
 uvicorn[standard]
 fastapi
+bcrypt
+python-multipart
