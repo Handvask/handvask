@@ -2,3 +2,5 @@ exe.sh
 google_deploy.yml
 pub_key.pem
 secret.json
+workflow_frontend.yml
+google_workflow.yml
