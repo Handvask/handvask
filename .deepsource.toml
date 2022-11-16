@@ -10,18 +10,7 @@ enabled = true
   runtime_version = "3.x.x"
 
 [[analyzers]]
-name = "go"
-enabled = true
-
-  [analyzers.meta]
-  import_root = "github.com/Handvask/handvask"
-
-[[analyzers]]
 name = "terraform"
-enabled = true
-
-[[analyzers]]
-name = "csharp"
 enabled = true
 
 [[analyzers]]
@@ -32,17 +21,13 @@ enabled = true
   plugins = ["react"]
 
 [[transformers]]
-name = "dotnet-format"
-enabled = true
-
-[[transformers]]
-name = "gofumpt"
-enabled = true
-
-[[transformers]]
 name = "black"
 enabled = true
 
 [[transformers]]
 name = "isort"
+enabled = true
+
+[[transformers]]
+name = "prettier"
 enabled = true
