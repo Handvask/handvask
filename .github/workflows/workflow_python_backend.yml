@@ -34,10 +34,8 @@ jobs:
       name: 'Authenticate to Google Cloud'
       uses: 'google-github-actions/auth@v1'
       with:
-        token_format: 'access_token'
         workload_identity_provider: 'projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
         service_account: 'morten-service@handvask.iam.gserviceaccount.com'
-        access_token_life: '3600s'
 
     # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
     - name: 'Set up Cloud SDK'
