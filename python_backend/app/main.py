@@ -1,10 +1,10 @@
+import os
+
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from .Models import make_conn
 from .routes import auth, users
-from fastapi.middleware.cors import CORSMiddleware
-import os
-
 
 origins = [os.environ["HANDVASK_FRONTEND_ORIGIN"]]
 
