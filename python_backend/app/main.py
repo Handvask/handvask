@@ -28,4 +28,4 @@ app.include_router(auth.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello Morten"}
+    return {"message": "Hello World"}
