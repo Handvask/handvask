@@ -23,7 +23,7 @@ jobs:
           echo "export DB_NAME=${{secrets.DB_NAME}}" >> ./python_backend/.env
       - name: print env content
         run: |
-          cat /python_backend/.env
+          cat ./python_backend/.env
       - name: Build python_backend image.
         run: |
           docker build ./python_backend --tag handvask_backend_python:latest
