@@ -21,7 +21,7 @@ jobs:
           envkey_DB_NAME: ${{ secrets.DB_NAME }}
           directory: ./python_backend
           filename: .env
-          fail_on_empty: true
+          fail_on_empty: false
       - name: print env content
         run: |
           cat ./python_backend/.env
