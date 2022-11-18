@@ -3,6 +3,7 @@ name: testing_pipeline
 on:
   push:
     paths:
+      - '.github/workflows/**'
       - "python_backend/**"
 jobs:
   build:
@@ -11,8 +12,8 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - name: Build env file
-        uses: SpicyPizza/create-envfile@v.1.3.0
+      - name: Create .env file
+        uses: SpicyPizza/create-envfile@v1.3.0
         with:
           envkey_DB_HOST: ${{ secrets.DB_HOST }}
           envkey_DB_USER: ${{ secrets.DB_USER }}
