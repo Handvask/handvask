@@ -2,8 +2,7 @@ name: testing_pipeline
 
 on:
   push:
-    branches:
-      - "pipeline_1"
+    paths:
       - "python_backend/**"
 jobs:
   build:
