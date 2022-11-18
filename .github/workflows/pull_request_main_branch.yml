@@ -4,7 +4,11 @@ on:
   # push:
   #   branches: ["main"]
   pull_request:
-    branches: ["main"]
+    branches: 
+    - "main"
+    paths:
+      - "python_backend/**"
+      - "frontend_handvask/**"
 
 jobs:
   build:
