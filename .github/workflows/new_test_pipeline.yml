@@ -1,0 +1,21 @@
+name: testing_pipeline
+
+on:
+  push:
+    branches:
+      - "pipeline_1"
+      - "python_backend/**"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build env file
+        run: |
+          touch ./python_backend/.env
+          echo "export DB_HOST=${{secrets.DB_HOST}}" >> ./python_backend/.env
+          echo "export DB_USER=${{secrets.DB_USER}}" >> ./python_backend/.env
+          echo "export DB_PASS=${{secrets.DB_PASS}}" >> ./python_backend/.env
+          echo "export DB_NAME=${{secrets.DB_NAME}}" >> ./python_backend/.env
+      - name: Build python_backend image.
+        run: |
+          docker build ./python_backend --tag handvask_backend_python:latest

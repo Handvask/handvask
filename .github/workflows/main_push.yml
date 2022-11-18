@@ -1,10 +1,10 @@
 name: Docker python_backend_handvask
 
 on:
-  # push:
-  #   branches: ["main"]
-  pull_request:
+  push:
     branches: ["main"]
+  # pull_request:
+  #   branches: ["main"]
 
 jobs:
   build:
@@ -22,10 +22,8 @@ jobs:
           workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
           service_account: "morten-service@handvask.iam.gserviceaccount.com"
 
-      # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
       - name: "Set up Cloud SDK"
         uses: "google-github-actions/setup-gcloud@v1"
-      # Now you can run gcloud commands authenticated as the impersonated service account.
       - name: Build env file
         run: |
           touch ./python_backend/.env
@@ -39,13 +37,12 @@ jobs:
       - name: Build frontend docker image.
         run: |
           docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
-      # Configure Workload Identity Federation via a credentials file.
 
 
-      # - id: "access-secret"
-      #   run: |-
-      #     gcloud auth configure-docker
-      #     docker tag handvask_backend_python:latest eu.gcr.io/handvask/handvask_backend_python:latest
-      #     docker tag handvask_frontend_handvask:latest eu.gcr.io/handvask/handvask_frontend_handvask:latest
-      #     docker push eu.gcr.io/handvask/handvask_backend_python:latest
-      #     docker push eu.gcr.io/handvask/handvask_frontend_handvask:latest
+      - id: "access-secret"
+        run: |-
+          gcloud auth configure-docker
+          docker tag handvask_backend_python:latest eu.gcr.io/handvask/handvask_backend_python:latest
+          docker tag handvask_frontend_handvask:latest eu.gcr.io/handvask/handvask_frontend_handvask:latest
+          docker push eu.gcr.io/handvask/handvask_backend_python:latest
+          docker push eu.gcr.io/handvask/handvask_frontend_handvask:latest
