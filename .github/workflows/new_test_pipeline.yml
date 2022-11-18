@@ -12,6 +12,8 @@ jobs:
       contents: read
       id-token: write
     steps:
+      - name: Run actions check
+        uses: actions/checkout@v3
       - name: Build env file
         run: |
           touch ./python_backend/.env
