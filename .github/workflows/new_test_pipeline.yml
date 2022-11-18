@@ -13,7 +13,6 @@ jobs:
       id-token: write
     steps:
       - name: Build env file
-        uses: actions/checkout@v3
         run: |
           touch ./python_backend/.env
           echo "export DB_HOST=${{secrets.DB_HOST}}" >> ./python_backend/.env
