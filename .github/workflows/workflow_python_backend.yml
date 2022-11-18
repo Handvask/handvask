@@ -1,8 +1,8 @@
 name: Docker python_backend_handvask
 
 on:
-  push:
-    branches: ["main"]
+  # push:
+  #   branches: ["main"]
   pull_request:
     branches: ["main"]
 
@@ -42,10 +42,10 @@ jobs:
       # Configure Workload Identity Federation via a credentials file.
 
 
-      - id: "access-secret"
-        run: |-
-          gcloud auth configure-docker
-          docker tag handvask_backend_python:latest eu.gcr.io/handvask/handvask_backend_python:latest
-          docker tag handvask_frontend_handvask:latest eu.gcr.io/handvask/handvask_frontend_handvask:latest
-          docker push eu.gcr.io/handvask/handvask_backend_python:latest
-          docker push eu.gcr.io/handvask/handvask_frontend_handvask:latest
+      # - id: "access-secret"
+      #   run: |-
+      #     gcloud auth configure-docker
+      #     docker tag handvask_backend_python:latest eu.gcr.io/handvask/handvask_backend_python:latest
+      #     docker tag handvask_frontend_handvask:latest eu.gcr.io/handvask/handvask_frontend_handvask:latest
+      #     docker push eu.gcr.io/handvask/handvask_backend_python:latest
+      #     docker push eu.gcr.io/handvask/handvask_frontend_handvask:latest
