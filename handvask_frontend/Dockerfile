@@ -3,7 +3,7 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY ["./src","./public",".eslintrc.json", "next.config.cjs","package.json","tsconfig.json", "./"]
+COPY ["./src","./public",".eslintrc.json", "next.config.cjs","package.json","tsconfig.json", ".env", "./"]
 
 RUN npm install --loglevel verbose
 
