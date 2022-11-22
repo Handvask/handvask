@@ -1,26 +1,33 @@
-import { getCookie, hasCookie } from "cookies-next";
-import { useRouter } from "next/router";
+import { getCookie, hasCookie, setCookie } from "cookies-next";
 import { useEffect, useState } from "react";
-import { httpGet } from "../functions";
+import useAPI from "./useAPI";
+import useToken from "./useToken";
 
 export default function useUser() {
-  const router = useRouter();
-  const hasToken = hasCookie("handvask_api_token");
-  const [token, setToken] = useState<string>("");
+  const token = useToken();
   const [user, setUser] = useState<User>();
+  const hasUserCookie = hasCookie("handvask_tmp_user");
+
+  const { get } = useAPI();
 
   useEffect(() => {
-    if (hasToken === false) {
-      router.replace("/login");
-    } else if (hasToken === true) {
-      setToken(getCookie("handvask_api_token") as string);
+    let loaded = false;
+    if (hasUserCookie) {
+      const cached = JSON.parse(getCookie("handvask_tmp_user") as string) as [
+        User,
+        string
+      ];
+      if (cached[1] === token) {
+        loaded = true;
+        setUser(cached[0]);
+      }
     }
-  }, [hasToken]);
-
-  useEffect(() => {
-    if (token.length > 0) {
-      httpGet<User>("users/get", (r) => {
+    if (!loaded && token.length > 0) {
+      get<User>("users/get", (r) => {
         setUser(r);
+        setCookie("handvask_tmp_user", JSON.stringify([r, token]), {
+          maxAge: 60,
+        });
       });
     }
   }, [token]);

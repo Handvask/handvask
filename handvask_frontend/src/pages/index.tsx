@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
-import { httpGet } from "../functions";
+import Base from "../components/Base";
 import useUser from "../hooks/useUser";
 export default function Home() {
   const user = useUser();
+
   useEffect(() => {
-    httpGet("users/get", (r) => {
-      console.log(r);
-    });
-  }, []);
-  return "Hello, World!";
+    if (user) {
+      console.log(user);
+    }
+  }, [user]);
+  return <Base>Hello, World!</Base>;
 }
