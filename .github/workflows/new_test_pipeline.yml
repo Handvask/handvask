@@ -4,24 +4,18 @@ on:
   push:
     branches:
       - "pipeline_1"
-    paths:
-      - "python_backend/**"
 jobs:
   build:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      id-token: write
+      contents: "read"
+      id-token: "write"
     steps:
-      - name: Run actions check
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       - name: Build env file
         run: |
-          touch ./python_backend/.env
-          echo "export DB_HOST=${{secrets.DB_HOST}}" >> ./python_backend/.env
-          echo "export DB_USER=${{secrets.DB_USER}}" >> ./python_backend/.env
-          echo "export DB_PASS=${{secrets.DB_PASS}}" >> ./python_backend/.env
-          echo "export DB_NAME=${{secrets.DB_NAME}}" >> ./python_backend/.env
-      - name: Build python_backend image.
+          touch ./handvask_frontend/.env
+          echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./handvask_frontend/.env
+      - name: Build frontend docker image.
         run: |
-          docker build ./python_backend --tag handvask_backend_python:latest
+          docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
