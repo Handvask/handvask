@@ -8,7 +8,7 @@ on:
     - "main"
     paths:
       - "python_backend/**"
-      - "frontend_handvask/**"
+      - "handvask_frontend/**"
 
 jobs:
   build:
