@@ -8,9 +8,9 @@ on:
     - "main"
     paths:
       - "python_backend/**"
-      - "frontend_handvask/**"
       - ".github/workflows/pull_request_main_branch.yml"
       - "minizinc/**"
+      - "handvask_frontend/**"
 
 jobs:
   build:
