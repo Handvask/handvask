@@ -1,6 +1,5 @@
-from os import getenv
-
 from datetime import datetime
+from os import getenv
 from typing import Optional as OptionalT
 
 from pony.orm import *
