@@ -41,6 +41,7 @@ npm install
 npx next dev
 ```
 
+If it doesn't work, try npx next dev.
 This will start the frontend on port 3000.
 
 ### Demo
@@ -50,9 +51,9 @@ or you can go to the [FastAPI](http://localhost:8000/docs) to see the API docume
 
 ## The deadlines
 
-The deadlines can be found in the `github.com/handvask/wiki`.
-I would encourage you to read the wiki, and the `project.md` file again and then come with suggestion
+The deadlines can be found in the github.com/handvask/wiki.
+I would encourage you to read the wiki, and the project.md file again and then come with suggestion
 with what you can do until the next deadline.
 
-If you hit a problem you want to fix, please post it in the discord channel,
+If you hit problem with the problem you want to fix, please post it in the discord channel,
 and we will try to help you.

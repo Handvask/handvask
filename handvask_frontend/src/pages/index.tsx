@@ -9,5 +9,5 @@ export default function Home() {
       console.log(user);
     }
   }, [user]);
-  return <Base>Hello, World!</Base>;
+  return <Base>Hello, Handvask!</Base>;
 }
