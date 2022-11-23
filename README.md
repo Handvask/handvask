@@ -38,7 +38,7 @@ Go to the directory `/handvask_frontend` and run:
 
 ```bash
 npm install
-npm run dev
+npx next dev
 ```
 
 If it doesn't work, try npx next dev.

@@ -67,17 +67,16 @@ export async function asyncHttp<T = SuccessResponse>(request: Request) {
 
 export function httpGet<T = SuccessResponse>(
   url: string,
-  callback?: (x: T) => void
+  callback?: (x: T) => void,
+  headers: Record<string, string> = {}
 ) {
-  const r = new Request(
-    process.env.NEXT_PUBLIC_API_URL + url.replace(/^\//, ""),
-    {
-      method: "GET",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }
-  );
+  const r = new Request(url, {
+    method: "GET",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+      ...headers,
+    },
+  });
   http<T>(r, callback);
 }
 
@@ -85,34 +84,30 @@ export function httpPost<T = SuccessResponse>(
   url: string,
   data: Record<string, unknown>,
   callback?: (x: T) => void,
-  useJson = true
+  useJson = true,
+  headers: Record<string, string> = {}
 ) {
-  const r = new Request(
-    process.env.NEXT_PUBLIC_API_URL + url.replace(/^\//, ""),
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": useJson
-          ? "application/json"
-          : "application/x-www-form-urlencoded",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: useJson ? JSON.stringify(data) : toUrlEncoded(data),
-    }
-  );
+  const r = new Request(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": useJson
+        ? "application/json"
+        : "application/x-www-form-urlencoded",
+      "X-Requested-With": "XMLHttpRequest",
+      ...headers,
+    },
+    body: useJson ? JSON.stringify(data) : toUrlEncoded(data),
+  });
   http<T>(r, callback);
 }
 
 export async function asyncHttpGet<T = SuccessResponse>(url: string) {
-  const r = new Request(
-    process.env.NEXT_PUBLIC_API_URL + url.replace(/^\//, ""),
-    {
-      method: "GET",
-      headers: {
-        "X-Requested-With": "XMLHttpRequest",
-      },
-    }
-  );
+  const r = new Request(url, {
+    method: "GET",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+    },
+  });
   return asyncHttp<T>(r);
 }
 
@@ -120,16 +115,13 @@ export async function asyncHttpPost<T = SuccessResponse>(
   url: string,
   data: Record<string, unknown>
 ) {
-  const r = new Request(
-    process.env.NEXT_PUBLIC_API_URL + url.replace(/^\//, ""),
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
-      body: JSON.stringify(data),
-    }
-  );
+  const r = new Request(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+    },
+    body: JSON.stringify(data),
+  });
   return asyncHttp<T>(r);
 }
