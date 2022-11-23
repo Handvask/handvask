@@ -1,8 +1,7 @@
-import os
+from os import getenv
+
 from datetime import datetime
-from typing import Generic
 from typing import Optional as OptionalT
-from typing import TypeVar
 
 from pony.orm import *
 from pydantic import BaseModel
@@ -131,9 +130,9 @@ SolverT.update_forward_refs()
 def make_conn():
     db.bind(
         provider="mysql",
-        host=os.environ["DB_HOST"],
-        user=os.environ["DB_USER"],
-        passwd=os.environ["DB_PASS"],
-        database=os.environ["DB_NAME"],
+        host=getenv("DB_HOST"),
+        user=getenv("DB_USER"),
+        passwd=getenv("DB_PASS"),
+        database=getenv("DB_NAME"),
     )
     db.generate_mapping(create_tables=True)
