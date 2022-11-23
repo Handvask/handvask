@@ -1,8 +1,6 @@
 import asyncio
 from multiprocessing import Process
 from threading import Event, Thread
-
-import flask
 from flask import Flask, Response, jsonify, request
 
 import minizinc as mz
