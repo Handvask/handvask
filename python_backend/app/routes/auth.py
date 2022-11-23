@@ -40,11 +40,7 @@ def register_user(username: str = Form(), password: str = Form()):
 class LoginRespT(SuccessT):
     access_token: str | None
     token_type: str | None
-
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
-
-
 @router.post("/login", response_model=LoginRespT)
 @db_session()
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -68,3 +64,15 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
     # Some kind of error occoured
     return {"success": False, "access_token": None, "token_type": None}
+
+@router.post("/createMzn", response_model=Mzn_instanceT)
+@db_session
+def createMznInstance(form_mzn: Mzn_instanceT = Depends()):
+    Mzn_instance(
+        name=form_mzn.name,
+        description=form_mzn.description,
+        mzn=form_mzn.mzn,
+        dzn=form_mzn.dzn,
+        user_id=form_mzn.user_id,
+    )
+    return {"success": True}

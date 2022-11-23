@@ -33,13 +33,13 @@ export default function Nav({ user }: NavPropT) {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" href="/page1">
-                page1
+              <NavLink className="nav-link" href="/handvask">
+                Minizinc
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" href="/page2">
-                page2
+              <NavLink className="nav-link" href="/admin">
+                Admin
               </NavLink>
             </li>
           </ul>
