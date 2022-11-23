@@ -21,10 +21,12 @@ jobs:
       - name: Build env file
         run: |
           touch ./python_backend/.env
+          touch ./frontend_handvask/.env
           echo "DB_HOST=${{secrets.DB_HOST}}" >> ./python_backend/.env
           echo "DB_USER=${{secrets.DB_USER}}" >> ./python_backend/.env
           echo "DB_PASS=${{secrets.DB_PASS}}" >> ./python_backend/.env
           echo "DB_NAME=${{secrets.DB_NAME}}" >> ./python_backend/.env
+          echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./frontend_handvask/.env
       - name: Build python_backend image.
         run: |
           docker build ./python_backend --tag handvask_backend_python:latest
