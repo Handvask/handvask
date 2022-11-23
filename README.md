@@ -50,6 +50,7 @@ You can either go to the [Handvask](http://127.0.0.1:3000),
 or you can go to the [FastAPI](http://localhost:8000/docs) to see the API documentation.
 
 ## The deadlines
+
 The deadlines can be found in the github.com/handvask/wiki.
 I would encourage you to read the wiki, and the project.md file again and then come with suggestion
 with what you can do until the next deadline.
