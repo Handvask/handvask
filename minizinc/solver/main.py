@@ -1,8 +1,6 @@
 import asyncio
-import flask
-from threading import Thread, Event
-from multiprocessing import Process
-from flask import Flask, Response, jsonify, request
+from threading import Thread, Event, Lock
+from flask import Flask, jsonify, request
 
 import minizinc as mz
 
@@ -12,26 +10,40 @@ app = Flask(__name__)
 #test_data = "i = 10000;"
 #test_solver = "gecode"
 
-solving: Thread = None
-cancelled: Event = Event()
+threads: list[Thread] = []
 solution: mz.Result = None
+cancelled = Event()
+lock = Lock()
+
+@app.route( "/", methods=["POST", "GET"] )
+def solve_and_return():
+    try:
+        content = request.json
+        inst = mz.Instance( mz.Solver.lookup( content.get( 'solver' ) ), mz.Model() )
+        inst.add_string( content.get( 'problem' ) )
+        inst.add_string( content.get( 'data' ) )
+        return jsonify( inst.solve().solution ), 200
+    except Exception as e:
+        return f"Couldn't solve, got exception: {e}", 400
+
 
 @app.route("/solve", methods=["POST"])
 def solve():
-    global solving
-
     try:
         content = request.json
+        threads.clear()
         cancelled.clear()
-        solving = Thread( 
-            target = start_solving,
-            args = (
-                content.get( "model" ),
-                content.get( "data" ),
-                content.get( "solver" )
-            )
-        )
-        solving.start()
+        for solver in content.get( "solvers" ):
+            threads.append( Thread( 
+                target = start_solving,
+                args = (
+                    content.get( "model" ),
+                    content.get( "data" ),
+                    solver
+                )
+            ) )
+        for t in threads:
+            t.start()
     except:
         return "Couldn't start solving", 400
     else:
@@ -47,14 +59,14 @@ def cancel():
 @app.route("/result", methods=["GET"])
 def result():
     if solution is None:
-        if solving.is_alive():
+        if len( threads ) > 0:
             return "No solutions found yet", 200
         else:
             return "Nothing is executing", 400
 
     if solution.status not in [mz.Status.OPTIMAL_SOLUTION, mz.Status.SATISFIED]:
-        if not solving.is_alive():
-            return f'Solving has stopped with the status: {solution.status.name}', 200
+        if cancelled.isSet():
+            return f'Solving was cancelled with the status: {solution.status.name}', 200
         else:
             return f'Still solving, with the current status: {solution.status.name}', 200
 
@@ -65,6 +77,7 @@ def start_solving( problem: str, data: str, solver: str ):
     inst = mz.Instance( mz.Solver.lookup( solver ), mz.Model() )
     inst.add_string( problem )
     inst.add_string( data )
+    inst.method
     asyncio.run( find_solutions( inst ) )
 
 
@@ -77,7 +90,7 @@ async def find_solutions( inst: mz.Instance ):
 
         if result is None:
             continue
-
+        
         if result.solution:
             solution = result
         else:
