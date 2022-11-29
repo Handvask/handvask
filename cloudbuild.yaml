@@ -34,8 +34,8 @@ steps:
            '--container-image', 
            'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest']
   env:
-      - 'CLOUDSDK_COMPUTE_REGION=us-central1'
-      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_COMPUTE_REGION=europe-north1'
+      - 'CLOUDSDK_COMPUTE_ZONE=europe-north1-a'
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
