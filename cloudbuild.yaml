@@ -29,7 +29,6 @@ steps:
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'gcloud'
   timeout: 240s
-  logging: CLOUD_LOGGING_ONLY
   args: ['compute', 'instances', 
            'create-with-container', 'handvask',
            '--container-image', 
@@ -38,4 +37,5 @@ steps:
       - 'CLOUDSDK_COMPUTE_REGION=us-central1'
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
 options:
+  logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
