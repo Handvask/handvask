@@ -13,7 +13,7 @@ resource "google_cloudbuild_trigger" "pubsub-config-trigger" {
 
   source_to_build {
     uri       = "https://github.com/handvask/handvask"
-    ref       = "refs/heads/main"
+    ref       = "refs/heads/terraform_branch"
     repo_type = "GITHUB"
   }
 
