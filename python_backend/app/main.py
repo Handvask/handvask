@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .Models import make_conn
-from .routes import auth, users, instances
+from .routes import auth, instances, users
 
 load_dotenv(dirname(__file__) + "/../.env")
 

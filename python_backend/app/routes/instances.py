@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from typing import List
+
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pony.orm import db_session
 
 from ..middleware.auth import get_current_user_id
 from ..Models import Mzn_instance, Mzn_instanceT, SuccessT
-from typing import List
 
 router = APIRouter(
     prefix="/instances",
