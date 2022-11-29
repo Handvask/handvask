@@ -38,7 +38,7 @@ class UserT(BaseModel):
     dzn_instances: list[int]
     mzn_instances: list[int]
     runs: list[int]
-    sys_admin: OptionalT["Sys_AdminT"]
+    sys_admin: OptionalT[int]
     max_cpu: int
 
 
