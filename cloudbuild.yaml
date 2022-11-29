@@ -64,6 +64,7 @@ steps:
 #       - 'CLOUDSDK_COMPUTE_REGION=europe-north1'
 #       - 'CLOUDSDK_COMPUTE_ZONE=europe-north1-a'
 
+
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
   args:
     - run
