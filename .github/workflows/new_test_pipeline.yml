@@ -12,10 +12,17 @@ jobs:
       id-token: "write"
     steps:
       - uses: actions/checkout@v3
-      - name: Build env file
-        run: |
-          touch ./handvask_frontend/.env
-          echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./handvask_frontend/.env
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "morten-service@handvask.iam.gserviceaccount.com"
       - name: Build frontend docker image.
         run: |
-          docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
+          docker build ./python_backend -t python_backend:latest
+      - name: push image to google artifacty registry
+        run: |
+          gcloud auth configure-docker europe-north1-docker.pkg.dev
+          docker tag python_backend europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest
+          docker push europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest
