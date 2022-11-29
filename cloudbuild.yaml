@@ -51,7 +51,7 @@ steps:
   args: ['build', '-t', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/python_backend:$COMMIT_SHA', './python_backend']
 # Docker Push
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:$COMMIT_SHA']
+  args: ['push', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/python_backend:$COMMIT_SHA']
   # Entrypoint, timeout and environment variables
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'gcloud'
@@ -59,10 +59,17 @@ steps:
   args: ['compute', 'instances', 
            'create-with-container', 'handvask',
            '--container-image', 
-           'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:$COMMIT_SHA']
+           '$_DEPLOY_REGION-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/python_backend:$COMMIT_SHA']
   env:
       - 'CLOUDSDK_COMPUTE_REGION=europe-north1'
       - 'CLOUDSDK_COMPUTE_ZONE=europe-north1-a'
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
+substitutions:
+  _LABELS: gcb-trigger-id=f02c9be6-5614-445c-8cc2-3dad3b27a037
+  _TRIGGER_ID: f02c9be6-5614-445c-8cc2-3dad3b27a037
+  _GCR_HOSTNAME: eu.gcr.io
+  _PLATFORM: managed
+  _SERVICE_NAME: handvask
+  _DEPLOY_REGION: europe-north1
