@@ -15,6 +15,7 @@
 #     env:
 #       - 'CLOUDSDK_COMPUTE_REGION=europe-north1'
 #       - 'CLOUDSDK_COMPUTE_ZONE=europe-north1-a'
+#       - 'CLOUDSDK_CONTAINER_CLUSTER=handvask'
 steps:
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'
