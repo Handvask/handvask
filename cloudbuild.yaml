@@ -1,0 +1,35 @@
+steps:
+  # Docker Build
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "build",
+        "-t",
+        "us-central1-docker.pkg.dev/${PROJECT_ID}/backend_${PROJECT_ID}/python_backend:${COMMIT_SHA}",
+        "./python_backend",
+      ]
+
+  # Docker Push
+  - name: "gcr.io/cloud-builders/docker"
+    args:
+      [
+        "push",
+        "us-central1-docker.pkg.dev/${PROJECT_ID}/backend_${PROJECT_ID}/python_backend:${COMMIT_SHA}",
+      ]
+
+  # Entrypoint, timeout and environment variables
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: "gcloud"
+    timeout: 240s
+    args:
+      [
+        "compute",
+        "instances",
+        "create-with-container",
+        "handvask",
+        "--container-image",
+        "eu-north1-docker.pkg.dev/${PROJECT_ID}/backend_${PROJECT_ID}/python_backend:${COMMIT_SHA}",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_REGION=europe-north1"
+      - "CLOUDSDK_COMPUTE_ZONE=europe-north1-a"
