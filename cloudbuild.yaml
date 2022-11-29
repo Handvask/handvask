@@ -80,8 +80,8 @@ steps:
   entrypoint: gcloud
 substitutions:
   _SUB_VALUE: python-backend
-  _LABELS: gcb-trigger-id=f02c9be6-5614-445c-8cc2-3dad3b27a037
-  _TRIGGER_ID: f02c9be6-5614-445c-8cc2-3dad3b27a037
+  _LABELS: gcb-trigger-id=68c844f1-4174-4817-9f3f-222ee4d501c3
+  _TRIGGER_ID: 68c844f1-4174-4817-9f3f-222ee4d501c3
   _GCR_HOSTNAME: europe-north1-docker.pkg.dev
   _PLATFORM: managed
   _SERVICE_NAME: handvask
