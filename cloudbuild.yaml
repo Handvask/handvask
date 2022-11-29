@@ -70,7 +70,7 @@ steps:
     - run
     - services
     - update
-    - $_SUB_VALUE-image
+    - $_SERVICE_NAME
     - '--platform=managed'
     - '--image=$_GCR_HOSTNAME/$PROJECT_ID/handvask-artifacts/$_SUB_VALUE-image:$COMMIT_SHA'
     - >-
