@@ -127,6 +127,7 @@ SolverT.update_forward_refs()
 
 
 def make_conn():
+    print(f"Host:{getenv("DB_HOST")}, User: {getenv("DB_USER")}, password: {getenv("DB_PASS")}, name{getenv("DB_NAME")}")
     db.bind(
         provider="mysql",
         host=getenv("DB_HOST"),
