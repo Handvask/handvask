@@ -12,7 +12,7 @@ load_dotenv(dirname(__file__) + "/../.env")
 
 origins = [getenv("HANDVASK_FRONTEND_ORIGIN")]
 
-make_conn()
+# make_conn()
 
 
 app = FastAPI()
