@@ -48,10 +48,10 @@
 steps:
   # Docker Build
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/$_SERVICE_NAME:$COMMIT_SHA', './$_SERVICE_NAME']
+  args: ['build', '-t', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/$_NAME:$COMMIT_SHA', './$PATH']
 # Docker Push
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/$_SERVICE_NAME:$COMMIT_SHA']
+  args: ['push', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/$_NAME:$COMMIT_SHA']
 # Entrypoint, timeout and environment variables
 # - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
 #   entrypoint: 'gcloud'
@@ -69,9 +69,9 @@ steps:
     - run
     - services
     - update
-    - $_SERVICE_NAME
+    - $_NAME
     - '--platform=managed'
-    - '--image=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+    - '--image=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_NAME:$COMMIT_SHA'
     - >-
       --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID,$_LABELS
     - '--region=$_DEPLOY_REGION'
@@ -88,8 +88,10 @@ substitutions:
   _PLATFORM: managed
   _SERVICE_NAME: python_backend
   _DEPLOY_REGION: europe-north1
+  _PATH: python_backend
+  _NAME: python_backend_image
 images:
-  - '$_GCR_HOSTNAME/$PROJECT_ID/handvask-artifacts/$_SERVICE_NAME:$COMMIT_SHA'
+  - '$_GCR_HOSTNAME/$PROJECT_ID/handvask-artifacts/$_NAME:$COMMIT_SHA'
   #  europe-north1-docker.pkg.dev/handvask/handvask-artifacts/$_SERVICE_NAME
 tags:
   - gcp-cloud-build-deploy-cloud-run
