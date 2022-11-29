@@ -48,7 +48,7 @@
 steps:
   # Docker Build
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/$_SUB_VALUE-image:$COMMIT_SHA', '-f', $_SUB_VALUE/Dockerfile ]
+  args: ['build', '-t', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/$_SUB_VALUE-image:$COMMIT_SHA', ./$_SUB_VALUE]
 # Docker Push
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/$_SUB_VALUE-image:$COMMIT_SHA']
