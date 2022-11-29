@@ -52,17 +52,31 @@ steps:
 # Docker Push
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'europe-north1-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/python_backend:$COMMIT_SHA']
-  # Entrypoint, timeout and environment variables
-- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-  entrypoint: 'gcloud'
-  timeout: 240s
-  args: ['compute', 'instances', 
-           'create-with-container', 'handvask',
-           '--container-image', 
-           '$_DEPLOY_REGION-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/python_backend:$COMMIT_SHA']
-  env:
-      - 'CLOUDSDK_COMPUTE_REGION=europe-north1'
-      - 'CLOUDSDK_COMPUTE_ZONE=europe-north1-a'
+# Entrypoint, timeout and environment variables
+# - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+#   entrypoint: 'gcloud'
+#   timeout: 240s
+#   args: ['compute', 'instances', 
+#            'create-with-container', 'handvask',
+#            '--container-image', 
+#            '$_DEPLOY_REGION-docker.pkg.dev/$PROJECT_ID/handvask-artifacts/python_backend:$COMMIT_SHA']
+#   env:
+#       - 'CLOUDSDK_COMPUTE_REGION=europe-north1'
+#       - 'CLOUDSDK_COMPUTE_ZONE=europe-north1-a'
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk:slim'
+  args:
+    - run
+    - services
+    - update
+    - $_SERVICE_NAME
+    - '--platform=managed'
+    - '--image=$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+    - >-
+      --labels=managed-by=gcp-cloud-build-deploy-cloud-run,commit-sha=$COMMIT_SHA,gcb-build-id=$BUILD_ID,gcb-trigger-id=$_TRIGGER_ID,$_LABELS
+    - '--region=$_DEPLOY_REGION'
+    - '--quiet'
+  id: Deploy
+  entrypoint: gcloud
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
@@ -73,3 +87,9 @@ substitutions:
   _PLATFORM: managed
   _SERVICE_NAME: handvask
   _DEPLOY_REGION: europe-north1
+images:
+  - '$_GCR_HOSTNAME/$PROJECT_ID/$REPO_NAME/$_SERVICE_NAME:$COMMIT_SHA'
+tags:
+  - gcp-cloud-build-deploy-cloud-run
+  - gcp-cloud-build-deploy-cloud-run-managed
+  - handvask
