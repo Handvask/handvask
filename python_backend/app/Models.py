@@ -47,13 +47,15 @@ class Mzn_instance(db.Entity):
     user = Required(User)
     friendly_name = Optional(str)
     runs = Set("Run")
+    contents = Optional(LongStr)
 
 
 class Mzn_instanceT(BaseModel):
     id: int
-    user: "UserT"
+    user: int
     friendly_name: str
     runs: list[int]
+    contents: None | str
 
 
 class Dzn_instance(db.Entity):
@@ -61,13 +63,15 @@ class Dzn_instance(db.Entity):
     user = Required(User)
     friendly_name = Optional(str)
     runs = Set("Run")
+    contents = Optional(LongStr)
 
 
 class Dzn_instanceT(BaseModel):
     id: int
-    user: "UserT"
+    user: int
     friendly_name: str
     runs: list[int]
+    contents: None | str
 
 
 class Run(db.Entity):
@@ -127,7 +131,6 @@ SolverT.update_forward_refs()
 
 
 def make_conn():
-    print(getenv("DB_HOST"), getenv("DB_USER"), getenv("DB_PASS"), getenv("DB_NAME"))
     db.bind(
         provider="mysql",
         host=getenv("DB_HOST"),

@@ -16,12 +16,16 @@ export function guuid() {
   });
 }
 
-export function toUrlEncoded(obj: Record<string, unknown>) {
+export function objToUrlEncoded(obj: Record<string, unknown>) {
   return Object.keys(obj)
     .map(
       (k) => encodeURIComponent(k) + "=" + encodeURIComponent(obj[k] as string)
     )
     .join("&");
+}
+
+export function listToUrlEncoded(arr: (string | number)[], name: string) {
+  return `${name}=` + arr.join(`${name}=`);
 }
 
 export function http<T = SuccessResponse>(
@@ -96,7 +100,7 @@ export function httpPost<T = SuccessResponse>(
       "X-Requested-With": "XMLHttpRequest",
       ...headers,
     },
-    body: useJson ? JSON.stringify(data) : toUrlEncoded(data),
+    body: useJson ? JSON.stringify(data) : objToUrlEncoded(data),
   });
   http<T>(r, callback);
 }

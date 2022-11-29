@@ -42,8 +42,8 @@ export default function Login() {
         if (r.detail) {
           setHadError(true);
         } else {
-          setCookie("handvask_api_token", r.access_token,  {
-            maxAge: 60,
+          setCookie("handvask_api_token", r.access_token, {
+            maxAge: 86400,
           });
           router.replace("/");
         }
