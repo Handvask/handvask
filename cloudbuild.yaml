@@ -20,12 +20,14 @@
 steps:
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'
+    logging: CLOUD_LOGGING_ONLY
     args: ['build', '-t', 
            'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest', 
            './python_backend']
 
   # Docker Push
   - name: 'gcr.io/cloud-builders/docker'
+    logging: CLOUD_LOGGING_ONLY
     args: ['push', 
            'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest']
 
@@ -33,6 +35,7 @@ steps:
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     timeout: 240s
+    logging: CLOUD_LOGGING_ONLY
     args: ['compute', 'instances', 
            'create-with-container', 'handvask',
            '--container-image', 
