@@ -20,16 +20,18 @@
 steps:
   # Docker Build
   - name: 'gcr.io/cloud-builders/docker'
-    logging: CLOUD_LOGGING_ONLY
     args: ['build', '-t', 
            'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest', 
            './python_backend']
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
   # Docker Push
   - name: 'gcr.io/cloud-builders/docker'
-    logging: CLOUD_LOGGING_ONLY
     args: ['push', 
            'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest']
+    options:
+      logging: CLOUD_LOGGING_ONLY
 
   # Entrypoint, timeout and environment variables
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -43,3 +45,5 @@ steps:
     env:
       - 'CLOUDSDK_COMPUTE_REGION=us-central1'
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+    options:
+      logging: CLOUD_LOGGING_ONLY
