@@ -24,6 +24,6 @@ jobs:
           docker build ./python_backend -t python_backend:latest
       - name: push image to google artifacty registry
         run: |
-          gcloud auth configure-docker
+          gcloud auth configure-docker europe-docker-docker.pkg.dev
           docker tag python_backend europe-docker.pkg.dev/handvask/eu.gcr.io/python_backend:latest
           docker push europe-docker.pkg.dev/handvask/eu.gcr.io/python_backend:latest
