@@ -20,31 +20,22 @@
 
 steps:
   # Docker Build
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 
-           'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest', 
-           './python_backend']
-    options:
-      logging: CLOUD_LOGGING_ONLY
-
-  # Docker Push
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 
-           'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest']
-    options:
-      logging: CLOUD_LOGGING_ONLY
-
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest', './python_backend']
+# Docker Push
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest']
   # Entrypoint, timeout and environment variables
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
-    timeout: 240s
-    logging: CLOUD_LOGGING_ONLY
-    args: ['compute', 'instances', 
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  timeout: 240s
+  logging: CLOUD_LOGGING_ONLY
+  args: ['compute', 'instances', 
            'create-with-container', 'handvask',
            '--container-image', 
            'europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest']
-    env:
+  env:
       - 'CLOUDSDK_COMPUTE_REGION=us-central1'
       - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
-    options:
-      logging: CLOUD_LOGGING_ONLY
+- options:
+  logging: 'CLOUD_LOGGING_ONLY'
