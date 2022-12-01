@@ -33,8 +33,19 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
         if (!v) return v;
         return [...v, r];
       });
+      user.addMzn(r.id);
       setAddingMzn(false);
     });
+  }
+
+  function onCloseModal() {
+    setSelectedMzn(undefined);
+    setShowInstanceModal(false);
+  }
+
+  function handleOpenMzn(instance: MznInstance) {
+    setShowInstanceModal(true);
+    setSelectedMzn(instance);
   }
 
   useEffect(() => {
@@ -45,7 +56,7 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
           setData(r);
         }
       );
-    } else if (user.mzn_instances.length == 0) {
+    } else if (user.mzn_instances.length === 0) {
       setData([]);
     }
   }, [apiReady]);
@@ -69,15 +80,15 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
             </tr>
           </thead>
           <tbody>
-            {data == undefined ? (
+            {data === undefined ? (
               <tr>
                 <td colSpan={3} className="text-center">
                   <FontAwesomeIcon icon={faSpinner} spin />
                 </td>
               </tr>
             ) : data.length > 0 ? (
-              data.map((e, i) => (
-                <tr key={i} style={{ lineHeight: "31px" }}>
+              data.map((e) => (
+                <tr key={e.id} style={{ lineHeight: "31px" }}>
                   <td>{e.id}</td>
                   <td>{e.friendly_name}</td>
                   <td className="text-end">
@@ -86,10 +97,7 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
                         kind="dark"
                         className=""
                         outline
-                        onClick={() => {
-                          setShowInstanceModal(true);
-                          setSelectedMzn(e);
-                        }}
+                        onClick={() => handleOpenMzn(e)}
                       >
                         <FontAwesomeIcon icon={faFile} />
                       </Button>
@@ -112,10 +120,7 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
       </div>
       {showInstanceModal && selectedMzn ? (
         <InstanceModal
-          onClose={() => {
-            setSelectedMzn(undefined);
-            setShowInstanceModal(false);
-          }}
+          onClose={onCloseModal}
           originalContents={selectedMzn.contents ?? ""}
           originalName={selectedMzn.friendly_name}
           id={selectedMzn.id}

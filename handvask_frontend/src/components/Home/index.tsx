@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useUser from "../../hooks/useUser";
+import useUser, { ExpandedUser } from "../../hooks/useUser";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "../Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,23 +11,13 @@ import Dzn from "./dzn";
 import Mzn from "./mzn";
 
 export type HomeSubpageBasePropT = {
-  user: User;
+  user: ExpandedUser;
 };
 
 export default function Home() {
   const [sideOpen, setSideOpen] = useState(true);
   const user = useUser();
   const [currentPage, setCurrentPage] = useState<string>("runs");
-  const tableRows = (
-    <tr>
-      <td>{user?.dzn_instances}</td>
-      <td>{user?.mzn_instances}</td>
-      <td>{user?.runs}</td>
-    </tr>
-  );
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <Base>

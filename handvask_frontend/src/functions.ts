@@ -102,7 +102,7 @@ export function httpPost<T = SuccessResponse>(
     },
     body: useJson
       ? JSON.stringify(data)
-      : typeof data == "string"
+      : typeof data === "string"
       ? data
       : objToUrlEncoded(data),
   });
