@@ -32,8 +32,3 @@ jobs:
         run: |
           cd python_backend
           docker build --tag handvask_backend_python:latest -f Dockerfile.backend .
-      - id: "access-secret"
-        run: |-
-          gcloud auth configure-docker
-          docker tag handvask_backend_python:latest eu.gcr.io/handvask/handvask_backend_python:latest
-          docker push eu.gcr.io/handvask/handvask_backend_python:latest
