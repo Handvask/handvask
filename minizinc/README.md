@@ -1,8 +1,7 @@
-# Simple version of minizinc solver that can spawn jobs to solve instances
-With docker and kubernetes set up properly can be started locally by running
-    bash deploy.sh
-which starts a webhost which should be exposed on port 6000 with the possible paths being:
-    POST /solve
-    GET /result
-    GET /delete
-Currently only a single job can exist at a time and the /solve just solves a hardcoded example
+# Local kubernetes cluster which allows a test minizinc instance to be solved
+
+With docker and local kubernetes running (I use docker desktop for both) run:
+bash deploy.sh
+to create two pods, where one can be accessed through:
+curl -X GET http://localhost:6000/solve
+to have it send a request to the other pod to have it calculate a minizinc instance and return its result (if not using docker desktop the url might be different)
