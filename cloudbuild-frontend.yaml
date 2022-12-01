@@ -8,7 +8,7 @@ steps:
         "$_GCR_HOSTNAME/$PROJECT_ID/handvask-frontend-artifacts/handvask-frontend-image:$COMMIT_SHA",
         "./handvask_frontend",
       ]
-    secretEnv: ['NEXT_API_PUBLIC_URL']
+    secretEnv: ['NEXT_PUBLIC_API_URL']
   #step 3
   - name: "gcr.io/cloud-builders/kubectl"
     args:
