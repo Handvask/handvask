@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { httpGet } from "../../functions";
-import useUser from "../../hooks/useUser";
-import Table from "react-bootstrap/Table";
+import useUser, { ExpandedUser } from "../../hooks/useUser";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "../Button";
-import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Base from "../Base";
@@ -14,23 +11,13 @@ import Dzn from "./dzn";
 import Mzn from "./mzn";
 
 export type HomeSubpageBasePropT = {
-  user: User;
+  user: ExpandedUser;
 };
 
 export default function Home() {
   const [sideOpen, setSideOpen] = useState(true);
   const user = useUser();
   const [currentPage, setCurrentPage] = useState<string>("runs");
-  const tableRows = (
-    <tr>
-      <td>{user?.dzn_instances}</td>
-      <td>{user?.mzn_instances}</td>
-      <td>{user?.runs}</td>
-    </tr>
-  );
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
 
   return (
     <Base>
@@ -90,7 +77,8 @@ export default function Home() {
           >
             {(currentPage == "runs" && <Runs user={user} />) ||
               (currentPage == "dzn" && <Dzn user={user} />) ||
-              (currentPage == "mzn" && <Mzn user={user} />) || <></>}
+              (currentPage == "mzn" && <Mzn user={user} />) ||
+              null}
           </div>
           {/* <Table hover>
           <thead>
@@ -103,7 +91,8 @@ export default function Home() {
           <tbody>{tableRows}</tbody>
         </Table> */}
         </div>
-      )) || <></>}
+      )) ||
+        null}
     </Base>
   );
 }

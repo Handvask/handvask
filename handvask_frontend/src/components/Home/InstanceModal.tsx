@@ -3,6 +3,7 @@ import useAPI from "../../hooks/useAPI";
 import AsyncBtn from "../AsyncBtn";
 import Button from "../Button";
 import Modal from "../Modal";
+import React from "react";
 
 type InstanceModalPropT = {
   onClose: () => void;

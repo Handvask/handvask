@@ -25,7 +25,7 @@ export function objToUrlEncoded(obj: Record<string, unknown>) {
 }
 
 export function listToUrlEncoded(arr: (string | number)[], name: string) {
-  return `${name}=` + arr.join(`${name}=`);
+  return `${name}=` + arr.join(`&${name}=`);
 }
 
 export function http<T = SuccessResponse>(
@@ -86,7 +86,7 @@ export function httpGet<T = SuccessResponse>(
 
 export function httpPost<T = SuccessResponse>(
   url: string,
-  data: Record<string, unknown>,
+  data: Record<string, unknown> | string,
   callback?: (x: T) => void,
   useJson = true,
   headers: Record<string, string> = {}
@@ -100,7 +100,11 @@ export function httpPost<T = SuccessResponse>(
       "X-Requested-With": "XMLHttpRequest",
       ...headers,
     },
-    body: useJson ? JSON.stringify(data) : objToUrlEncoded(data),
+    body: useJson
+      ? JSON.stringify(data)
+      : typeof data === "string"
+      ? data
+      : objToUrlEncoded(data),
   });
   http<T>(r, callback);
 }

@@ -1,7 +1,11 @@
 import { getCookie, hasCookie, setCookie } from "cookies-next";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useAPI from "./useAPI";
 import useToken from "./useToken";
+
+export type ExpandedUser = {
+  addMzn: (id: number) => void;
+} & User;
 
 export default function useUser() {
   const token = useToken();
@@ -9,6 +13,21 @@ export default function useUser() {
   const hasUserCookie = hasCookie("handvask_tmp_user");
 
   const { get } = useAPI();
+
+  const expandedUser = useMemo<ExpandedUser>(() => {
+    return {
+      ...user,
+      addMzn(id) {
+        setUser((v) => {
+          if (!v) return v;
+          return {
+            ...v,
+            mzn_instances: [...v.mzn_instances.filter((i) => i != id), id],
+          };
+        });
+      },
+    } as ExpandedUser;
+  }, [user]);
 
   useEffect(() => {
     let loaded = false;
@@ -32,5 +51,5 @@ export default function useUser() {
     }
   }, [token]);
 
-  return user;
+  return expandedUser;
 }
