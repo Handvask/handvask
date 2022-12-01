@@ -42,7 +42,7 @@ substitutions:
   _SERVICE_NAME: handvask
   _DEPLOY_REGION: europe-north1
 availableSecrets:
-  secretsManger:
+  secretManger:
     - versionName: projects/383672682031/secrets/NEXT_PUBLIC_API_URL
       env: NEXT_PUBLIC_API_URL
 options:
