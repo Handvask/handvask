@@ -5,8 +5,8 @@ steps:
       [
         "build",
         "-t",
-        "$_GCR_HOSTNAME/$PROJECT_ID/handvask-frontend-artifacts/handvask-frontend-image:$COMMIT_SHA",
-        "./handvask_frontend",
+        "$_GCR_HOSTNAME/$PROJECT_ID/_SERVICE_NAME-frontend-artifacts/_SERVICE_NAME-frontend-image:$COMMIT_SHA",
+        "./_SERVICE_NAME_frontend",
       ]
     secretEnv: ['NEXT_PUBLIC_API_URL']
   #step 3
@@ -28,11 +28,11 @@ steps:
         "image",
         "deployment",
         "frontend",
-        "frontend=$_GCR_HOSTNAME/$PROJECT_ID/handvask-frontend-artifacts/handvask-frontend:$COMMIT_SHA",
+        "frontend=$_GCR_HOSTNAME/$PROJECT_ID/_SERVICE_NAME-frontend-artifacts/_SERVICE_NAME-frontend:$COMMIT_SHA",
       ]
     env:
       - "CLOUDSDK_COMPUTE_ZONE=$_DEPLOY_REGION"
-      - "CLOUDSDK_CONTAINER_CLUSTER=$handvask-cluster"
+      - "CLOUDSDK_CONTAINER_CLUSTER=_SERVICE_NAME-cluster"
 substitutions:
   _SUB_VALUE: python-backend
   # _LABELS: gcb-trigger-id=9723ac3b-95ac-44e2-b4e1-0da4e7dc8453
