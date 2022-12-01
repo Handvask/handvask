@@ -1,12 +1,16 @@
-import os
+from os import getenv
+from os.path import dirname
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .Models import make_conn
-from .routes import auth, users
+from .routes import auth, instances, users
 
-origins = [os.environ["HANDVASK_FRONTEND_ORIGIN"]]
+load_dotenv(dirname(__file__) + "/../.env")
+
+origins = [getenv("HANDVASK_FRONTEND_ORIGIN")]
 
 make_conn()
 
@@ -24,6 +28,7 @@ app.add_middleware(
 
 app.include_router(users.router)
 app.include_router(auth.router)
+app.include_router(instances.router)
 
 
 @app.get("/")

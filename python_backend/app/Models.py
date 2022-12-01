@@ -1,8 +1,6 @@
-import os
 from datetime import datetime
-from typing import Generic
+from os import getenv
 from typing import Optional as OptionalT
-from typing import TypeVar
 
 from pony.orm import *
 from pydantic import BaseModel
@@ -40,7 +38,7 @@ class UserT(BaseModel):
     dzn_instances: list[int]
     mzn_instances: list[int]
     runs: list[int]
-    sys_admin: OptionalT["Sys_AdminT"]
+    sys_admin: OptionalT[int]
     max_cpu: int
 
 
@@ -49,13 +47,15 @@ class Mzn_instance(db.Entity):
     user = Required(User)
     friendly_name = Optional(str)
     runs = Set("Run")
+    contents = Optional(LongStr)
 
 
 class Mzn_instanceT(BaseModel):
     id: int
-    user: "UserT"
+    user: int
     friendly_name: str
     runs: list[int]
+    contents: None | str
 
 
 class Dzn_instance(db.Entity):
@@ -63,13 +63,15 @@ class Dzn_instance(db.Entity):
     user = Required(User)
     friendly_name = Optional(str)
     runs = Set("Run")
+    contents = Optional(LongStr)
 
 
 class Dzn_instanceT(BaseModel):
     id: int
-    user: "UserT"
+    user: int
     friendly_name: str
     runs: list[int]
+    contents: None | str
 
 
 class Run(db.Entity):
@@ -131,9 +133,9 @@ SolverT.update_forward_refs()
 def make_conn():
     db.bind(
         provider="mysql",
-        host=os.environ["DB_HOST"],
-        user=os.environ["DB_USER"],
-        passwd=os.environ["DB_PASS"],
-        database=os.environ["DB_NAME"],
+        host=getenv("DB_HOST"),
+        user=getenv("DB_USER"),
+        passwd=getenv("DB_PASS"),
+        database=getenv("DB_NAME"),
     )
     db.generate_mapping(create_tables=True)
