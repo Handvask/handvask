@@ -28,7 +28,7 @@ export default function useAPI() {
 
   function post<T = SuccessResponse>(
     url: string,
-    data: Record<string, unknown>,
+    data: Record<string, unknown> | string,
     callback?: (x: T) => void,
     useJson = true,
     headers: Record<string, string> = {}
