@@ -65,8 +65,9 @@ export default function Register() {
                 <div className="form-floating mb-3 w-100">
                   <input
                     type="text"
-                    className={`form-control ${hadUsernameError ? "is-invalid" : ""
-                      }`}
+                    className={`form-control ${
+                      hadUsernameError ? "is-invalid" : ""
+                    }`}
                     id="userInput"
                     value={username}
                     placeholder=" "
@@ -80,8 +81,9 @@ export default function Register() {
                 <div className="form-floating mb-3 w-100">
                   <input
                     type="password"
-                    className={`form-control ${hasPasswordError ? "is-invalid" : ""
-                      }`}
+                    className={`form-control ${
+                      hasPasswordError ? "is-invalid" : ""
+                    }`}
                     id="passwordInput"
                     value={password}
                     placeholder=" "
@@ -96,8 +98,9 @@ export default function Register() {
                 <div className="form-floating mb-3 w-100">
                   <input
                     type="password"
-                    className={`form-control ${hasPasswordError ? "is-invalid" : ""
-                      }`}
+                    className={`form-control ${
+                      hasPasswordError ? "is-invalid" : ""
+                    }`}
                     id="confirmPasswordInput"
                     value={confirmPassword}
                     placeholder=" "
