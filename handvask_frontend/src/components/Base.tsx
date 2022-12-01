@@ -10,7 +10,7 @@ export default function Base({ children }: BasePropT) {
   return (
     (user && (
       <>
-        <Nav user={user}></Nav>
+        <Nav user={user} />
         {children}
       </>
     )) || <PageLoader />

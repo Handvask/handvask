@@ -41,14 +41,14 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
           <tr>
             <td>ID</td>
             <td>Name</td>
-            <td></td>
+            <td />
           </tr>
         </thead>
         <tbody>
           {data == undefined ? (
             <tr>
               <td colSpan={3} className="text-center">
-                <FontAwesomeIcon icon={faSpinner} spin></FontAwesomeIcon>
+                <FontAwesomeIcon icon={faSpinner} spin />
               </td>
             </tr>
           ) : (
