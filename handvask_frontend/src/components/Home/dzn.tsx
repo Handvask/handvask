@@ -1,3 +1,4 @@
+import React from "react";
 import { HomeSubpageBasePropT } from ".";
 
 export default function Dzn({ user }: HomeSubpageBasePropT) {

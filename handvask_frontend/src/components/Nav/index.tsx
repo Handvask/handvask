@@ -1,7 +1,7 @@
 import NavLink from "./NavLink";
-import useUser from "../../hooks/useUser";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSink, faUser, faUserNinja } from "@fortawesome/free-solid-svg-icons";
+import React from "react";
 
 type NavPropT = {
   user: User;
@@ -26,7 +26,7 @@ export default function Nav({ user }: NavPropT) {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon" />
         </button>
         <div className="collapse navbar-collapse" id="mainNavbar">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">

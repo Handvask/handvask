@@ -5,6 +5,7 @@ import { setCookie, hasCookie } from "cookies-next";
 import useAPI from "../hooks/useAPI";
 import AsyncBtn from "../components/AsyncBtn";
 import Link from "next/link";
+import React from "react";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -101,7 +102,7 @@ export default function Login() {
             </form>
           </div>
         </div>
-        <div></div>
+        <div />
       </div>
     </>
   );
