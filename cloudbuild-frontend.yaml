@@ -6,7 +6,7 @@ steps:
         "build",
         "-t",
         "$_GCR_HOSTNAME/$PROJECT_ID/$_SERVICE_NAME-frontend-artifacts/$_SERVICE_NAME-frontend-image:$COMMIT_SHA",
-        "./$_SERVICE_NAME_frontend",
+        "./handvask_frontend",
       ]
     secretEnv: ['NEXT_PUBLIC_API_URL']
   #step 3
