@@ -98,7 +98,8 @@ def create_mzn(contents: str = Body(""), user_id: int = Depends(get_current_user
     instance.friendly_name = f"mzn_{instance.id}"
     return instance.to_dict(with_collections=True, with_lazy=True)
 
-#region Dzn
+
+# region Dzn
 @router.get("/dzn", response_model=List[Dzn_instanceT])
 @db_session
 def get_dzn(
@@ -127,6 +128,7 @@ def get_dzn(
             raise HTTPException(status_code=401, detail="Access denied")
         res.append(instance.to_dict(with_collections=True, with_lazy=True))
     return res
+
 
 @router.post("/dzn/{instance_id}", response_model=SuccessT)
 @db_session
@@ -161,6 +163,7 @@ def update_dzn(
     instance.contents = contents
     instance.friendly_name = friendly_name
     return {"success": True}
+
 
 @router.post("/create_dzn", response_model=Dzn_instanceT)
 @db_session
