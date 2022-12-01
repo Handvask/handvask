@@ -35,13 +35,13 @@ export function http<T = SuccessResponse>(
   fetch(request)
     .then((r) => r.json())
     .then((data) => {
-      if (data.hasOwnProperty("dd")) {
+      if (Object.prototype.hasOwnProperty.call(data, "dd")) {
         window.dispatchEvent(new CustomEvent("__dd", { detail: data.dd }));
-      } else if (data.hasOwnProperty("whoops")) {
+      } else if (Object.prototype.hasOwnProperty.call(data, "whoops")) {
         window.dispatchEvent(
           new CustomEvent("__whoops", { detail: data.whoops })
         );
-      } else if (data.hasOwnProperty("redirect")) {
+      } else if (Object.prototype.hasOwnProperty.call(data, "redirect")) {
         if (callback) {
           callback(data);
         }
@@ -56,13 +56,13 @@ export async function asyncHttp<T = SuccessResponse>(request: Request) {
   return fetch(request)
     .then((r) => r.json())
     .then((data) => {
-      if (data.hasOwnProperty("dd")) {
+      if (Object.prototype.hasOwnProperty.call(data, "dd")) {
         window.dispatchEvent(new CustomEvent("__dd", { detail: data.dd }));
-      } else if (data.hasOwnProperty("whoops")) {
+      } else if (Object.prototype.hasOwnProperty.call(data, "whoops")) {
         window.dispatchEvent(
           new CustomEvent("__whoops", { detail: data.whoops })
         );
-      } else if (data.hasOwnProperty("redirect")) {
+      } else if (Object.prototype.hasOwnProperty.call(data, "redirect")) {
         document.location = data.redirect;
       }
       return data as T;
