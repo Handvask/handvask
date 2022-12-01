@@ -96,7 +96,7 @@ export default function Login() {
                   Login
                 </AsyncBtn>
                 <Link href="/register" className="mt-2">
-                  Register new account.
+                  Register new account
                 </Link>
               </div>
             </form>
