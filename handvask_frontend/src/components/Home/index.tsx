@@ -52,7 +52,7 @@ export default function Home() {
               }}
               onClick={() => setSideOpen((v) => !v)}
             >
-              <FontAwesomeIcon icon={faBars}></FontAwesomeIcon>
+              <FontAwesomeIcon icon={faBars} />
             </Button>
             <div
               className={`d-flex justify-content-start flex-column align-items-left bg-light pt-5 border-end px-4`}
