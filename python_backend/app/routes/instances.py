@@ -4,7 +4,14 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pony.orm import commit, db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import Dzn_instance, Dzn_instanceT, Mzn_instance, Mzn_instanceT, SuccessT, User
+from ..Models import (
+    Dzn_instance,
+    Dzn_instanceT,
+    Mzn_instance,
+    Mzn_instanceT,
+    SuccessT,
+    User,
+)
 
 router = APIRouter(
     prefix="/instances",
@@ -95,6 +102,7 @@ def create_mzn(contents: str = Body(""), user_id: int = Depends(get_current_user
     instance.friendly_name = f"mzn_{instance.id}"
     return instance.to_dict(with_collections=True, with_lazy=True)
 
+
 @router.post("/delete_mzn/{instance_id}", response_model=SuccessT)
 @db_session
 def delete_mzn(
@@ -124,6 +132,7 @@ def delete_mzn(
         raise HTTPException(status_code=401, detail="Access denied")
     instance.delete()
     return {"success": True}
+
 
 # region Dzn
 @router.get("/dzn", response_model=List[Dzn_instanceT])
@@ -204,6 +213,7 @@ def create_dzn(contents: str = Body(""), user_id: int = Depends(get_current_user
     commit()  # Save the instance so we can get the ID
     instance.friendly_name = f"dzn_{instance.id}"
     return instance.to_dict(with_collections=True, with_lazy=True)
+
 
 @router.post("/delete_dzn/{instance_id}", response_model=SuccessT)
 @db_session
