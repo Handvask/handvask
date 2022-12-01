@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
-from pony.orm import db_session
+from pony.orm import db_session, commit
 
 from ..middleware.auth import get_current_user_id
 from ..Models import Mzn_instance, Mzn_instanceT, SuccessT
@@ -51,3 +51,12 @@ def update_mzn(
     instance.contents = contents
     instance.friendly_name = friendly_name
     return {"success": True}
+
+
+@router.post("/create_mzn", response_model=Mzn_instanceT)
+@db_session
+def create_mzn(contents: str = Body(""), user_id: int = Depends(get_current_user_id)):
+    instance = Mzn_instance(user=user_id, contents=contents)
+    commit()  # Save the instance so we can get the ID
+    instance.friendly_name = f"mzn_{instance.id}"
+    return instance.to_dict(with_collections=True, with_lazy=True)

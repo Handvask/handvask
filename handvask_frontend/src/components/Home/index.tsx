@@ -90,7 +90,8 @@ export default function Home() {
           >
             {(currentPage == "runs" && <Runs user={user} />) ||
               (currentPage == "dzn" && <Dzn user={user} />) ||
-              (currentPage == "mzn" && <Mzn user={user} />) || <></>}
+              (currentPage == "mzn" && <Mzn user={user} />) ||
+              null}
           </div>
           {/* <Table hover>
           <thead>
@@ -103,7 +104,8 @@ export default function Home() {
           <tbody>{tableRows}</tbody>
         </Table> */}
         </div>
-      )) || <></>}
+      )) ||
+        null}
     </Base>
   );
 }

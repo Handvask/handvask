@@ -52,7 +52,7 @@ export default function Modal({
       <div
         className="modal-backdrop-custom bg-dark bg-opacity-50 vw-100 vh-100 position-fixed"
         onClick={onClose}
-       />
+      />
       <div
         className="modal-dialog modal-xl modal-dialog-scrollable modal-dialog-centered modal-sm"
         role="document"
@@ -68,10 +68,10 @@ export default function Modal({
               data-bs-dismiss="modal"
               aria-label="Close"
               onClick={onClose}
-             />
+            />
           </div>
           <div className="modal-body">{children}</div>
-          {(footer && <div className="modal-footer">{footer}</div>) || <></>}
+          {(footer && <div className="modal-footer">{footer}</div>) || null}
         </div>
       </div>
     </div>
