@@ -7,8 +7,8 @@ COPY ["package.json", "./"]
 
 RUN npm install
 
-COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", ".env", "./"]
-
+COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "./"]
+# ".env",
 RUN npx next build 
 
 EXPOSE 3000
