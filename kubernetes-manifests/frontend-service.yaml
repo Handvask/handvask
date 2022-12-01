@@ -1,12 +1,14 @@
-kind: Service
-apiVersion: v1
+apiVersion: "v1"
+kind: "Service"
 metadata:
-  name: handvask-frontend-service
+  name: "handvask-frontend-service"
+  namespace: "default"
 spec:
-  selector:
-    run: handvask-frontend-service
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3000
-  type: LoadBalancer
+  - protocol: "TCP"
+    port: 80
+    targetPort: 3000
+  selector:
+    app: "handvask-frontend"
+  type: "LoadBalancer"
+  loadBalancerIP: ""
