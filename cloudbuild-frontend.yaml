@@ -5,6 +5,8 @@ steps:
       [
         "build",
         "-t",
+        "--build-arg",
+        "NEXT_PUBLIC_API_URL=$$NEXT_PUBLIC_API_URL",
         "$_GCR_HOSTNAME/$PROJECT_ID/$_SERVICE_NAME-frontend-artifacts/$_SERVICE_NAME-frontend-image:$COMMIT_SHA",
         "./handvask_frontend",
       ]
