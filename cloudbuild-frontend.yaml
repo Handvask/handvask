@@ -40,6 +40,16 @@ steps:
     env:
       - "CLOUDSDK_COMPUTE_ZONE=$_DEPLOY_REGION"
       - "CLOUDSDK_CONTAINER_CLUSTER=$_SERVICE_NAME-cluster"
+  # Step 5
+  # - name: "gcr.io/cloud-builders/kubectl"
+  #   args:
+  #     [
+  #       "set",
+  #       "image",
+  #       "expose",
+  #       "deployment",
+  #       "frontend-service",
+  #     ]
 substitutions:
   _SUB_VALUE: python-backend
   # _LABELS: gcb-trigger-id=9723ac3b-95ac-44e2-b4e1-0da4e7dc8453
