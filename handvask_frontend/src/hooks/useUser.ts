@@ -5,6 +5,7 @@ import useToken from "./useToken";
 
 export type ExpandedUser = {
   addMzn: (id: number) => void;
+  addDzn: (id: number) => void;
 } & User;
 
 export default function useUser() {
@@ -23,6 +24,15 @@ export default function useUser() {
           return {
             ...v,
             mzn_instances: [...v.mzn_instances.filter((i) => i != id), id],
+          };
+        });
+      },
+      addDzn(id) {
+        setUser((v) => {
+          if (!v) return v;
+          return {
+            ...v,
+            dzn_instances: [...v.dzn_instances.filter((i) => i != id), id],
           };
         });
       },

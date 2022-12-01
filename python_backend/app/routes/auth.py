@@ -101,3 +101,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
 
 class Mzn_instanceT(SuccessT):
     name: str
+
+
+class Dzn_instanceT(SuccessT):
+    name: str
