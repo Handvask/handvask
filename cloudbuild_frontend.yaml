@@ -1,0 +1,50 @@
+steps:
+  #step 1
+  - name: gcr.io/cloud-builders/docker
+    args:
+      [
+        "build",
+        "-t",
+        "$_GCR_HOSTNAME/$PROJECT_ID/handvask-frontend-artifacts/handvask-frontend-image:$COMMIT_SHA",
+        "./handvask_frontend",
+      ]
+    secretEnv: ['NEXT_API_PUBLIC_URL']
+  #step 3
+  - name: "gcr.io/cloud-builders/kubectl"
+    args:
+      [
+        "apply",
+        "-f",
+        "kubernetes-manifests/",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=europe-north1"
+      - "CLOUDSDK_CONTAINER_CLUSTER=europe-north1-a"
+  #step 4
+  - name: "gcr.io/cloud-builders/kubectl"
+    args:
+      [
+        "set",
+        "image",
+        "deployment",
+        "frontend",
+        "frontend=$_GCR_HOSTNAME/$PROJECT_ID/handvask-frontend-artifacts/handvask-frontend:$COMMIT_SHA",
+      ]
+    env:
+      - "CLOUDSDK_COMPUTE_ZONE=$_DEPLOY_REGION"
+      - "CLOUDSDK_CONTAINER_CLUSTER=$_DEPLOY_REGION-a"
+substitutions:
+  _SUB_VALUE: python-backend
+  _LABELS: gcb-trigger-id=9723ac3b-95ac-44e2-b4e1-0da4e7dc8453
+  _TRIGGER_ID: 9723ac3b-95ac-44e2-b4e1-0da4e7dc8453
+  _GCR_HOSTNAME: europe-north1-docker.pkg.dev
+  _PLATFORM: managed
+  _SERVICE_NAME: handvask
+  _DEPLOY_REGION: europe-north1
+availableSecrets:
+  secrets:
+    - versionName: projects/383672682031/secrets/NEXT_PUBLIC_API_URL
+      env: NEXT_PUBLIC_API_URL
+options:
+  logging: CLOUD_LOGGING_ONLY
+  substitutionOption: ALLOW_LOOSE
