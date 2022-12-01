@@ -29,7 +29,6 @@ def solve_and_return():
         return f"Couldn't solve, got exception: {e}", 400
 
 
-
 @app.route("/solve", methods=["POST"])
 def solve():
     try:
