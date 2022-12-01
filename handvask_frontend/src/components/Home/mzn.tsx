@@ -15,6 +15,7 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
   const [showInstanceModal, setShowInstanceModal] = useState(false);
   const [selectedMzn, setSelectedMzn] = useState<MznInstance>();
   const [addingMzn, setAddingMzn] = useState(false);
+  const [deletingMzn, setDeletingMzn] = useState(false);
   function onUpdate(id: number, newName: string, newContents: string) {
     setData((v) => {
       if (!v) return v;
@@ -35,6 +36,17 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
       });
       user.addMzn(r.id);
       setAddingMzn(false);
+    });
+  }
+
+  function deleteMzn(instance: MznInstance) {
+    setDeletingMzn(true);
+    post<DznInstance>(`/instances/delete_mzn/${instance.id}`, "", (r) => {
+      setData((v) => {
+        if (!v) return v;
+        return v.filter((i) => i.id !== instance.id);
+      });
+      setDeletingMzn(false);
     });
   }
 
@@ -101,9 +113,15 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
                       >
                         <FontAwesomeIcon icon={faFile} />
                       </Button>
-                      <Button kind="danger" className="" outline>
+                      <AsyncBtn
+                        kind="danger"
+                        className=""
+                        loading={deletingMzn}
+                        outline
+                        onClick={() => deleteMzn(e)}
+                      >
                         <FontAwesomeIcon icon={faTrash} />
-                      </Button>
+                      </AsyncBtn>
                     </div>
                   </td>
                 </tr>

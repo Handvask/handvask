@@ -1,10 +1,10 @@
 from typing import List
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
-from pony.orm import commit, db_session
+from pony.orm import commit, db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import Dzn_instance, Dzn_instanceT, Mzn_instance, Mzn_instanceT, SuccessT
+from ..Models import Dzn_instance, Dzn_instanceT, Mzn_instance, Mzn_instanceT, SuccessT, User
 
 router = APIRouter(
     prefix="/instances",
@@ -34,12 +34,9 @@ def get_mzn(
     Returns:
         List[Mzn_InstanceT]: A list of mzn instances
     """
+    response = select(i for i in Mzn_instance if i.id in instance_ids)[:]
     res = []
-    for i in instance_ids:
-        try:
-            instance = Mzn_instance[i]
-        except:
-            raise HTTPException(status_code=404, detail=f"Instance {i} not found")
+    for instance in response:
         if instance.user.id != user_id:
             raise HTTPException(status_code=401, detail="Access denied")
         res.append(instance.to_dict(with_collections=True, with_lazy=True))
@@ -98,6 +95,35 @@ def create_mzn(contents: str = Body(""), user_id: int = Depends(get_current_user
     instance.friendly_name = f"mzn_{instance.id}"
     return instance.to_dict(with_collections=True, with_lazy=True)
 
+@router.post("/delete_mzn/{instance_id}", response_model=SuccessT)
+@db_session
+def delete_mzn(
+    instance_id: int,
+    user_id: int = Depends(get_current_user_id),
+):
+    """deletes an existing mzn instance
+
+    Args:
+        instance_id (int): The instance to delete
+        contents (str, optional): The new contents of the instance.
+        friendly_name (str, optional): The new name of the instance
+        user_id (int, optional): The user_id of the currently logged in user
+
+    Raises:
+        HTTPException: Instance not found
+        HTTPException: Access denied
+
+    Returns:
+        dict: A success flag in a dictionary
+    """
+    try:
+        instance = Mzn_instance[instance_id]
+    except:
+        raise HTTPException(status_code=404, detail=f"Instance {instance_id} not found")
+    if instance.user.id != user_id or bool(User[user_id].sys_admin):
+        raise HTTPException(status_code=401, detail="Access denied")
+    instance.delete()
+    return {"success": True}
 
 # region Dzn
 @router.get("/dzn", response_model=List[Dzn_instanceT])
@@ -118,12 +144,9 @@ def get_dzn(
     Returns:
         List[Dzn_InstanceT]: A list of dzn instances
     """
+    response = select(i for i in Dzn_instance if i.id in instance_ids)[:]
     res = []
-    for i in instance_ids:
-        try:
-            instance = Dzn_instance[i]
-        except:
-            raise HTTPException(status_code=404, detail=f"Instance {i} not found")
+    for instance in response:
         if instance.user.id != user_id:
             raise HTTPException(status_code=401, detail="Access denied")
         res.append(instance.to_dict(with_collections=True, with_lazy=True))
@@ -181,3 +204,33 @@ def create_dzn(contents: str = Body(""), user_id: int = Depends(get_current_user
     commit()  # Save the instance so we can get the ID
     instance.friendly_name = f"dzn_{instance.id}"
     return instance.to_dict(with_collections=True, with_lazy=True)
+
+@router.post("/delete_dzn/{instance_id}", response_model=SuccessT)
+@db_session
+def delete_dzn(
+    instance_id: int,
+    user_id: int = Depends(get_current_user_id),
+):
+    """deletes an existing dzn instance
+
+    Args:
+        instance_id (int): The instance to delete
+        contents (str, optional): The new contents of the instance.
+        friendly_name (str, optional): The new name of the instance
+        user_id (int, optional): The user_id of the currently logged in user
+
+    Raises:
+        HTTPException: Instance not found
+        HTTPException: Access denied
+
+    Returns:
+        dict: A success flag in a dictionary
+    """
+    try:
+        instance = Dzn_instance[instance_id]
+    except:
+        raise HTTPException(status_code=404, detail=f"Instance {instance_id} not found")
+    if instance.user.id != user_id or bool(User[user_id].sys_admin):
+        raise HTTPException(status_code=401, detail="Access denied")
+    instance.delete()
+    return {"success": True}

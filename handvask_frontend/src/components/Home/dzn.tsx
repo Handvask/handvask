@@ -15,6 +15,7 @@ export default function Dzn({ user }: HomeSubpageBasePropT) {
   const [showInstanceModal, setShowInstanceModal] = useState(false);
   const [selectedDzn, setSelectedDzn] = useState<DznInstance>();
   const [addingDzn, setAddingDzn] = useState(false);
+  const [deletingDzn, setDeletingDzn] = useState(false);
   function onUpdate(id: number, newName: string, newContents: string) {
     setData((v) => {
       if (!v) return v;
@@ -31,11 +32,21 @@ export default function Dzn({ user }: HomeSubpageBasePropT) {
     post<DznInstance>(`/instances/create_dzn`, "", (r) => {
       setData((v) => {
         if (!v) return v;
-        console.log(v)
         return [...v, r];
       });
       user.addDzn(r.id);
       setAddingDzn(false);
+    });
+  }
+
+  function deleteDzn(instance: DznInstance) {
+    setDeletingDzn(true);
+    post<DznInstance>(`/instances/delete_dzn/${instance.id}`, "", (r) => {
+      setData((v) => {
+        if (!v) return v;
+        return v.filter((i) => i.id !== instance.id);
+      });
+      setDeletingDzn(false);
     });
   }
 
@@ -102,9 +113,15 @@ export default function Dzn({ user }: HomeSubpageBasePropT) {
                       >
                         <FontAwesomeIcon icon={faFile} />
                       </Button>
-                      <Button kind="danger" className="" outline>
+                      <AsyncBtn
+                        kind="danger"
+                        className=""
+                        loading={deletingDzn}
+                        outline
+                        onClick={() => deleteDzn(e)}
+                      >
                         <FontAwesomeIcon icon={faTrash} />
-                      </Button>
+                      </AsyncBtn>
                     </div>
                   </td>
                 </tr>
