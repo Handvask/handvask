@@ -131,7 +131,7 @@ SolverT.update_forward_refs()
 
 
 def make_conn():
-    print(getenv("DB_HOST"), getenv("DB_USER"), getenv("DB_PASS"), getenv("DB_NAME")) 
+    print(getenv("DB_HOST"), getenv("DB_USER"), getenv("DB_PASS"), getenv("DB_NAME"))
     db.bind(
         provider="mysql",
         host=getenv("DB_HOST"),
@@ -143,5 +143,5 @@ def make_conn():
 
 
 def make_test_conn():
-    db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
-    db.generate_mapping(create_tables=True) 
+    db.bind(provider="sqlite", filename="database.sqlite", create_db=True)
+    db.generate_mapping(create_tables=True)
