@@ -1,10 +1,10 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: frontend-service
+  name: handvask-frontend-service
 spec:
   selector:
-    run: frontend-service
+    run: handvask-frontend-service
   ports:
     - protocol: TCP
       port: 80
