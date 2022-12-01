@@ -1,6 +1,7 @@
 import { deleteCookie } from "cookies-next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import React from "react";
 
 export default function Logout() {
   deleteCookie("handvask_api_token");

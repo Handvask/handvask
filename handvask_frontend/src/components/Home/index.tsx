@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { httpGet } from "../../functions";
 import useUser from "../../hooks/useUser";
-import Table from "react-bootstrap/Table";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "../Button";
-import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import Base from "../Base";

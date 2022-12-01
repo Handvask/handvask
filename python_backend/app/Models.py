@@ -2,7 +2,7 @@ from datetime import datetime
 from os import getenv
 from typing import Optional as OptionalT
 
-from pony.orm import *
+from pony.orm import PrimaryKey, Required, Set, Optional, LongStr, Database
 from pydantic import BaseModel
 
 db = Database()

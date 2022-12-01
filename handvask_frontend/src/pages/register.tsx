@@ -1,10 +1,11 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { setCookie, hasCookie } from "cookies-next";
+import { hasCookie } from "cookies-next";
 import useAPI from "../hooks/useAPI";
 import AsyncBtn from "../components/AsyncBtn";
 import Link from "next/link";
+import React from "react";
 
 export default function Register() {
   const [username, setUsername] = useState("");
