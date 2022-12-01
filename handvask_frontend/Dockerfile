@@ -8,7 +8,9 @@ COPY ["package.json", "./"]
 RUN npm install
 
 COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "./"]
-# ".env",
+
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 RUN npx next build 
 
 EXPOSE 3000
