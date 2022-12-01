@@ -4,14 +4,14 @@ metadata:
   name: minizinc
 build:
   artifacts:
-  - image: minizinc-app
-    context: app
-    docker:
-      dockerfile: Dockerfile
-  - image: minizinc-solver
-    context: solver
-    docker:
-      dockerfile: Dockerfile
+    - image: minizinc-app
+      context: app
+      docker:
+        dockerfile: Dockerfile
+    - image: minizinc-solver
+      context: solver
+      docker:
+        dockerfile: Dockerfile
 manifests:
   rawYaml:
-  - deployment.yaml
+    - deployment.yaml
