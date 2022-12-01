@@ -19,4 +19,4 @@ spec:
             cpu: 300m
             memory: 512Mi
         ports:
-        - containerPort: 8080
+        - containerPort: 3000

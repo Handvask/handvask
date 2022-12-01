@@ -34,8 +34,8 @@ steps:
         "set",
         "image",
         "deployment",
-        "frontend",
-        "frontend=$_GCR_HOSTNAME/$PROJECT_ID/$_SERVICE_NAME-frontend-artifacts/$_SERVICE_NAME-frontend:$COMMIT_SHA",
+        "handvask-frontend",
+        "handvask-frontend=$_GCR_HOSTNAME/$PROJECT_ID/$_SERVICE_NAME-frontend-artifacts/$_SERVICE_NAME-frontend:$COMMIT_SHA",
       ]
     env:
       - "CLOUDSDK_COMPUTE_ZONE=$_DEPLOY_REGION"
