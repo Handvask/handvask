@@ -12,11 +12,11 @@ spec:
         app: handvask-frontend
     spec:
       containers:
-      - name: handvask-frontend
-        image: europe-north1-docker.pkg.dev/handvask/handvask-backend-artifacts/handvask_backend_python:$COMMIT_SHA
-        resources:
-          limits:
-            cpu: 300m
-            memory: 512Mi
-        ports:
-        - containerPort: 3000
+        - name: handvask-frontend
+          image: europe-north1-docker.pkg.dev/handvask/handvask-backend-artifacts/handvask_backend_python:$COMMIT_SHA
+          resources:
+            limits:
+              cpu: 300m
+              memory: 512Mi
+          ports:
+            - containerPort: 3000
