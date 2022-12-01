@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
-from pony.orm import db_session, commit
+from pony.orm import commit, db_session
 
 from ..middleware.auth import get_current_user_id
 from ..Models import Mzn_instance, Mzn_instanceT, SuccessT
