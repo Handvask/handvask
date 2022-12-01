@@ -32,7 +32,7 @@ steps:
       ]
     env:
       - "CLOUDSDK_COMPUTE_ZONE=$_DEPLOY_REGION"
-      - "CLOUDSDK_CONTAINER_CLUSTER=$_DEPLOY_REGION-a"
+      - "CLOUDSDK_CONTAINER_CLUSTER=$handvask-cluster"
 substitutions:
   _SUB_VALUE: python-backend
   # _LABELS: gcb-trigger-id=9723ac3b-95ac-44e2-b4e1-0da4e7dc8453
