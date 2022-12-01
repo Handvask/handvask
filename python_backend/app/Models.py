@@ -140,3 +140,8 @@ def make_conn():
         database=getenv("DB_NAME"),
     )
     db.generate_mapping(create_tables=True)
+
+
+def make_test_conn():
+    db.bind(provider='sqlite', filename='database.sqlite', create_db=True)
+    db.generate_mapping(create_tables=True) 
