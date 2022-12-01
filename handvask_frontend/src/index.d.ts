@@ -10,3 +10,10 @@ type User = {
   };
   max_cpu: number;
 };
+
+type MznInstance = {
+  id: number;
+  user: number;
+  friendly_name: string;
+  contents: string | null;
+};

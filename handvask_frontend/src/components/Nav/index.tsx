@@ -9,7 +9,10 @@ type NavPropT = {
 
 export default function Nav({ user }: NavPropT) {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav
+      className="navbar navbar-expand-lg navbar-light bg-light shadow-sm"
+      style={{ zIndex: 99 }}
+    >
       <div className="container-fluid">
         <NavLink className="navbar-brand" href="/">
           <FontAwesomeIcon icon={faSink} size={"lg"} />
@@ -18,14 +21,14 @@ export default function Nav({ user }: NavPropT) {
           className="navbar-toggler"
           type="button"
           data-bs-toggle="collapse"
-          data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
+          data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggler-icon" />
         </button>
-        <div className="collapse navbar-collapse">
+        <div className="collapse navbar-collapse" id="mainNavbar">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <NavLink className="nav-link" href="/">
@@ -33,13 +36,13 @@ export default function Nav({ user }: NavPropT) {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" href="/page1">
-                page1
+              <NavLink className="nav-link" href="/handvask">
+                Minizinc
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" href="/page2">
-                page2
+              <NavLink className="nav-link" href="/admin">
+                Admin
               </NavLink>
             </li>
           </ul>

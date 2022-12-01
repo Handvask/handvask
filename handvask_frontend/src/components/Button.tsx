@@ -17,6 +17,7 @@ export type ButtonPropT = {
   className?: string;
   children?: React.ReactNode;
   type?: "button" | "submit" | "reset";
+  style?: React.CSSProperties;
 };
 
 export default function Button({
@@ -29,6 +30,7 @@ export default function Button({
   className = "",
   children = "",
   type,
+  style = {},
 }: ButtonPropT) {
   return (
     <button
@@ -38,6 +40,7 @@ export default function Button({
       } ${large ? "btn-lg" : ""} ${small ? "btn-sm" : ""} ${className}`}
       onClick={onClick}
       disabled={disabled}
+      style={style}
     >
       {children}
     </button>
