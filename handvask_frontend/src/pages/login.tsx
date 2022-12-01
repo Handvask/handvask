@@ -42,7 +42,9 @@ export default function Login() {
         if (r.detail) {
           setHadError(true);
         } else {
-          setCookie("handvask_api_token", r.access_token);
+          setCookie("handvask_api_token", r.access_token, {
+            maxAge: 86400,
+          });
           router.replace("/");
         }
       },
@@ -93,7 +95,7 @@ export default function Login() {
                   Login
                 </AsyncBtn>
                 <Link href="/register" className="mt-2">
-                  I don't have an account yet
+                  I don't have an account yet man
                 </Link>
               </div>
             </form>
