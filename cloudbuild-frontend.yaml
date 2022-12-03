@@ -58,7 +58,7 @@ substitutions:
 availableSecrets:
   secretManager:
     - versionName: projects/383672682031/secrets/NEXT_PUBLIC_API_URL/versions/1
-      env: "NEXT_PUBLIC_API_URL"
+      env: NEXT_PUBLIC_API_URL
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
