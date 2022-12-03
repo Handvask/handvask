@@ -11,12 +11,10 @@ COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", ".
 
 ARG API_URL
 
-ENV NEXT_PUBLIC_API_URL=$API_URL
+ENV NEXT_PUBLIC_API_URL=${API_URL}
 
 RUN npx next build 
 
 EXPOSE 3000
-
-# CMD ["nslookup", "backend-service"]
 
 CMD ["npx", "next","start", "-H", "0.0.0.0", "-p", "3000"]
