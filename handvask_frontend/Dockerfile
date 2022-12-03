@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY ["package.json", "./"]
 
-RUN npm install
+# RUN npm install
 
 COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "./"]
 
