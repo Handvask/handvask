@@ -9,7 +9,9 @@ RUN npm install
 
 COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "./"]
 
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ARG API_URL
+
+ENV NEXT_PUBLIC_API_URL=$API_URL
 
 RUN npx next build 
 

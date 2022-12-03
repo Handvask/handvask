@@ -36,6 +36,7 @@ def register_user(username: str = Form(), password: str = Form()):
     Returns:
         dict: A simple dictionary with the property "success": true
     """
+    # print([user.to_dict() for user in select(u for u in User)[:]])
     # Check if user already exists
     existing_user = select(u for u in User if u.username == username)[:]
     if len(existing_user) != 0:
@@ -59,7 +60,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 @router.post("/login", response_model=LoginRespT)
-@db_session()
+@db_session
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """Logs the user in
 
