@@ -19,9 +19,6 @@ steps:
         3000:3000
         europe-north1.pkg.dev/handvask/handvask-frontend-artifacts/handvask-frontend-image:$COMMIT_SHA",
       ]
-substitutions:
-  _NEXT_PUBLIC_API_URL: $$NEXT_PUBLIC_API_URL
-  secretEnv: ["NEXT_PUBLIC_API_URL"]
 availableSecrets:
   secretManager:
     - versionName: projects/383672682031/secrets/NEXT_PUBLIC_API_URL/versions/1
