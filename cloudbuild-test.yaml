@@ -10,6 +10,7 @@ availableSecrets:
       env: NEXT_PUBLIC_API_URL
 substitutions:
   _NEXT_PUBLIC_API_URL: $$NEXT_PUBLIC_API_URL
+  secretEnv: ["NEXT_PUBLIC_API_URL"]
 options:
   logging: CLOUD_LOGGING_ONLY
   substitutionOption: ALLOW_LOOSE
