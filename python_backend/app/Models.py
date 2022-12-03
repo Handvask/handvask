@@ -130,21 +130,25 @@ RunT.update_forward_refs()
 SolverT.update_forward_refs()
 
 
-
 class DBHandler(object):
     """
     A simple singleton class that makes sure that only one connection to the database is ever initialised.
     """
+
     def __new__(cls):
-        if not hasattr(cls, 'instance'):
+        if not hasattr(cls, "instance"):
             cls.instance = super(DBHandler, cls).__new__(cls)
             cls.instance.bound = False
         return cls.instance
 
-
     def make_conn(self):
         if not self.bound:
-            print(getenv("DB_HOST"), getenv("DB_USER"), getenv("DB_PASS"), getenv("DB_NAME"))
+            print(
+                getenv("DB_HOST"),
+                getenv("DB_USER"),
+                getenv("DB_PASS"),
+                getenv("DB_NAME"),
+            )
             db.bind(
                 provider="mysql",
                 host=getenv("DB_HOST"),
@@ -157,6 +161,10 @@ class DBHandler(object):
 
     def make_test_conn(self):
         if not self.bound:
-            db.bind(provider="sqlite", filename=f"{path.dirname(__file__)}/db.sqlite", create_db=True)
+            db.bind(
+                provider="sqlite",
+                filename=f"{path.dirname(__file__)}/db.sqlite",
+                create_db=True,
+            )
             db.generate_mapping(create_tables=True)
             self.bound = True

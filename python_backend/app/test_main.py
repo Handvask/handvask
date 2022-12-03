@@ -1,8 +1,10 @@
-from fastapi.testclient import TestClient
-import pytest
 import os
 
+import pytest
+from fastapi.testclient import TestClient
+
 from .Models import DBHandler
+
 dbh = DBHandler()
 dbh.make_test_conn()
 
@@ -11,10 +13,9 @@ from .main import app
 client = TestClient(app)
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope="session", autouse=True)
 def db_conn():
     # Will be executed before the first test
-    
 
     yield None
     # Will be executed after the last test
