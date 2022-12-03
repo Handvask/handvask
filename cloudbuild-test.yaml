@@ -17,8 +17,16 @@ steps:
         run
         -p
         3000:3000
-        europe-north1.pkg.dev/handvask/handvask-frontend-artifacts/handvask-frontend-image:$COMMIT_SHA",
+        europe-north1.pkg.dev/handvask/$_SERVICE_NAME-frontend-artifacts/handvask-frontend-image:$COMMIT_SHA",
       ]
+substitutions:
+  _SUB_VALUE: handvask-frontend
+  # _LABELS: gcb-trigger-id=9723ac3b-95ac-44e2-b4e1-0da4e7dc8453
+  # _TRIGGER_ID: 9723ac3b-95ac-44e2-b4e1-0da4e7dc8453
+  _GCR_HOSTNAME: europe-north1-docker.pkg.dev
+  _PLATFORM: managed
+  _SERVICE_NAME: handvask
+  _DEPLOY_REGION: europe-north1
 availableSecrets:
   secretManager:
     - versionName: projects/383672682031/secrets/NEXT_PUBLIC_API_URL/versions/1
