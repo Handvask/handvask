@@ -1,7 +1,9 @@
 steps:
   #step 1
   - name: gcr.io/cloud-builders/docker
+    entrypoint: bash
     args: [
+        "-c",
         "build
         --build-arg API_URL=$$NEXT_PUBLIC_API_URL
         -t
