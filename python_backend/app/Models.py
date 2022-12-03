@@ -1,5 +1,5 @@
 from datetime import datetime
-from os import getenv
+from os import getenv, path
 from typing import Optional as OptionalT
 
 from pony.orm import Database, LongStr, Optional, PrimaryKey, Required, Set
@@ -130,18 +130,33 @@ RunT.update_forward_refs()
 SolverT.update_forward_refs()
 
 
-def make_conn():
-    print(getenv("DB_HOST"), getenv("DB_USER"), getenv("DB_PASS"), getenv("DB_NAME"))
-    db.bind(
-        provider="mysql",
-        host=getenv("DB_HOST"),
-        user=getenv("DB_USER"),
-        passwd=getenv("DB_PASS"),
-        database=getenv("DB_NAME"),
-    )
-    db.generate_mapping(create_tables=True)
+
+class DBHandler(object):
+    """
+    A simple singleton class that makes sure that only one connection to the database is ever initialised.
+    """
+    def __new__(cls):
+        if not hasattr(cls, 'instance'):
+            cls.instance = super(DBHandler, cls).__new__(cls)
+            cls.instance.bound = False
+        return cls.instance
 
 
-def make_test_conn():
-    db.bind(provider="sqlite", filename="database.sqlite", create_db=True)
-    db.generate_mapping(create_tables=True)
+    def make_conn(self):
+        if not self.bound:
+            print(getenv("DB_HOST"), getenv("DB_USER"), getenv("DB_PASS"), getenv("DB_NAME"))
+            db.bind(
+                provider="mysql",
+                host=getenv("DB_HOST"),
+                user=getenv("DB_USER"),
+                passwd=getenv("DB_PASS"),
+                database=getenv("DB_NAME"),
+            )
+            db.generate_mapping(create_tables=True)
+            self.bound = True
+
+    def make_test_conn(self):
+        if not self.bound:
+            db.bind(provider="sqlite", filename=f"{path.dirname(__file__)}/db.sqlite", create_db=True)
+            db.generate_mapping(create_tables=True)
+            self.bound = True

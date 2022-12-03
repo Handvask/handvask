@@ -1,18 +1,30 @@
 from fastapi.testclient import TestClient
+import pytest
+import os
+
+from .Models import DBHandler
+dbh = DBHandler()
+dbh.make_test_conn()
 
 from .main import app
-from .Models import make_test_conn
 
 client = TestClient(app)
 
 
-make_test_conn()
+@pytest.fixture(scope='session', autouse=True)
+def db_conn():
+    # Will be executed before the first test
+    
+
+    yield None
+    # Will be executed after the last test
+    os.system(f"rm {os.path.dirname(__file__)}/db.sqlite")
 
 
 def test_main():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Hello World"}
+    assert response.json() == {"message": "Hello From Handvask Backend!"}
 
 
 # Register
@@ -56,7 +68,7 @@ def test_login_success():
             "password": "asdf",
             "scope": "",
             "client_id": "",
-            "cleint_secret": "",
+            "client_secret": "",
         },
     )
     assert response.status_code == 200
@@ -72,7 +84,7 @@ def test_login_fail():
             "password": "aaaa",
             "scope": "",
             "client_id": "",
-            "cleint_secret": "",
+            "client_secret": "",
         },
     )
     assert response.status_code == 400
