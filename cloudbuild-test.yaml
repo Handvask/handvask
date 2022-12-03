@@ -1,10 +1,12 @@
 steps:
   # step 0;
-  - name: show variable
-    args: [
-      'echo',
-      'variable is $$NEXT_PUBLIC_API_URL'
-    ]
+  - name: ubuntu
+    entrypoint: bash
+    args:
+      [
+        "-c",
+        "echo $NEXT_PUBLIC_API_URL",
+      ]
 availableSecrets:
   secretManager:
     - versionName: projects/383672682031/secrets/NEXT_PUBLIC_API_URL/versions/1
