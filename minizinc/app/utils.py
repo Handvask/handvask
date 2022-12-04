@@ -27,27 +27,24 @@ def delete_job( api_instance: client.BatchV1Api, job: client.V1Job ) -> bool:
         return False
 
 
-def get_result( api_instance: client.CoreV1Api, job: client.V1Job ) -> Tuple[str, int]:
-    pods: client.V1PodList
+def list_pods( api_instance: client.CoreV1Api, job: client.V1Job ) -> client.V1PodList:
     try:
-        pods = api_instance.list_namespaced_pod(
+        return api_instance.list_namespaced_pod(
             namespace='default',
             label_selector=f'controller-uid={job.metadata.labels["controller-uid"]}'
         )
-    except Exception as e:
-        return "\nCouldn't find job", 400
+    except:
+        return None
 
-    for item in pods.items:
-        try:
-            result = api_instance.read_namespaced_pod_log(
-                name=item.metadata.name,
-                namespace='default'
-            )
-            return f'\nGot result:\n{result}', 200
-        except:
-            pass
-    
-    return "\nCouldn't get result", 500
+
+def log_pod( api_instance: client.CoreV1Api, pod: client.V1Pod ) -> str:
+    try:
+        return api_instance.read_namespaced_pod_log(
+            name=pod.metadata.name,
+            namespace='default'
+        )
+    except:
+        return None
 
 
 def _create_job_object( problem: str, data: str, solvers: list[str] ):

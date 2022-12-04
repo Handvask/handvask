@@ -1,10 +1,10 @@
 import os
 import base64
 from tempfile import NamedTemporaryFile
-from flask import Flask
+from flask import Flask, jsonify
 from kubernetes import client, config
 
-from utils import create_job, get_result, delete_job
+from utils import create_job, delete_job, list_pods, log_pod
 
 app = Flask(__name__)
 
@@ -18,21 +18,38 @@ test_solvers = ["gecode", "gist"]
 
 job: client.V1Job
 
+# TODO: should have problem, data, and solvers posted
 @app.route( "/solve", methods=["POST"] )
 def solve():
     global job
 
     job = create_job( BATCHV1, test_problem, test_data, test_solvers )
 
-    return (f'\nSuccesfully created job: {job.metadata.name}', 200) if job else (f"\nCouldn't create job", 400)
+    if job:
+        result = { 
+            "job_name": job.metadata.name,
+            "job_label": job.metadata.labels["controller-uid"]
+        }
+        return jsonify( result ), 200
 
+    return "\nCouldn't create job", 500
 
-@app.route( "/result", methods=["GET"] )
+# TODO: should have label of job to retrieve result from posted
+@app.route( "/result", methods=["POST"] )
 def result():
-    return get_result( COREV1, job )
+    pods = list_pods( COREV1, job )
+    if pods is None:
+        return "\nCouldn't get job", 400
 
+    for pod in pods.items:
+        result = log_pod( COREV1, pod )
+        if result:
+            return f"\nGot result: {result}", 200
 
-@app.route( "/delete", methods=["GET"] )
+    return "\nCouldn't get result", 500
+
+# TODO: should have name of job to delete posted
+@app.route( "/delete", methods=["POST"] )
 def delete():
     global job
 
@@ -42,7 +59,7 @@ def delete():
 
     return "\nCouldn't delete job", 400
 
-
+# TODO: look at later
 def configure():
     try:
         host_url = os.environ["HOST_URL"]
