@@ -34,9 +34,9 @@ spec:
   selector:
     app: minizinc-app
   ports:
-  - protocol: "TCP"
-    port: 6000
-    targetPort: 5000
+    - protocol: "TCP"
+      port: 6000
+      targetPort: 5000
   type: LoadBalancer
 
 ---

@@ -1,18 +1,26 @@
-# To learn more about the skaffold.yaml schema visit
-# https://skaffold.dev/docs/references/yaml/
-apiVersion: skaffold/v2beta19
+apiVersion: skaffold/v3
 kind: Config
+metadata:
+  name: handvask
 build:
-  tagPolicy:
-    sha256: {}
   artifacts:
-    - context: .
-      image: go-hello-world
-deploy:
-  kubectl:
-    manifests:
-      - kubernetes-manifests/**
-profiles:
-  - name: cloudbuild
-    build:
-      googleCloudBuild: {}
+    - image: backend
+      context: python_backend
+      docker:
+        dockerfile: Dockerfile
+    - image: frontend
+      context: handvask_frontend
+      # sync:
+      #   manual:
+      #     - src: "src/***/*.ts"
+      #       dest: "/app/src"
+      #     - src: "src/***/*.tsx"
+      #       dest: "/app/src"
+      docker:
+        dockerfile: Dockerfile
+manifests:
+  rawYaml:
+    - kubernetes-manifests/backend-deploy.yaml
+    - kubernetes-manifests/backend-service.yaml
+    - kubernetes-manifests/frontend-deploy.yaml
+    - kubernetes-manifests/frontend-service.yaml

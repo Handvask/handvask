@@ -6,7 +6,7 @@ from kubernetes import client, config
 
 from utils import create_job, get_result, delete_job
 
-app = Flask( __name__ )
+app = Flask(__name__)
 
 config.load_incluster_config()
 COREV1 = client.CoreV1Api()

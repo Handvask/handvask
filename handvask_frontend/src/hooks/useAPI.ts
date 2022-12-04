@@ -1,14 +1,15 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { httpGet, httpPost, SuccessResponse } from "../functions";
 import useToken from "./useToken";
 
 export default function useAPI() {
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
   const token = useToken();
+  const [apiReady, setReady] = useState(false);
 
   const authHeader = useMemo(() => {
     if (token.length === 0) return {};
-
+    setReady(true);
     return {
       Authorization: `Bearer ${token}`,
     };
@@ -38,5 +39,5 @@ export default function useAPI() {
     });
   }
 
-  return { get, post };
+  return { get, post, apiReady };
 }

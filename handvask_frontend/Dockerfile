@@ -3,12 +3,16 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-COPY ["./src","./public",".eslintrc.json", "next.config.cjs","package.json","tsconfig.json", ".env", "./"]
+COPY ["package.json", "./"]
 
-RUN npm install --loglevel verbose
+RUN npm install
+
+COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", ".env", "./"]
 
 RUN npx next build 
 
 EXPOSE 3000
 
-CMD ["npx", "next","start"]
+# CMD ["nslookup", "backend-service"]
+
+CMD ["npx", "next","start", "-H", "0.0.0.0", "-p", "3000"]

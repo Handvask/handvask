@@ -16,12 +16,16 @@ export function guuid() {
   });
 }
 
-export function toUrlEncoded(obj: Record<string, unknown>) {
+export function objToUrlEncoded(obj: Record<string, unknown>) {
   return Object.keys(obj)
     .map(
       (k) => encodeURIComponent(k) + "=" + encodeURIComponent(obj[k] as string)
     )
     .join("&");
+}
+
+export function listToUrlEncoded(arr: (string | number)[], name: string) {
+  return `${name}=` + arr.join(`${name}=`);
 }
 
 export function http<T = SuccessResponse>(
@@ -31,13 +35,13 @@ export function http<T = SuccessResponse>(
   fetch(request)
     .then((r) => r.json())
     .then((data) => {
-      if (data.hasOwnProperty("dd")) {
+      if (Object.prototype.hasOwnProperty.call(data, "dd")) {
         window.dispatchEvent(new CustomEvent("__dd", { detail: data.dd }));
-      } else if (data.hasOwnProperty("whoops")) {
+      } else if (Object.prototype.hasOwnProperty.call(data, "whoops")) {
         window.dispatchEvent(
           new CustomEvent("__whoops", { detail: data.whoops })
         );
-      } else if (data.hasOwnProperty("redirect")) {
+      } else if (Object.prototype.hasOwnProperty.call(data, "redirect")) {
         if (callback) {
           callback(data);
         }
@@ -52,13 +56,13 @@ export async function asyncHttp<T = SuccessResponse>(request: Request) {
   return fetch(request)
     .then((r) => r.json())
     .then((data) => {
-      if (data.hasOwnProperty("dd")) {
+      if (Object.prototype.hasOwnProperty.call(data, "dd")) {
         window.dispatchEvent(new CustomEvent("__dd", { detail: data.dd }));
-      } else if (data.hasOwnProperty("whoops")) {
+      } else if (Object.prototype.hasOwnProperty.call(data, "whoops")) {
         window.dispatchEvent(
           new CustomEvent("__whoops", { detail: data.whoops })
         );
-      } else if (data.hasOwnProperty("redirect")) {
+      } else if (Object.prototype.hasOwnProperty.call(data, "redirect")) {
         document.location = data.redirect;
       }
       return data as T;
@@ -96,7 +100,7 @@ export function httpPost<T = SuccessResponse>(
       "X-Requested-With": "XMLHttpRequest",
       ...headers,
     },
-    body: useJson ? JSON.stringify(data) : toUrlEncoded(data),
+    body: useJson ? JSON.stringify(data) : objToUrlEncoded(data),
   });
   http<T>(r, callback);
 }
