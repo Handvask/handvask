@@ -1,5 +1,4 @@
 from kubernetes import client
-from typing import Tuple
 
 
 def create_job( api_instance: client.BatchV1Api, problem: str, data: str, solvers: list[str] ) -> client.V1Job:
@@ -64,8 +63,6 @@ def _create_job_object( problem: str, data: str, solvers: list[str] ):
     container = client.V1Container(
         name='minizinc-solver',
         image='jonasplesner/minizinc-solver:latest',
-        #command=[ "bash", "-c", "ls /input/" ],
-        #command=[ "minizinc", "--solvers" ],
         command=[ "python", "main.py" ],
         volume_mounts=[client.V1VolumeMount( mount_path='/input', name='input' )]
     )
