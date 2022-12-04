@@ -30,7 +30,7 @@ def solve():
             "job_name": job.metadata.name,
             "job_label": job.metadata.labels["controller-uid"],
         }
-        return jsonify(result), 200
+        return jsonify(result), 202
 
     return "\nCouldn't create job", 500
 
@@ -43,9 +43,14 @@ def result():
         return "\nCouldn't get job", 400
 
     for pod in pods.items:
-        result = log_pod(COREV1, pod)
+        result = log_pod(COREV1, pod).splitlines()
         if result:
-            return f"\nGot result: {result}", 200
+            if result[-1] == "=" * 10:
+                return jsonify(result[-2]), 200
+            elif result[-1] == "-" * 10:
+                return f"\nGot intermediate result: {result[-2]}", 200
+            else:
+                return f"\nGot error: {result[-1]}", 200
 
     return "\nCouldn't get result", 500
 
