@@ -10,13 +10,11 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-COPY ./app/utils.py /app
-
 COPY ./app/main.py /app
 
 EXPOSE 5000
 
-CMD [ "python", "main.py" ]
+CMD ["python", "main.py"]
 
 
 FROM python as minizinc-solver
@@ -36,3 +34,10 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 COPY ./solver/main.py /solver
+
+EXPOSE 5000
+
+CMD ["python", "main.py"]
+
+
+FROM minizinc/minizinc as minizinc-cmd
