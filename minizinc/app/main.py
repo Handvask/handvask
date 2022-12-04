@@ -43,8 +43,9 @@ def result():
         return "\nCouldn't get job", 400
 
     for pod in pods.items:
-        result = log_pod(COREV1, pod).splitlines()
+        result = log_pod(COREV1, pod)
         if result:
+            result = result.splitlines()
             if result[-1] == "=" * 10:
                 return jsonify(result[-2]), 200
             elif result[-1] == "-" * 10:
