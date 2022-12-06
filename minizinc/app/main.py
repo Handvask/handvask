@@ -18,6 +18,12 @@ test_solvers = ["gecode", "gist"]
 
 job: client.V1Job
 
+
+@app.route("/", methods=["GET"])
+def hello_world():
+    return "Hello, Minizinc APP", 200
+
+
 # TODO: should have problem, data, and solvers posted
 @app.route("/solve", methods=["POST"])
 def solve():

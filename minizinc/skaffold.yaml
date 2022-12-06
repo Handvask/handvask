@@ -12,6 +12,7 @@ build:
     context: solver
     docker:
       dockerfile: Dockerfile
+
 manifests:
   rawYaml:
-  - deployment.yaml
+    - deployment.yaml
