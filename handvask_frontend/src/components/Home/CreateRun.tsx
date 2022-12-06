@@ -5,7 +5,7 @@ import Select from "react-select";
 import useAPI from "../../hooks/useAPI";
 import { listToUrlEncoded } from "../../functions";
 import PageLoader from "../PageLoader";
-import type { SingleValue } from "react-select";
+import type { SingleValue, MultiValue } from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCalculator,
@@ -16,10 +16,12 @@ import {
 export default function CreateRun({ user }: HomeSubpageBasePropT) {
   const [mznInstances, setMznInstances] = useState<MznInstance[]>();
   const [dznInstances, setDznInstances] = useState<DznInstance[]>();
+  const [solvers, setSolvers] = useState<Solver[]>();
   const { get, post, apiReady } = useAPI();
   const [step, setStep] = useState(1);
   const [selectedMzn, setSelectedMzn] = useState<MznInstance | null>(null);
   const [selectedDzn, setSelectedDzn] = useState<DznInstance | null>(null);
+  const [selectedSolvers, setSelectedSolvers] = useState<number[]>([]);
 
   const mznOptions = useMemo(() => {
     if (mznInstances) {
@@ -43,6 +45,14 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
     }
   }, [dznInstances]);
 
+  const solverOptions = useMemo(() => {
+    if (solvers) {
+      return solvers.map((solver) => {
+        return { label: solver.name, value: solver.id };
+      });
+    }
+  }, [solvers]);
+
   function handleMznSelectChange(
     e: SingleValue<{
       label: string;
@@ -65,6 +75,12 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
     setSelectedDzn(
       dznInstances?.find((instance) => instance.id == e?.value) as DznInstance
     );
+  }
+
+  function handleSolverSelectChange(
+    e: MultiValue<{ label: string; value: number }>
+  ) {
+    setSelectedSolvers(e.map((solver) => solver.value));
   }
 
   useEffect(() => {
@@ -95,6 +111,9 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
       } else {
         setDznInstances([]);
       }
+      get<Solver[]>("/solvers", (r) => {
+        setSolvers(r);
+      });
     }
   }, [apiReady]);
 
@@ -202,7 +221,40 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
               </div>
             </>
           )) ||
-          (step == 3 && selectedMzn && (
+          (step === 3 && (
+            <>
+              <div className="card-header d-flex justify-content-center">
+                <p className="m-0 fw-bold">Select solver(s)</p>
+              </div>
+              <div className="card-header d-flex justify-content-between">
+                <Button
+                  kind="danger"
+                  className="px fw-bold"
+                  onClick={() => setStep(2)}
+                >
+                  <FontAwesomeIcon icon={faChevronLeft} />
+                </Button>
+                <Button
+                  kind="primary"
+                  className="px fw-bold"
+                  onClick={() => setStep(4)}
+                >
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </Button>
+              </div>
+              <div className="card-body">
+                <Select
+                  options={solverOptions}
+                  isMulti
+                  value={solverOptions?.filter((solver) =>
+                    selectedSolvers?.includes(solver.value)
+                  )}
+                  onChange={handleSolverSelectChange}
+                />
+              </div>
+            </>
+          )) ||
+          (step === 4 && selectedMzn && (
             <>
               <div className="card-header d-flex justify-content-center">
                 <p className="m-0 fw-bold">Solve it!</p>
@@ -211,7 +263,7 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
                 <Button
                   kind="danger"
                   className="px fw-bold"
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(3)}
                 >
                   <FontAwesomeIcon icon={faChevronLeft} />
                 </Button>
