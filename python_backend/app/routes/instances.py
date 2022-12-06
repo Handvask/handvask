@@ -4,13 +4,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pony.orm import commit, db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import (
-    Dzn_instance,
-    Dzn_instanceT,
-    Mzn_instance,
-    Mzn_instanceT,
-    SuccessT,
-)
+from ..Models import Dzn_instance, Dzn_instanceT, Mzn_instance, Mzn_instanceT, SuccessT
 
 router = APIRouter(
     prefix="/instances",
