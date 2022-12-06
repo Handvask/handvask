@@ -1,4 +1,5 @@
 from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
 from pony.orm import db_session, select
 
@@ -24,6 +25,7 @@ def get_self_user(user_id: int = Depends(get_current_user_id)):
     user = User[user_id]
     return user.to_dict(with_collections=True)
 
+
 @router.get("/getall", response_model=List[UserT])
 @db_session
 def get_all_users(user_id: int = Depends(get_current_user_id)):
@@ -42,6 +44,7 @@ def get_all_users(user_id: int = Depends(get_current_user_id)):
     for user in users:
         output.append(user.to_dict(with_collections=True))
     return output
+
 
 @router.post("/delete_user/{user_id}", response_model=SuccessT)
 @db_session
@@ -68,6 +71,6 @@ def delete_user(
         user = User[user_id]
     except:
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
-    
+
     user.delete()
     return {"success": True}

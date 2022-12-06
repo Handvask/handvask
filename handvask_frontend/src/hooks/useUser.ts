@@ -16,7 +16,7 @@ export default function useUser() {
   const { get } = useAPI();
 
   const expandedUser = useMemo<ExpandedUser | undefined>(() => {
-    if(!user) return undefined;
+    if (!user) return undefined;
     return {
       ...user,
       addMzn(id) {
