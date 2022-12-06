@@ -2,12 +2,25 @@ import NavLink from "./NavLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSink, faUser, faUserNinja } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
+import useUser from "../../hooks/useUser";
 
 type NavPropT = {
   user: User;
 };
 
-export default function Nav({ user }: NavPropT) {
+export default function Nav() {
+  const user = useUser();
+  function load_admin_button() {
+    if (user !== undefined && user.sys_admin) {
+      return (
+        <li className="nav-item">
+          <NavLink className="nav-link" href="/admin">
+            Admin
+          </NavLink>
+        </li>
+      );
+    }
+  }
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light shadow-sm"
@@ -40,11 +53,7 @@ export default function Nav({ user }: NavPropT) {
                 Minizinc
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" href="/admin">
-                Admin
-              </NavLink>
-            </li>
+            {load_admin_button()}
           </ul>
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item dropdown" id="userDropdownMenu">
@@ -57,8 +66,10 @@ export default function Nav({ user }: NavPropT) {
                 aria-expanded="false"
                 onClick={(e) => e.preventDefault()}
               >
-                <FontAwesomeIcon icon={user.sys_admin ? faUserNinja : faUser} />{" "}
-                {user.username}
+                <FontAwesomeIcon
+                  icon={user?.sys_admin ? faUserNinja : faUser}
+                />{" "}
+                {user?.username}
               </a>
               <ul
                 className="dropdown-menu dropdown-menu-end"
