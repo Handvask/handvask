@@ -1,3 +1,5 @@
+import React from "react";
+
 type SideBarButtonPropT = {
   name: string;
   active: boolean;

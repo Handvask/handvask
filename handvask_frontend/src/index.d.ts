@@ -17,3 +17,10 @@ type MznInstance = {
   friendly_name: string;
   contents: string | null;
 };
+
+type DznInstance = {
+  id: number;
+  user: number;
+  friendly_name: string;
+  contents: string | null;
+};
