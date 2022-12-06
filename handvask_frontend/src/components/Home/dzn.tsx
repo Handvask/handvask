@@ -41,11 +41,16 @@ export default function Dzn({ user }: HomeSubpageBasePropT) {
 
   function deleteDzn(instance: DznInstance) {
     setDeletingDzn(true);
-    post<DznInstance>(`/instances/delete_dzn/${instance.id}`, "", (r) => {
-      setData((v) => {
-        if (!v) return v;
-        return v.filter((i) => i.id !== instance.id);
-      });
+    post(`/instances/delete_dzn/${instance.id}`, "", (r) => {
+      if (r.success) {
+        setData((v) => {
+          if (!v) return v;
+          return v.filter((i) => i.id !== instance.id);
+        });
+        user.removeDzn(instance.id);
+      } else {
+        alert("Couldn't delete dzn");
+      }
       setDeletingDzn(false);
     });
   }
@@ -61,15 +66,20 @@ export default function Dzn({ user }: HomeSubpageBasePropT) {
   }
 
   useEffect(() => {
-    if (apiReady && user.dzn_instances.length > 0) {
-      get<DznInstance[]>(
-        `instances/dzn?${listToUrlEncoded(user.dzn_instances, "instance_ids")}`,
-        (r) => {
-          setData(r);
-        }
-      );
-    } else if (user.dzn_instances.length === 0) {
-      setData([]);
+    if (apiReady) {
+      if (user.dzn_instances.length > 0) {
+        get<DznInstance[]>(
+          `instances/dzn?${listToUrlEncoded(
+            user.dzn_instances,
+            "instance_ids"
+          )}`,
+          (r) => {
+            setData(r);
+          }
+        );
+      } else {
+        setData([]);
+      }
     }
   }, [apiReady]);
   return (

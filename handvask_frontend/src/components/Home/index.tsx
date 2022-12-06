@@ -9,6 +9,7 @@ import SideBarButton from "../SideBarButton";
 import Runs from "./runs";
 import Dzn from "./dzn";
 import Mzn from "./mzn";
+import CreateRun from "./CreateRun";
 
 export type HomeSubpageBasePropT = {
   user: ExpandedUser;
@@ -57,6 +58,11 @@ export default function Home() {
                 trigger={() => setCurrentPage("runs")}
               />
               <SideBarButton
+                name="Create new run"
+                active={currentPage == "createRun"}
+                trigger={() => setCurrentPage("createRun")}
+              />
+              <SideBarButton
                 name=".mzn instances"
                 active={currentPage == "mzn"}
                 trigger={() => setCurrentPage("mzn")}
@@ -78,6 +84,7 @@ export default function Home() {
             {(currentPage == "runs" && <Runs user={user} />) ||
               (currentPage == "dzn" && <Dzn user={user} />) ||
               (currentPage == "mzn" && <Mzn user={user} />) ||
+              (currentPage == "createRun" && <CreateRun user={user} />) ||
               null}
           </div>
           {/* <Table hover>

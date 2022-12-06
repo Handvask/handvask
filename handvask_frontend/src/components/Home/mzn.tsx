@@ -41,11 +41,16 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
 
   function deleteMzn(instance: MznInstance) {
     setDeletingMzn(true);
-    post<DznInstance>(`/instances/delete_mzn/${instance.id}`, "", (r) => {
-      setData((v) => {
-        if (!v) return v;
-        return v.filter((i) => i.id !== instance.id);
-      });
+    post(`/instances/delete_mzn/${instance.id}`, "", (r) => {
+      if (r.success) {
+        setData((v) => {
+          if (!v) return v;
+          return v.filter((i) => i.id !== instance.id);
+        });
+        user.removeMzn(instance.id);
+      } else {
+        alert("Couldn't delete mzn");
+      }
       setDeletingMzn(false);
     });
   }
@@ -61,15 +66,20 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
   }
 
   useEffect(() => {
-    if (apiReady && user.mzn_instances.length > 0) {
-      get<MznInstance[]>(
-        `instances/mzn?${listToUrlEncoded(user.mzn_instances, "instance_ids")}`,
-        (r) => {
-          setData(r);
-        }
-      );
-    } else if (user.mzn_instances.length === 0) {
-      setData([]);
+    if (apiReady) {
+      if (user.mzn_instances.length > 0)
+        get<MznInstance[]>(
+          `instances/mzn?${listToUrlEncoded(
+            user.mzn_instances,
+            "instance_ids"
+          )}`,
+          (r) => {
+            setData(r);
+          }
+        );
+      else {
+        setData([]);
+      }
     }
   }, [apiReady]);
   return (
