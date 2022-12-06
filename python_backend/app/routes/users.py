@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends
-from pony.orm import db_session
+from typing import List
+
+from fastapi import APIRouter, Depends, HTTPException
+from pony.orm import db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import User, UserT
+from ..Models import SuccessT, User, UserT
 
 router = APIRouter(
     prefix="/users", tags=["Users"], responses={404: {"Description": "Not found"}}
@@ -22,3 +24,53 @@ def get_self_user(user_id: int = Depends(get_current_user_id)):
     """
     user = User[user_id]
     return user.to_dict(with_collections=True)
+
+
+@router.get("/getall", response_model=List[UserT])
+@db_session
+def get_all_users(user_id: int = Depends(get_current_user_id)):
+    """Fetches all users
+
+    Args:
+        user_id (int, optional): The user_id of the currently logged in user
+
+    Returns:
+        List[UserT]: The user objects
+    """
+    if not bool(User[user_id].sys_admin):
+        raise HTTPException(status_code=401, detail="Access denied")
+    users = select(user for user in User)
+    output = []
+    for user in users:
+        output.append(user.to_dict(with_collections=True))
+    return output
+
+
+@router.post("/delete_user/{user_id}", response_model=SuccessT)
+@db_session
+def delete_user(
+    user_id: int,
+    admin_id: int = Depends(get_current_user_id),
+):
+    """deletes an existing user
+
+    Args:
+        user_id (int): The instance to delete
+        admin_id (int, optional): The user_id of the currently logged in user
+
+    Raises:
+        HTTPException: User not found
+        HTTPException: Access denied
+
+    Returns:
+        dict: A success flag in a dictionary
+    """
+    if not bool(User[admin_id].sys_admin):
+        raise HTTPException(status_code=401, detail="Access denied")
+    try:
+        user = User[user_id]
+    except:
+        raise HTTPException(status_code=404, detail=f"User {user_id} not found")
+
+    user.delete()
+    return {"success": True}

@@ -4,14 +4,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pony.orm import commit, db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import (
-    Dzn_instance,
-    Dzn_instanceT,
-    Mzn_instance,
-    Mzn_instanceT,
-    SuccessT,
-    User,
-)
+from ..Models import Dzn_instance, Dzn_instanceT, Mzn_instance, Mzn_instanceT, SuccessT
 
 router = APIRouter(
     prefix="/instances",
@@ -113,8 +106,6 @@ def delete_mzn(
 
     Args:
         instance_id (int): The instance to delete
-        contents (str, optional): The new contents of the instance.
-        friendly_name (str, optional): The new name of the instance
         user_id (int, optional): The user_id of the currently logged in user
 
     Raises:
@@ -128,7 +119,7 @@ def delete_mzn(
         instance = Mzn_instance[instance_id]
     except:
         raise HTTPException(status_code=404, detail=f"Instance {instance_id} not found")
-    if instance.user.id != user_id or bool(User[user_id].sys_admin):
+    if instance.user.id != user_id:
         raise HTTPException(status_code=401, detail="Access denied")
     instance.delete()
     return {"success": True}
@@ -225,8 +216,6 @@ def delete_dzn(
 
     Args:
         instance_id (int): The instance to delete
-        contents (str, optional): The new contents of the instance.
-        friendly_name (str, optional): The new name of the instance
         user_id (int, optional): The user_id of the currently logged in user
 
     Raises:
@@ -240,7 +229,7 @@ def delete_dzn(
         instance = Dzn_instance[instance_id]
     except:
         raise HTTPException(status_code=404, detail=f"Instance {instance_id} not found")
-    if instance.user.id != user_id or bool(User[user_id].sys_admin):
+    if instance.user.id != user_id:
         raise HTTPException(status_code=401, detail="Access denied")
     instance.delete()
     return {"success": True}
