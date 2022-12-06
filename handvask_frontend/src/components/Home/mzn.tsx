@@ -2,7 +2,7 @@ import { faFile, faSpinner, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import { HomeSubpageBasePropT } from ".";
-import { listToUrlEncoded } from "../../functions";
+import { listToUrlEncoded, SuccessResponse } from "../../functions";
 import useAPI from "../../hooks/useAPI";
 import AsyncBtn from "../AsyncBtn";
 import Button from "../Button";
@@ -41,11 +41,13 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
 
   function deleteMzn(instance: MznInstance) {
     setDeletingMzn(true);
-    post<DznInstance>(`/instances/delete_mzn/${instance.id}`, "", (r) => {
-      setData((v) => {
-        if (!v) return v;
-        return v.filter((i) => i.id !== instance.id);
-      });
+    post<SuccessResponse>(`/instances/delete_mzn/${instance.id}`, "", (r) => {
+      if (r.success) {
+        setData((v) => {
+          if (!v) return v;
+          return v.filter((i) => i.id !== instance.id);
+        });
+      }
       setDeletingMzn(false);
     });
   }
