@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Base from "../components/Base";
 import useAPI from "../hooks/useAPI";
-import { HomeSubpageBasePropT } from "../components/Home";
 import useUser from "../hooks/useUser";
 import AsyncBtn from "../components/AsyncBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,11 +25,13 @@ export default function admin() {
 
   function deleteUser(user: User) {
     setDeletingUser(true);
-    post<User>(`users/delete_user/${user.id}`, "", (r) => {
-      setUsers((v) => {
-        if (!v) return v;
-        return v.filter((i) => i.id !== user.id);
-      });
+    post<User>(`users/delete_user/${user.id}`, "", () => {
+      if (apiReady) {
+        setUsers((v) => {
+          if (!v) return v;
+          return v.filter((i) => i.id !== user.id);
+        });
+      }
       setDeletingUser(false);
     });
   }
@@ -96,7 +97,6 @@ export default function admin() {
         </div>
       </Base>
     );
-  } else {
-    return <Base>Access denied</Base>;
   }
+  return <Base>Access denied</Base>;
 }

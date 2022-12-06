@@ -8,10 +8,9 @@ type NavPropT = {
   user: User;
 };
 
-export default function Nav() {
-  const user = useUser();
-  function load_admin_button() {
-    if (user !== undefined && user.sys_admin) {
+export default function Nav({ user }: NavPropT) {
+  function admin_button() {
+    if (user.sys_admin) {
       return (
         <li className="nav-item">
           <NavLink className="nav-link" href="/admin">
@@ -53,7 +52,7 @@ export default function Nav() {
                 Minizinc
               </NavLink>
             </li>
-            {load_admin_button()}
+            {admin_button()}
           </ul>
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item dropdown" id="userDropdownMenu">
@@ -66,10 +65,8 @@ export default function Nav() {
                 aria-expanded="false"
                 onClick={(e) => e.preventDefault()}
               >
-                <FontAwesomeIcon
-                  icon={user?.sys_admin ? faUserNinja : faUser}
-                />{" "}
-                {user?.username}
+                <FontAwesomeIcon icon={user.sys_admin ? faUserNinja : faUser} />{" "}
+                {user.username}
               </a>
               <ul
                 className="dropdown-menu dropdown-menu-end"

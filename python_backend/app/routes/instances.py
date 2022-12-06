@@ -10,7 +10,6 @@ from ..Models import (
     Mzn_instance,
     Mzn_instanceT,
     SuccessT,
-    User,
 )
 
 router = APIRouter(
