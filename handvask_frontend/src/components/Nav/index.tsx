@@ -2,7 +2,6 @@ import NavLink from "./NavLink";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSink, faUser, faUserNinja } from "@fortawesome/free-solid-svg-icons";
 import React from "react";
-import useUser from "../../hooks/useUser";
 
 type NavPropT = {
   user: User;
@@ -19,6 +18,7 @@ export default function Nav({ user }: NavPropT) {
         </li>
       );
     }
+    return <></>;
   }
   return (
     <nav

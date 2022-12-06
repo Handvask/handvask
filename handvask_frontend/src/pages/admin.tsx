@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "../components/Button";
 import PageLoader from "../components/PageLoader";
+import { SuccessResponse } from "../functions";
 export default function admin() {
   const { get, apiReady, post } = useAPI();
   const user = useUser();
@@ -23,13 +24,13 @@ export default function admin() {
     });
   }
 
-  function deleteUser(user: User) {
+  function deleteUser(user_tbd: User) {
     setDeletingUser(true);
-    post<User>(`users/delete_user/${user.id}`, "", () => {
-      if (apiReady) {
+    post<SuccessResponse>(`users/delete_user/${user_tbd.id}`, "", (r) => {
+      if (r.success) {
         setUsers((v) => {
           if (!v) return v;
-          return v.filter((i) => i.id !== user.id);
+          return v.filter((i) => i.id !== user_tbd.id);
         });
       }
       setDeletingUser(false);
