@@ -4,11 +4,11 @@ RUN apt-get update -y
 
 RUN apt-get install -y minizinc
 
+COPY . ./solver
+
 RUN mkdir /solver
 
 WORKDIR /solver
-
-COPY ./requirements.txt /solver
 
 RUN pip install --upgrade pip
 

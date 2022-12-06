@@ -8,10 +8,6 @@ build:
     context: app
     docker:
       dockerfile: Dockerfile
-  - image: minizinc-solver
-    context: solver
-    docker:
-      dockerfile: Dockerfile
 
 manifests:
   rawYaml:

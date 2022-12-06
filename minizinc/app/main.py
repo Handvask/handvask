@@ -1,12 +1,13 @@
 import os
 import base64
 from tempfile import NamedTemporaryFile
-from flask import Flask, jsonify
 from kubernetes import client, config
+from fastapi import FastAPI
+from pony.orm import db_session
 
 from utils import create_job, delete_job, list_pods, log_pod
 
-app = Flask(__name__)
+app = FastAPI()
 
 config.load_incluster_config()
 COREV1 = client.CoreV1Api()
@@ -17,6 +18,11 @@ test_data = "i = 10;"
 test_solvers = ["gecode", "gist"]
 
 job: client.V1Job
+result: dict
+
+@app.get( "/" )
+def hello():
+    return {"message": "Hello from minizinc-app!"}
 
 
 @app.route("/", methods=["GET"])
@@ -25,8 +31,9 @@ def hello_world():
 
 
 # TODO: should have problem, data, and solvers posted
-@app.route("/solve", methods=["POST"])
-def solve():
+@app.post( "/solve" )
+@db_session
+def solve( mzn: int, dzn: (int | None) = None, solvers: list[int] = [0] ):
     global job
 
     job = create_job(BATCHV1, test_problem, test_data, test_solvers)
@@ -36,13 +43,13 @@ def solve():
             "job_name": job.metadata.name,
             "job_label": job.metadata.labels["controller-uid"],
         }
-        return jsonify(result), 202
+        return result, 202
 
     return "\nCouldn't create job", 500
 
 
 # TODO: should have label of job to retrieve result from posted
-@app.route("/result", methods=["POST"])
+@app.post( "/result" )
 def result():
     pods = list_pods(COREV1, job)
     if pods is None:
@@ -57,13 +64,13 @@ def result():
             elif result[-1] == "-" * 10:
                 return f"\nGot intermediate result: {result[-2]}", 200
             else:
-                return f"\nGot error: {result[-1]}", 200
+                return f"\nCouldn't solve: {result[-1]}", 200
 
     return "\nCouldn't get result", 500
 
 
 # TODO: should have name of job to delete posted
-@app.route("/delete", methods=["POST"])
+@app.post( "/delete" )
 def delete():
     global job
 
@@ -73,6 +80,17 @@ def delete():
 
     return "\nCouldn't delete job", 400
 
+@app.post( "/finished" )
+def finished():
+    global result
+    result = None
+    delete()
+
+@app.get( "/stored" )
+def stored():
+    if result is None:
+        return {"message": "No result stored"}
+    return result
 
 # TODO: look at later
 def configure():
@@ -93,9 +111,4 @@ def configure():
         client.Configuration.set_default(configuration)
 
     except Exception as e:
-        print(f"Got exception while configuring: {e}")
-
-
-if __name__ == "__main__":
-    # configure()
-    app.run(host="0.0.0.0", port=5000)
+        print( f'Got exception while configuring: {e}' )
