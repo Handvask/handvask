@@ -24,3 +24,8 @@ type DznInstance = {
   friendly_name: string;
   contents: string | null;
 };
+
+type Solver = {
+  id: number;
+  name: string;
+};

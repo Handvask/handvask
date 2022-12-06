@@ -4,7 +4,14 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pony.orm import commit, db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import Dzn_instance, Dzn_instanceT, Mzn_instance, Mzn_instanceT, SuccessT
+from ..Models import (
+    Dzn_instance,
+    Dzn_instanceT,
+    Mzn_instance,
+    Mzn_instanceT,
+    SuccessT,
+    User,
+)
 
 router = APIRouter(
     prefix="/instances",
@@ -119,7 +126,7 @@ def delete_mzn(
         instance = Mzn_instance[instance_id]
     except:
         raise HTTPException(status_code=404, detail=f"Instance {instance_id} not found")
-    if instance.user.id != user_id:
+    if instance.user.id != user_id and not bool(User[user_id].sys_admin):
         raise HTTPException(status_code=401, detail="Access denied")
     instance.delete()
     return {"success": True}
@@ -229,7 +236,7 @@ def delete_dzn(
         instance = Dzn_instance[instance_id]
     except:
         raise HTTPException(status_code=404, detail=f"Instance {instance_id} not found")
-    if instance.user.id != user_id:
+    if instance.user.id != user_id and not bool(User[user_id].sys_admin):
         raise HTTPException(status_code=401, detail="Access denied")
     instance.delete()
     return {"success": True}
