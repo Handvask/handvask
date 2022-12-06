@@ -35,7 +35,7 @@ spec:
     app: minizinc-app
   ports:
     - protocol: "TCP"
-      port: 6000
+      port: 8383
       targetPort: 5000
   type: LoadBalancer
 

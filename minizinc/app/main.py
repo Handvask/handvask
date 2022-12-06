@@ -18,52 +18,61 @@ test_solvers = ["gecode", "gist"]
 
 job: client.V1Job
 
+
+@app.route("/", methods=["GET"])
+def hello_world():
+    return "Hello, Minizinc APP", 200
+
+
 # TODO: should have problem, data, and solvers posted
-@app.route( "/solve", methods=["POST"] )
+@app.route("/solve", methods=["POST"])
 def solve():
     global job
 
-    job = create_job( BATCHV1, test_problem, test_data, test_solvers )
+    job = create_job(BATCHV1, test_problem, test_data, test_solvers)
 
     if job:
-        result = { 
+        result = {
             "job_name": job.metadata.name,
-            "job_label": job.metadata.labels["controller-uid"]
+            "job_label": job.metadata.labels["controller-uid"],
         }
-        return jsonify( result ), 202
+        return jsonify(result), 202
 
     return "\nCouldn't create job", 500
 
+
 # TODO: should have label of job to retrieve result from posted
-@app.route( "/result", methods=["POST"] )
+@app.route("/result", methods=["POST"])
 def result():
-    pods = list_pods( COREV1, job )
+    pods = list_pods(COREV1, job)
     if pods is None:
         return "\nCouldn't get job", 400
 
     for pod in pods.items:
-        result = log_pod( COREV1, pod )
+        result = log_pod(COREV1, pod)
         if result:
             result = result.splitlines()
-            if result[-1] == "="*10:
-                return jsonify( result[-2] ), 200
-            elif result[-1] == "-"*10:
+            if result[-1] == "=" * 10:
+                return jsonify(result[-2]), 200
+            elif result[-1] == "-" * 10:
                 return f"\nGot intermediate result: {result[-2]}", 200
             else:
                 return f"\nGot error: {result[-1]}", 200
 
     return "\nCouldn't get result", 500
 
+
 # TODO: should have name of job to delete posted
-@app.route( "/delete", methods=["POST"] )
+@app.route("/delete", methods=["POST"])
 def delete():
     global job
 
-    if delete_job( BATCHV1, job ):
+    if delete_job(BATCHV1, job):
         job = None
-        return '\nDeleted job!', 200
+        return "\nDeleted job!", 200
 
     return "\nCouldn't delete job", 400
+
 
 # TODO: look at later
 def configure():
@@ -84,9 +93,9 @@ def configure():
         client.Configuration.set_default(configuration)
 
     except Exception as e:
-        print( f'Got exception while configuring: {e}' )
+        print(f"Got exception while configuring: {e}")
 
 
-if __name__ == '__main__':
-    #configure()
+if __name__ == "__main__":
+    # configure()
     app.run(host="0.0.0.0", port=5000)
