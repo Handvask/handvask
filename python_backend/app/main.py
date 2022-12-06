@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .Models import DBHandler
-from .routes import auth, instances, users, runs
+from .routes import auth, instances, users, runs, solvers
 
 load_dotenv(dirname(__file__) + "/../.env")
 
@@ -32,6 +32,7 @@ app.include_router(users.router)
 app.include_router(auth.router)
 app.include_router(instances.router)
 app.include_router(runs.router)
+app.include_router(solvers.router)
 
 
 @app.get("/")

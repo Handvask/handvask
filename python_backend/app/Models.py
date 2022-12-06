@@ -115,7 +115,6 @@ class Solver(db.Entity):
 class SolverT(BaseModel):
     id: int
     name: OptionalT[str]
-    runs: list[int]
 
 
 class SuccessT(BaseModel):
