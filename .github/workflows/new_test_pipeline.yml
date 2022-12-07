@@ -33,9 +33,9 @@ jobs:
       - name: get-gke-credentials
         uses: google-github-actions/get-gke-credentials@v1
         with:
-          cluster_name: "{{secrets.PROJECT_ID}}-cluster"
-          location: "europe-north1"
-          project_id: "{{secrets.PROJECT_ID}}"
+          cluster_name: "${{secrets.PROJECT_ID}}-cluster"
+          location: "${{secrets.GKE_REGION}}"
+          project_id: "${{secrets.PROJECT_ID}}"
       - name: Build backend image.
         run: docker compose build
       - name: Tag backend image.
