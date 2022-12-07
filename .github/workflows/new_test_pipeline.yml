@@ -12,9 +12,15 @@ jobs:
       id-token: "write"
     steps:
       - uses: actions/checkout@v3
-      - name: Build frontend docker image.
+      - name: Build backend image.
         run: |
           docker build ./python_backend -t python_backend:latest
       - name: test
         run: |
           docker run python_backend:latest python -m pytest
+      - name: Build frontend image.
+        run: |
+          docker build ./handvask_frontend -t handvask_frontend:latest
+      - name: test
+        run: |
+          docker run handvask_frontend:latest npm run test
