@@ -53,7 +53,7 @@ jobs:
           push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
       - name: Set region, since Github Actions does not support it.
         run: |
-          gcloud config set /zone europe-north1
+          gcloud config set compute/zone europe-north1
       - name: Deploy backend image.
         run: |
           gcloud \
@@ -61,9 +61,9 @@ jobs:
           services \
           update \
           handvask \
+          --platform=managed \
           --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
           --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }}\
-          --platform=managed \
           --region=europe-north1 \
       # - name: testing backend image.
       #   run: |
