@@ -1,0 +1,31 @@
+FROM python:3.10
+
+WORKDIR /server
+
+COPY ./requirements.txt /server/requirements.txt
+
+RUN pip install --upgrade pip
+
+RUN pip install --no-cache-dir --upgrade --default-timeout=100 -r /server/requirements.txt --quiet
+
+COPY ./app /server/app
+
+COPY ./gen_key.sh /server/gen_key.sh
+
+RUN bash /server/gen_key.sh
+
+ENV DB_HOST=$DB_HOST
+
+ENV DB_USER=$DB_USER
+
+ENV DB_PASS=$DB_PASS
+
+ENV DB_NAME=$DB_NAME
+
+# COPY ./.env /server/.env
+
+COPY ./start.sh /server/start.sh
+
+CMD ["echo", "$DB_HOST"]
+
+# CMD ["bash", "/server/start.sh"]

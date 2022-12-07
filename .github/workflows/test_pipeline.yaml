@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - "pipeline_1"
-
-
 jobs:
   mortens_test:
     name: Mortens Job
