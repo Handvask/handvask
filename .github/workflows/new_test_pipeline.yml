@@ -10,10 +10,35 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v3
+      - name: set up ENV variables
+        uses: actions/checkout@v3
+        env:
+          DB_HOST: "${{secrets.DB_HOST}}"
+          DB_USER: "${{secrets.DB_USER}}"
+          DB_PASS: "${{secrets.DB_PASS}}"
+          DB_NAME: "${{secrets.DB_NAME}}"
+          HANDVASK_FRONTEND_ORIGIN: "*"
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+        run: |
+          gcloud auth configure-docker europe-north1-docker.pkg.dev
+      # - name: get-gke-credentials
+      #   uses: google-github-actions/get-gke-credentials@v1
+      #   with:
+      #     cluster_name: "{{secrets.PROJECT_ID}}-cluster"
+      #     location: "{{secrets.GKE_REGION}}"
+      #     project_id: "{{secrets.PROJECT_ID}}"
       - name: Build backend image.
         run: |
-          docker build ./python_backend -t python_backend:${{ github.sha }}
-      - name: test
+          docker build ./python_backend -t ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} -f ./python_backend/Dockerfile.workflowTest
+      - name: Run docker image.
         run: |
-          docker run python_backend:${{ github.sha }} python -m pytest
+          docker run ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      
