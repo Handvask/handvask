@@ -1,5 +1,4 @@
 name: testing-pipeline
-
 on:
   push:
     branches:
@@ -14,13 +13,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Build backend image.
         run: |
-          docker build ./python_backend -t python_backend:latest
+          docker build ./python_backend -t python_backend:${{ github.sha }}
       - name: test
         run: |
-          docker run python_backend:latest python -m pytest
-      - name: Build frontend image.
-        run: |
-          docker build ./handvask_frontend -t handvask_frontend:latest
-      - name: test
-        run: |
-          docker run handvask_frontend:latest npm run test
+          docker run python_backend:${{ github.sha }} python -m pytest
