@@ -37,4 +37,4 @@ app.include_router(solvers.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello From Handvask Backend!"}
+    return {"message": "Hello From Handvask Backend Party!"}

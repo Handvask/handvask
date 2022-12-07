@@ -47,21 +47,22 @@ jobs:
         run: |
           docker \
           tag python-backend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      # - name: Push backend image.
-      #   run: |
-      #     docker \
-      #     push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: testing backend image.
+      - name: Push backend image.
         run: |
-          docker run -d -p 8080:8080 ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      # - name: Deploy backend image.
+          docker \
+          push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: Deploy backend image.
+        run: |
+          gcloud \
+          run \
+          services \
+          update \
+          handvask \
+          --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }}\
+          --platform=managed \
+          --region=europe-north1 \
+      # - name: testing backend image.
       #   run: |
-      #     gcloud \
-      #     run \
-      #     services \
-      #     update \
-      #     handvask \
-      #     --platform=managed \
-      #     --region=europe-north1 \
-      #     --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      #     docker run -d -p 8080:8080 ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
       

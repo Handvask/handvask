@@ -11,7 +11,7 @@ services:
       - "DB_USER=${DB_USER}"
       - "DB_PASS=${DB_PASS}"
       - "DB_NAME=${DB_NAME}"
-      - "HANDVASK_FRONTEND_URL=${HANDVASK_FRONTEND_URL}"
+      - "HANDVASK_FRONTEND_ORIGIN=${HANDVASK_FRONTEND_URL}"
       - "REGION=${ARTIFACT_LOCATION_BACKEND}"
     ports:
       - "8080:8080"
