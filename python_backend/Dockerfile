@@ -4,6 +4,8 @@ WORKDIR /server
 
 COPY ./requirements.txt /server/requirements.txt
 
+RUN pip install --upgrade pip --quiet
+
 RUN pip install --no-cache-dir --upgrade --default-timeout=100 -r /server/requirements.txt
 
 COPY ./app /server/app
