@@ -17,6 +17,7 @@ jobs:
           SECOND_NAME: "Jakobsen"
           Title: "Mr"
           Gender: "Male"
+          project_id: "{{secrets.PROJECT_ID}}"
         run: |
           echo "Hello $FIRST_NAME $SECOND_NAME $Title $Gender"
-          echo "{{secrets.PROJECT_ID}}"
+          echo "$project_id"
