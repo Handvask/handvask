@@ -14,7 +14,7 @@ COPY ./gen_key.sh /server/gen_key.sh
 
 RUN bash /server/gen_key.sh
 
-COPY ./.env /server/.env
+# COPY ./.env /server/.env
 
 COPY ./start.sh /server/start.sh
 

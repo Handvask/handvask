@@ -12,13 +12,6 @@ jobs:
     steps:
       - name: set up ENV variables
         uses: actions/checkout@v3
-        env:
-          DB_HOST: "${{secrets.DB_HOST}}"
-          DB_USER: "${{secrets.DB_USER}}"
-          # DB_PASS: "${{secrets.DB_PASS}}"
-          # DB_NAME: "${{secrets.DB_NAME}}"
-          HANDVASK_FRONTEND_ORIGIN: "*"
-          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v1"
@@ -38,6 +31,13 @@ jobs:
           project_id: "${{secrets.PROJECT_ID}}"
       - name: Build backend image.
         run: docker compose build
+        env:
+          DB_HOST: "${{secrets.DB_HOST}}"
+          DB_USER: "${{secrets.DB_USER}}"
+          # DB_PASS: "${{secrets.DB_PASS}}"
+          # DB_NAME: "${{secrets.DB_NAME}}"
+          HANDVASK_FRONTEND_ORIGIN: "*"
+          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
       - name: Tag backend image.
         run: docker tag python-backend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
       - name: Run docker image.
