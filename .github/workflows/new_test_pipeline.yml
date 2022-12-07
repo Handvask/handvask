@@ -47,10 +47,13 @@ jobs:
         run: |
           docker \
           tag python-backend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Push backend image.
+      # - name: Push backend image.
+      #   run: |
+      #     docker \
+      #     push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: testing backend image.
         run: |
-          docker \
-          push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          docker run -d -p 8080:8080 ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
       # - name: Deploy backend image.
       #   run: |
       #     gcloud \
