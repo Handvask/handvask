@@ -10,7 +10,7 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - name: set up ENV variables
+      - name: Set up actions checkout
         uses: actions/checkout@v3
       - id: "auth"
         name: "Authenticate to Google Cloud"
@@ -34,8 +34,8 @@ jobs:
         env:
           DB_HOST: "${{secrets.DB_HOST}}"
           DB_USER: "${{secrets.DB_USER}}"
-          # DB_PASS: "${{secrets.DB_PASS}}"
-          # DB_NAME: "${{secrets.DB_NAME}}"
+          DB_PASS: "${{secrets.DB_PASS}}"
+          DB_NAME: "${{secrets.DB_NAME}}"
           HANDVASK_FRONTEND_ORIGIN: "*"
           ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
       - name: Tag backend image.
