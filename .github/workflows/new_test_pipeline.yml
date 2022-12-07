@@ -51,6 +51,9 @@ jobs:
         run: |
           docker \
           push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: Set region, since Github Actions does not support it.
+        run: |
+          gcloud config set /zone europe-north1
       - name: Deploy backend image.
         run: |
           gcloud \
