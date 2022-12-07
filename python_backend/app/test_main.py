@@ -2,8 +2,9 @@ import os
 
 import pytest
 from fastapi.testclient import TestClient
+from pony.orm import db_session, commit
 
-from .Models import DBHandler
+from .Models import DBHandler, Solver, Sys_admin, User
 
 dbh = DBHandler()
 dbh.make_test_conn()
@@ -27,6 +28,7 @@ def test_main():
     assert response.status_code == 200
     assert response.json() == {"message": "Hello From Handvask Backend!"}
 
+# Auth
 # Register
 
 def test_register_success():
@@ -105,7 +107,7 @@ def token():
     token = dict(response.json())["access_token"] 
     return token
 
-
+# Instances
 # Test for MZN
 
 def test_create_mzn(token):
@@ -158,7 +160,6 @@ def test_delete_mzn(token):
     )
     assert response.status_code == 200
     assert dict(response.json())["success"] == True
-
 
 # Test for DZN
 
@@ -213,3 +214,63 @@ def test_delete_dzn(token):
     assert response.status_code == 200
     assert dict(response.json())["success"] == True
 
+# Test for Solvers
+
+@db_session
+def test_solvers(token):
+    Solver(id="1",name="test_solver")
+    commit()
+    access_token = "Bearer "+token
+    response = client.get(
+        "/solvers",
+        headers={
+            "Authorization":access_token
+            }
+    )
+    assert response.status_code == 200
+    assert dict(response.json()[0])["id"] == 1
+    assert dict(response.json()[0])["name"] == "test_solver"
+
+# Test for Users
+
+def test_get_user(token):
+    access_token = "Bearer "+token
+    response = client.get(
+        "/users/get",
+        headers={
+            "Authorization":access_token
+            }
+    )
+    assert response.status_code == 200
+    assert dict(response.json())["id"] == 1
+
+@db_session
+def test_get_all_user(token):
+    Sys_admin(id=1, user=1)
+    commit()
+    access_token = "Bearer "+token
+    response = client.get(
+        "/users/getall",
+        headers={
+            "Authorization":access_token
+            }
+    )
+    assert response.status_code == 200
+    assert dict(response.json()[0])["id"] == 1
+
+@db_session
+def test_delete_user(token):
+    User(username="1234", password="1234")
+    commit()
+    access_token = "Bearer "+token
+    response = client.post(
+        "/users/delete_user/2",
+        data={
+            "user_id":1
+        },
+        headers={
+            "Authorization":access_token
+            }
+    )
+    assert response.status_code == 200
+    assert dict(response.json())["success"] == True
