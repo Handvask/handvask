@@ -12,17 +12,9 @@ jobs:
       id-token: "write"
     steps:
       - uses: actions/checkout@v3
-      - id: "auth"
-        name: "Authenticate to Google Cloud"
-        uses: "google-github-actions/auth@v1"
-        with:
-          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
-          service_account: "morten-service@handvask.iam.gserviceaccount.com"
       - name: Build frontend docker image.
         run: |
           docker build ./python_backend -t python_backend:latest
-      - name: push image to google artifacty registry
+      - name: test
         run: |
-          gcloud auth configure-docker europe-north1-docker.pkg.dev
-          docker tag python_backend europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest
-          docker push europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest
+          docker run python_backend:latest python -m pytest
