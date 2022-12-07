@@ -18,4 +18,5 @@ jobs:
           Title: "Mr"
           Gender: "Male"
         run: |
-          echo "Hello $FIRST_NAME\n $SECOND_NAME\n $Title\n $Gender\n"
+          echo "Hello $FIRST_NAME $SECOND_NAME $Title $Gender"
+          echo "{{secrets.PROJECT_ID}}"
