@@ -1,10 +1,10 @@
-name: Changes in backend, build
+name: Backend Deploy - Serverless
 on:
   push:
     branches:
-      - "main"
+      - "Main"
     paths:
-      - "python_backend/**"
+      - "handvask_backend/**"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,7 +12,8 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v3
+      - name: Set up actions checkout
+        uses: actions/checkout@v3
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v1"
@@ -21,18 +22,57 @@ jobs:
           service_account: "morten-service@handvask.iam.gserviceaccount.com"
       - name: "Set up Cloud SDK"
         uses: "google-github-actions/setup-gcloud@v1"
-      - name: Build env file
+      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
         run: |
-          touch ./python_backend/.env
-          echo "DB_HOST=${{secrets.DB_HOST}}" >> ./python_backend/.env
-          echo "DB_USER=${{secrets.DB_USER}}" >> ./python_backend/.env
-          echo "DB_PASS=${{secrets.DB_PASS}}" >> ./python_backend/.env
-          echo "DB_NAME=${{secrets.DB_NAME}}" >> ./python_backend/.env
-      - name: Build python_backend image.
+          gcloud \
+          auth \
+          configure-docker europe-north1-docker.pkg.dev
+      - name: get-gke-credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: "handvask-cluster"
+          location: "${{secrets.GKE_REGION}}"
+          project_id: "${{secrets.PROJECT_ID}}"
+      - name: Build backend image.
         run: |
-          docker build ./python_backend --tag handvask_backend_python:latest
-      - id: "access-secret"
-        run: |-
-          gcloud auth configure-docker
-          docker tag handvask_backend_python:latest eu.gcr.io/handvask/handvask_backend_python:latest
-          docker push eu.gcr.io/handvask/handvask_backend_python:latest
+          docker \
+          compose \
+          build
+        env:
+          DB_HOST: "${{secrets.DB_HOST}}"
+          DB_USER: "${{secrets.DB_USER}}"
+          DB_PASS: "${{secrets.DB_PASS}}"
+          DB_NAME: "${{secrets.DB_NAME}}"
+          HANDVASK_FRONTEND_ORIGIN: "*"
+          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
+      - name: Tag backend image.
+        run: |
+          docker \
+          tag python-backend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: Push backend image.
+        run: |
+          docker \
+          push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: Set region, since Github Actions does not support it.
+        run: |
+          gcloud config set compute/zone europe-north1
+      - name: Deploy backend image.
+        run: |
+          gcloud \
+          run \
+          services \
+          update \
+          handvask \
+          --platform=managed \
+          --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
+          --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }} \
+          --region=europe-north1 \
+      - name: Fail build if deployment failed.
+        if: |
+          (curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200' != 'HTTP/(2) 200')
+          ||
+          (curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200' != 'HTTP/(3) 200') 
+        run: |
+          echo "Deployment failed."
+          exit 1
+      
