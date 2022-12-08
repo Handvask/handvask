@@ -42,7 +42,7 @@ def update_quota(
     curr_user = User[curr_user_id]  # check whether current user is admin
     is_admin = select(u for u in Sys_admin if u.user == curr_user)[:]
     if len(is_admin) == 0:
-        raise HTTPException(status_code=401, detail=f"Not Authorized")
+        raise HTTPException(status_code=401, detail="Not Authorized")
 
     user.max_cpu = int(max_cpu)
 
@@ -72,7 +72,7 @@ def update_permission(user_id: int, curr_user_id: int = Depends(get_current_user
     curr_user = User[curr_user_id]  # check whether current user is admin
     is_admin = select(u for u in Sys_admin if u.user == curr_user)[:]
     if len(is_admin) == 0:
-        raise HTTPException(status_code=401, detail=f"Not Authorized")
+        raise HTTPException(status_code=401, detail="Not Authorized")
 
     is_admin = select(u for u in Sys_admin if u.user == user)[:]
     if len(is_admin) != 0:
