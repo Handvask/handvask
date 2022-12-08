@@ -30,11 +30,11 @@ export function listToUrlEncoded(arr: (string | number)[], name: string) {
 
 export function http<T = SuccessResponse>(
   request: Request,
-  callback?: (x: T) => void
+  callback?: (x: T, code: number) => void
 ) {
   fetch(request)
-    .then((r) => r.json())
-    .then((data) => {
+    .then((r) => r.json().then((data) => ({ data, code: r.status })))
+    .then(({ data, code }) => {
       if (Object.prototype.hasOwnProperty.call(data, "dd")) {
         window.dispatchEvent(new CustomEvent("__dd", { detail: data.dd }));
       } else if (Object.prototype.hasOwnProperty.call(data, "whoops")) {
@@ -43,11 +43,11 @@ export function http<T = SuccessResponse>(
         );
       } else if (Object.prototype.hasOwnProperty.call(data, "redirect")) {
         if (callback) {
-          callback(data);
+          callback(data, code);
         }
         document.location = data.redirect;
       } else if (callback) {
-        callback(data);
+        callback(data, code);
       }
     });
 }
@@ -71,7 +71,7 @@ export async function asyncHttp<T = SuccessResponse>(request: Request) {
 
 export function httpGet<T = SuccessResponse>(
   url: string,
-  callback?: (x: T) => void,
+  callback?: (x: T, code: number) => void,
   headers: Record<string, string> = {}
 ) {
   const r = new Request(url, {
@@ -87,7 +87,7 @@ export function httpGet<T = SuccessResponse>(
 export function httpPost<T = SuccessResponse>(
   url: string,
   data: Record<string, unknown> | string,
-  callback?: (x: T) => void,
+  callback?: (x: T, code: number) => void,
   useJson = true,
   headers: Record<string, string> = {}
 ) {
