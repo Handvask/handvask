@@ -34,7 +34,8 @@ def test_main():
 
 
 class Test_Register:
-    def register(self, username, password):
+    @staticmethod
+    def register(username, password):
         response = client.post(
             "/auth/register",
             data={"username": username, "password": password},
@@ -44,7 +45,7 @@ class Test_Register:
     def test_register_success(self):
         response = self.register("asdf", "asdf")
         assert response.status_code == 200
-        assert dict(response.json())["success"] == True
+        assert dict(response.json())["success"] is True
 
     def test_register_fail_duplicated(self):
         response = self.register("asdf", "asdf")
@@ -60,7 +61,8 @@ class Test_Register:
 
 
 class Test_Login:
-    def login(self, username, password):
+    @staticmethod
+    def login(username, password):
         response = client.post(
             "/auth/login",
             data={
@@ -98,7 +100,8 @@ def token():
 
 
 class Test_Create_MZN:
-    def create_mzn(self, token):
+    @staticmethod
+    def create_mzn(token):
         access_token = "Bearer " + token
         response = client.post(
             "/instances/create_mzn", headers={"Authorization": access_token}
@@ -112,7 +115,8 @@ class Test_Create_MZN:
 
 
 class Test_Get_MZN:
-    def get_mzn(self, instance_ids, token):
+    @staticmethod
+    def get_mzn(instance_ids, token):
         access_token = "Bearer " + token
         response = client.get(
             "/instances/mzn",
@@ -130,7 +134,8 @@ class Test_Get_MZN:
 
 
 class Test_Update_MZN:
-    def update_mzn(self, instance_number, contents, friendly_name, token):
+    @staticmethod
+    def update_mzn(instance_number, contents, friendly_name, token):
         access_token = "Bearer " + token
         url = "/instances/mzn/" + str(instance_number)
         response = client.post(
@@ -143,7 +148,7 @@ class Test_Update_MZN:
     def test_update_mzn_success(self, token):
         response = self.update_mzn(1, "update_test", "", token)
         assert response.status_code == 200
-        assert dict(response.json())["success"] == True
+        assert dict(response.json())["success"] is True
 
     def test_update_mzn_fail(self, token):
         response = self.update_mzn(2, "update_test", "", token)
@@ -151,7 +156,8 @@ class Test_Update_MZN:
 
 
 class Test_Delete_MZN:
-    def delete_mzn(self, instance_number, token):
+    @staticmethod
+    def delete_mzn(instance_number, token):
         access_token = "Bearer " + token
         url = "/instances/delete_mzn/" + str(instance_number)
         response = client.post(url, headers={"Authorization": access_token})
@@ -160,7 +166,7 @@ class Test_Delete_MZN:
     def test_delete_mzn_success(self, token):
         response = self.delete_mzn(1, token)
         assert response.status_code == 200
-        assert dict(response.json())["success"] == True
+        assert dict(response.json())["success"] is True
 
     def test_delete_mzn_fail(self, token):
         response = self.delete_mzn(2, token)
@@ -171,7 +177,8 @@ class Test_Delete_MZN:
 
 
 class Text_Create_DZN:
-    def create_dzn(self, token):
+    @staticmethod
+    def create_dzn(token):
         access_token = "Bearer " + token
         response = client.post(
             "/instances/create_dzn", headers={"Authorization": access_token}
@@ -185,7 +192,8 @@ class Text_Create_DZN:
 
 
 class Text_Get_DZN:
-    def get_dzn(self, instance_ids, token):
+    @staticmethod
+    def get_dzn(instance_ids, token):
         access_token = "Bearer " + token
         response = client.get(
             "/instances/dzn",
@@ -207,7 +215,8 @@ class Text_Get_DZN:
 
 
 class Text_Update_DZN:
-    def update_dzn(self, instance_id, contents, friendly_name, token):
+    @staticmethod
+    def update_dzn(instance_id, contents, friendly_name, token):
         access_token = "Bearer " + token
         url = "/instances/dzn/" + str(instance_id)
         response = client.post(
@@ -220,7 +229,7 @@ class Text_Update_DZN:
     def test_update_dzn_success(self, token):
         response = self.update_dzn(1, "update_test", "", token)
         assert response.status_code == 200
-        assert dict(response.json())["success"] == True
+        assert dict(response.json())["success"] is True
 
     def test_fail(self, token):
         response = self.update_dzn(2, "update_test", "", token)
@@ -228,7 +237,8 @@ class Text_Update_DZN:
 
 
 class Text_Delete_DZN:
-    def delete_dzn(self, instance_number, token):
+    @staticmethod
+    def delete_dzn(instance_number, token):
         access_token = "Bearer " + token
         url = "/instances/delete_dzn/" + str(instance_number)
         response = client.post(url, headers={"Authorization": access_token})
@@ -237,7 +247,7 @@ class Text_Delete_DZN:
     def test_delete_dzn_success(self, token):
         response = self.delete_dzn(1, token)
         assert response.status_code == 200
-        assert dict(response.json())["success"] == True
+        assert dict(response.json())["success"] is True
 
     def test_delete_dzn_fail(self, token):
         response = self.delete_dzn(2, token)
@@ -248,7 +258,8 @@ class Text_Delete_DZN:
 
 
 class Test_Solvers:
-    def solvers(self, token):
+    @staticmethod
+    def solvers(token):
         access_token = "Bearer " + token
         response = client.get("/solvers", headers={"Authorization": access_token})
         return response
@@ -267,7 +278,8 @@ class Test_Solvers:
 
 
 class Test_Get_UserInfo:
-    def get_userInfo(self, token):
+    @staticmethod
+    def get_userInfo(token):
         access_token = "Bearer " + token
         response = client.get("/users/get", headers={"Authorization": access_token})
         return response
@@ -279,7 +291,8 @@ class Test_Get_UserInfo:
 
 
 class Test_Get_All_UserInfo:
-    def get_all_userInfo(self, token):
+    @staticmethod
+    def get_all_userInfo(token):
         access_token = "Bearer " + token
         response = client.get("/users/getall", headers={"Authorization": access_token})
         return response
@@ -298,7 +311,8 @@ class Test_Get_All_UserInfo:
 
 
 class Test_Delete_User:
-    def delete_user(self, admin_id, user_id, token):
+    @staticmethod
+    def delete_user(admin_id, user_id, token):
         access_token = "Bearer " + token
         url = "/users/delete_user/" + str(user_id)
         response = client.post(
@@ -316,4 +330,4 @@ class Test_Delete_User:
         commit()
         response = self.delete_user(1, 2, token)
         assert response.status_code == 200
-        assert dict(response.json())["success"] == True
+        assert dict(response.json())["success"] is True
