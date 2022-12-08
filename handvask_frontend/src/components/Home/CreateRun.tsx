@@ -12,8 +12,14 @@ import {
   faChevronLeft,
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
+import AsyncBtn from "../AsyncBtn";
 
-export default function CreateRun({ user }: HomeSubpageBasePropT) {
+export default function CreateRun({
+  user,
+  setCurrentPage,
+}: HomeSubpageBasePropT & {
+  setCurrentPage: (page: string) => void;
+}) {
   const [mznInstances, setMznInstances] = useState<MznInstance[]>();
   const [dznInstances, setDznInstances] = useState<DznInstance[]>();
   const [solvers, setSolvers] = useState<Solver[]>();
@@ -22,6 +28,7 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
   const [selectedMzn, setSelectedMzn] = useState<MznInstance | null>(null);
   const [selectedDzn, setSelectedDzn] = useState<DznInstance | null>(null);
   const [selectedSolvers, setSelectedSolvers] = useState<number[]>([]);
+  const [creatingRun, setCreatingRun] = useState(false);
 
   const mznOptions = useMemo(() => {
     if (mznInstances) {
@@ -118,12 +125,20 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
   }, [apiReady]);
 
   function submitRun() {
-    if (!selectedMzn) return;
+    if (!selectedMzn || selectedSolvers.length === 0) return;
+    setCreatingRun(true);
     post(
       "/runs/create",
-      { mzn: selectedMzn.id, dzn: selectedDzn?.id ?? null },
+      {
+        mzn_id: selectedMzn.id,
+        dzn_id: selectedDzn?.id ?? null,
+        solvers: selectedSolvers,
+      },
       (r) => {
-        console.log(r);
+        setCreatingRun(false);
+        if (r.success) {
+          setCurrentPage("runs");
+        }
       }
     );
   }
@@ -238,6 +253,7 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
                   kind="primary"
                   className="px fw-bold"
                   onClick={() => setStep(4)}
+                  disabled={selectedSolvers.length === 0}
                 >
                   <FontAwesomeIcon icon={faChevronRight} />
                 </Button>
@@ -254,7 +270,7 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
               </div>
             </>
           )) ||
-          (step === 4 && selectedMzn && (
+          (step === 4 && selectedMzn && selectedSolvers.length > 0 && (
             <>
               <div className="card-header d-flex justify-content-center">
                 <p className="m-0 fw-bold">Solve it!</p>
@@ -267,13 +283,14 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
                 >
                   <FontAwesomeIcon icon={faChevronLeft} />
                 </Button>
-                <Button
+                <AsyncBtn
                   kind="success"
                   className="px fw-bold"
                   onClick={submitRun}
+                  loading={creatingRun}
                 >
                   <FontAwesomeIcon icon={faCalculator} />
-                </Button>
+                </AsyncBtn>
               </div>
               <div className="card-body">
                 <p>Review selections</p>
@@ -342,6 +359,37 @@ export default function CreateRun({ user }: HomeSubpageBasePropT) {
                       </div>
                     </div>
                   ) : null}
+                  <div className="accordion-item">
+                    <h2 className="accordion-header" id="reviewSolverHeader">
+                      <button
+                        className="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#reviewSolverBody"
+                        aria-controls="reviewSolverBody"
+                      >
+                        {selectedSolvers.length} Solver
+                        {selectedSolvers.length > 1 ? "s" : ""} selected
+                      </button>
+                    </h2>
+                    <div
+                      id="reviewSolverBody"
+                      className="accordion-collapse collapse"
+                      aria-labelledby="reviewSolverHeader"
+                      data-bs-parent="#reviewRunAccordion"
+                    >
+                      <div className="accordion-body">
+                        <ul>
+                          {selectedSolvers.map((i) => (
+                            <li key={i}>
+                              {solvers?.find((solver) => solver.id === i)
+                                ?.name ?? ""}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </>
