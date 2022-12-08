@@ -12,10 +12,18 @@ with open(f"{dirname(__file__)}/../../jwtRS256.key.pub", "r") as f:
 def get_bearer_token(token: str = Depends(oauth2_scheme)):
     try:
         unencoded = jwt.decode(token, public_key, algorithms=["RS256"])
-    except jwt.exceptions.ExpiredSignatureError:
+    except (
+        jwt.exceptions.ExpiredSignatureError,
+        jwt.exceptions.DecodeError,
+        jwt.exceptions.InvalidAlgorithmError,
+        jwt.exceptions.InvalidKeyError,
+        jwt.exceptions.InvalidSignatureError,
+        jwt.exceptions.InvalidTokenError,
+        jwt.exceptions.PyJWTError,
+    ):
         raise HTTPException(
             status_code=401,
-            detail="Token expired",
+            detail="Invalid token",
             headers={"WWW-Authenticate": "Bearer"},
         )
     return unencoded

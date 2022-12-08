@@ -50,12 +50,15 @@ class Mzn_instance(db.Entity):
     contents = Optional(LongStr)
 
 
-class Mzn_instanceT(BaseModel):
+class Mzn_instanceT_slim(BaseModel):
     id: int
     user: int
     friendly_name: str
-    runs: list[int]
     contents: None | str
+
+
+class Mzn_instanceT(Mzn_instanceT_slim):
+    runs: list[int]
 
 
 class Dzn_instance(db.Entity):
@@ -66,34 +69,75 @@ class Dzn_instance(db.Entity):
     contents = Optional(LongStr)
 
 
-class Dzn_instanceT(BaseModel):
+class Dzn_instanceT_slim(BaseModel):
     id: int
     user: int
     friendly_name: str
-    runs: list[int]
     contents: None | str
+
+
+class Dzn_instanceT(Dzn_instanceT_slim):
+    runs: list[int]
+
+
+class Run_status(db.Entity):
+    SUBMITTED = 1
+    RUNNING = 2
+    TERMINATED_USER = 3
+    TERMINATED_ADMIN = 4
+    DONE = 5
+    EXCEPTION = 6
+
+    id = PrimaryKey(int, auto=True)
+    name = Required(str)
+    runs = Set("Run")
+
+
+class Run_statusT(BaseModel):
+    id: int
+    name: str
 
 
 class Run(db.Entity):
     id = PrimaryKey(int, auto=True)
     user = Required(User)
-    start_time = Required(datetime, default=lambda: datetime.now())
+    submit_time = Required(datetime, default=datetime.now)
+    start_time = Optional(datetime)
     end_time = Optional(datetime)
     result = Optional(str, nullable=True)
     solvers = Set("Solver")
     mzn_instance = Required(Mzn_instance)
     dzn_instance = Optional(Dzn_instance)
+    status = Required("Run_status")
+
+    def get_resp_type(self):
+        """Converts this Run into a valid response for the API
+
+        Returns:
+            RunT: The run
+        """
+        run = self.to_dict(with_collections=True, with_lazy=True, related_objects=True)
+        run["user"] = run["user"].id
+        run["mzn_instance"] = run["mzn_instance"].to_dict()
+        run["dzn_instance"] = (
+            None if not run["dzn_instance"] else run["dzn_instance"].to_dict()
+        )
+        run["solvers"] = [s.to_dict() for s in run["solvers"]]
+        run["status"] = run["status"].to_dict()
+        return run
 
 
 class RunT(BaseModel):
     id: int
-    user: "UserT"
-    start_time: datetime
+    user: int
+    submit_time: datetime
+    start_time: OptionalT[datetime]
     end_time: OptionalT[datetime]
     result: OptionalT[str]
-    solvers: list[int]
-    mzn_instance: "Mzn_instanceT"
-    dzn_instance: "Dzn_instanceT"
+    solvers: list["SolverT"]
+    mzn_instance: "Mzn_instanceT_slim"
+    dzn_instance: OptionalT["Dzn_instanceT_slim"]
+    status: "Run_statusT"
 
 
 class Sys_admin(db.Entity):

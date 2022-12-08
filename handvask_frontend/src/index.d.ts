@@ -29,3 +29,19 @@ type Solver = {
   id: number;
   name: string;
 };
+
+type Run = {
+  id: number;
+  user: number;
+  submit_time: string;
+  start_time: string;
+  end_time: string;
+  result: string;
+  solvers: Solver[];
+  mzn_instance: Omit<MznInstance, "runs">;
+  dzn_instance: Omit<DznInstance, "runs">;
+  status: {
+    id: 1 | 2 | 3 | 4 | 5 | 6;
+    name: string;
+  };
+};

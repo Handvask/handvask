@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useMemo, useState } from "react";
 import { httpGet, httpPost, SuccessResponse } from "../functions";
 import useToken from "./useToken";
@@ -6,6 +7,7 @@ export default function useAPI() {
   const baseURL = process.env.NEXT_PUBLIC_API_URL;
   const token = useToken();
   const [apiReady, setReady] = useState(false);
+  const router = useRouter();
 
   const authHeader = useMemo(() => {
     if (token.length === 0) return {};
@@ -20,10 +22,19 @@ export default function useAPI() {
     callback?: (x: T) => void,
     headers: Record<string, string> = {}
   ) {
-    httpGet(baseURL + url.replace(/^\//, ""), callback, {
-      ...authHeader,
-      ...headers,
-    });
+    httpGet<T>(
+      baseURL + url.replace(/^\//, ""),
+      (resp, code) => {
+        if (code === 401) {
+          router.replace("/logout");
+        }
+        if (callback) callback(resp);
+      },
+      {
+        ...authHeader,
+        ...headers,
+      }
+    );
   }
 
   function post<T = SuccessResponse>(
@@ -33,10 +44,21 @@ export default function useAPI() {
     useJson = true,
     headers: Record<string, string> = {}
   ) {
-    httpPost(baseURL + url.replace(/^\//, ""), data, callback, useJson, {
-      ...authHeader,
-      ...headers,
-    });
+    httpPost<T>(
+      baseURL + url.replace(/^\//, ""),
+      data,
+      (resp, code) => {
+        if (code === 401) {
+          router.replace("/logout");
+        }
+        if (callback) callback(resp);
+      },
+      useJson,
+      {
+        ...authHeader,
+        ...headers,
+      }
+    );
   }
 
   return { get, post, apiReady };
