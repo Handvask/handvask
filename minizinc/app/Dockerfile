@@ -1,8 +1,14 @@
 FROM python as minizinc-app
 
-COPY . ./app
-
 WORKDIR /app
+
+COPY main.py /app/
+
+COPY utils.py /app/
+
+COPY requirements.txt /app/
+
+COPY .env /app/
 
 RUN pip install --upgrade pip
 
