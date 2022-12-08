@@ -2,7 +2,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException
 from pony.orm import commit, db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import SuccessT, User, Sys_admin
+from ..Models import SuccessT, Sys_admin, User
 
 router = APIRouter(
     prefix="/admin",
@@ -13,12 +13,13 @@ router = APIRouter(
     },
 )
 
+
 @router.post("/user_quota", response_model=SuccessT)
 @db_session
 def update_quota(
     user_id: str = Body(""),
     max_cpu: str = Body(""),
-    curr_user_id: int = Depends(get_current_user_id)
+    curr_user_id: int = Depends(get_current_user_id),
 ):
     """Update the number of cpu allowed to the user
 
@@ -29,7 +30,7 @@ def update_quota(
     Raises:
         HTTPException: User not found
         HTTPException: Not authorized
-        
+
     Returns:
         dict: A success flag in a dictionary
     """
@@ -37,8 +38,8 @@ def update_quota(
         user = User[int(user_id)]
     except:
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
-    
-    curr_user = User[curr_user_id] # check whether current user is admin
+
+    curr_user = User[curr_user_id]  # check whether current user is admin
     is_admin = select(u for u in Sys_admin if u.user == curr_user)[:]
     if len(is_admin) == 0:
         raise HTTPException(status_code=401, detail=f"Not Authorized")
@@ -50,10 +51,7 @@ def update_quota(
 
 @router.post("/user_permission/{user_id}", response_model=SuccessT)
 @db_session
-def update_permission(
-    user_id: int,
-    curr_user_id: int = Depends(get_current_user_id)
-):
+def update_permission(user_id: int, curr_user_id: int = Depends(get_current_user_id)):
     """Update the permission of the user
 
     Args:
@@ -62,7 +60,7 @@ def update_permission(
     Raises:
         HTTPException: User not found
         HTTPException: Not authorized
-        
+
     Returns:
         dict: A success flag in a dictionary
     """
@@ -71,7 +69,7 @@ def update_permission(
     except:
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
 
-    curr_user = User[curr_user_id] # check whether current user is admin
+    curr_user = User[curr_user_id]  # check whether current user is admin
     is_admin = select(u for u in Sys_admin if u.user == curr_user)[:]
     if len(is_admin) == 0:
         raise HTTPException(status_code=401, detail=f"Not Authorized")
