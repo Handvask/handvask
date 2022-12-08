@@ -26,13 +26,6 @@ jobs:
           DB_NAME: "${{secrets.DB_NAME}}"
           HANDVASK_FRONTEND_ORIGIN: "*"
           ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
-      - name: test backend image.
-        run: |
-          docker \
-          run \
-          -it \
-          python-backend-image \
-          pytest
       - name: Build frontend docker image.
         run: |
           docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
