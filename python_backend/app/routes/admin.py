@@ -4,7 +4,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pony.orm import commit, db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import Dzn_instance, Mzn_instance, SuccessT, User, Sys_admin
+from ..Models import Dzn_instance, Mzn_instance, SuccessT, Sys_admin, User
 
 router = APIRouter(
     prefix="/admin",
@@ -15,12 +15,10 @@ router = APIRouter(
     },
 )
 
+
 @router.post("/user_quota", response_model=SuccessT)
 @db_session
-def update_quota(
-    user_id: str = Body(""),
-    max_cpu: str = Body("")
-):
+def update_quota(user_id: str = Body(""), max_cpu: str = Body("")):
     """Update the number of cpu allowed to the user
 
     Args:
@@ -38,15 +36,13 @@ def update_quota(
     except:
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
     user.max_cpu = int(max_cpu)
-    
+
     return {"success": True}
 
 
 @router.post("/user_permission/{user_id}", response_model=SuccessT)
 @db_session
-def update_permission(
-    user_id: int
-):
+def update_permission(user_id: int):
     """Update the permission of the user
 
     Args:
@@ -69,7 +65,6 @@ def update_permission(
         admin.delete()
     else:
         admin = Sys_admin(user=user_id)
-        commit()  
+        commit()
 
     return {"success": True}
-
