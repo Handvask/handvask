@@ -111,6 +111,11 @@ class Run(db.Entity):
     status = Required("Run_status")
 
     def get_resp_type(self):
+        """Converts this Run into a valid response for the API
+
+        Returns:
+            RunT: The run
+        """
         run = self.to_dict(with_collections=True, with_lazy=True, related_objects=True)
         run["user"] = run["user"].id
         run["mzn_instance"] = run["mzn_instance"].to_dict()

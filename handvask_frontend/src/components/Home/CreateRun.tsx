@@ -151,7 +151,8 @@ export default function CreateRun({
             <PageLoader />
           ) : mznInstances.length == 0 ? (
             <p>
-              You don't have any mzn instances yet, why don't your create some?
+              You don&apos;t have any mzn instances yet, why don&apos;t your
+              create some?
             </p>
           ) : (
             <>

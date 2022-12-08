@@ -24,11 +24,11 @@ export default function useAPI() {
   ) {
     httpGet<T>(
       baseURL + url.replace(/^\//, ""),
-      (data, code) => {
+      (resp, code) => {
         if (code === 401) {
           router.replace("/logout");
         }
-        if (callback) callback(data);
+        if (callback) callback(resp);
       },
       {
         ...authHeader,
@@ -47,11 +47,11 @@ export default function useAPI() {
     httpPost<T>(
       baseURL + url.replace(/^\//, ""),
       data,
-      (data, code) => {
+      (resp, code) => {
         if (code === 401) {
           router.replace("/logout");
         }
-        if (callback) callback(data);
+        if (callback) callback(resp);
       },
       useJson,
       {
