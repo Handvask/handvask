@@ -2,9 +2,9 @@ name: Backend Deploy - Serverless
 on:
   push:
     branches:
-      - "Main"
+      - "main"
     paths:
-      - "handvask_backend/**"
+      - "python_backend/**"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,6 +14,19 @@ jobs:
     steps:
       - name: Set up actions checkout
         uses: actions/checkout@v3
+      - name: Build backend image.
+        id: "build-image"
+        run: |
+          docker \
+          compose \
+          build
+        env:
+          DB_HOST: "${{secrets.DB_HOST}}"
+          DB_USER: "${{secrets.DB_USER}}"
+          DB_PASS: "${{secrets.DB_PASS}}"
+          DB_NAME: "${{secrets.DB_NAME}}"
+          HANDVASK_FRONTEND_ORIGIN: "*"
+          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v1"
@@ -33,18 +46,6 @@ jobs:
           cluster_name: "handvask-cluster"
           location: "${{secrets.GKE_REGION}}"
           project_id: "${{secrets.PROJECT_ID}}"
-      - name: Build backend image.
-        run: |
-          docker \
-          compose \
-          build
-        env:
-          DB_HOST: "${{secrets.DB_HOST}}"
-          DB_USER: "${{secrets.DB_USER}}"
-          DB_PASS: "${{secrets.DB_PASS}}"
-          DB_NAME: "${{secrets.DB_NAME}}"
-          HANDVASK_FRONTEND_ORIGIN: "*"
-          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
       - name: Tag backend image.
         run: |
           docker \
@@ -53,9 +54,6 @@ jobs:
         run: |
           docker \
           push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Set region, since Github Actions does not support it.
-        run: |
-          gcloud config set compute/zone europe-north1
       - name: Deploy backend image.
         run: |
           gcloud \
@@ -67,12 +65,3 @@ jobs:
           --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
           --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }} \
           --region=europe-north1 \
-      - name: Fail build if deployment failed.
-        if: |
-          (curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200' != 'HTTP/(2) 200')
-          ||
-          (curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200' != 'HTTP/(3) 200') 
-        run: |
-          echo "Deployment failed."
-          exit 1
-      

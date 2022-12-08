@@ -10,67 +10,14 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - name: Set up actions checkout
-        uses: actions/checkout@v3
-      - id: "auth"
-        name: "Authenticate to Google Cloud"
-        uses: "google-github-actions/auth@v1"
-        with:
-          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
-          service_account: "morten-service@handvask.iam.gserviceaccount.com"
-      - name: "Set up Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v1"
-      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+      #      Work in progress, dont look at it!
+      - name: Curl for a response, to check if deployment succeeded.
+        id: check
         run: |
-          gcloud \
-          auth \
-          configure-docker europe-north1-docker.pkg.dev
-      - name: get-gke-credentials
-        uses: google-github-actions/get-gke-credentials@v1
-        with:
-          cluster_name: "handvask-cluster"
-          location: "${{secrets.GKE_REGION}}"
-          project_id: "${{secrets.PROJECT_ID}}"
-      - name: Build backend image.
+          response = $(curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200') &&
+          echo "::set-output name=response::$response"
+      - name: Check if deployment succeeded.
+        if: ${{ steps.check.outputs.response != 'HTTP/2 200' }} || ${{ steps.check.outputs.response != 'HTTP/3 200' }}
         run: |
-          docker \
-          compose \
-          build
-        env:
-          DB_HOST: "${{secrets.DB_HOST}}"
-          DB_USER: "${{secrets.DB_USER}}"
-          DB_PASS: "${{secrets.DB_PASS}}"
-          DB_NAME: "${{secrets.DB_NAME}}"
-          HANDVASK_FRONTEND_ORIGIN: "*"
-          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
-      - name: Tag backend image.
-        run: |
-          docker \
-          tag python-backend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Push backend image.
-        run: |
-          docker \
-          push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Deploy backend image.
-        run: |
-          gcloud \
-          run \
-          services \
-          update \
-          handvask \
-          --platform=managed \
-          --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
-          --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }} \
-          --region=europe-north1 \
-      # Work in progress, dont look at it!
-      # - name: Curl for a response, to check if deployment succeeded.
-      #   id: check
-      #   run: |
-      #     response = $(curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200') &&
-      #     echo "::set-output name=response::$response"
-      # - name: Check if deployment succeeded.
-      #   if: ${{ steps.check.outputs.response != 'HTTP/2 200' }} || ${{ steps.check.outputs.response != 'HTTP/3 200' }}
-      #   run: |
-      #     echo "Deployment failed."
-      #     exit 1
-      
+          echo "Deployment failed."
+          exit 1
