@@ -13,6 +13,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: run pytest
+        run: |
+          docker \
+          build \
+          -t handvask_backend_test \
+          -f ./python_backend/Dockerfile.backend \
+          ./python_backend
+        continue-on-error: true
       - name: Build backend image.
         id: "build-image"
         run: |
