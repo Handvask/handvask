@@ -55,44 +55,8 @@ spec:
         app: minizinc-app
     spec:
       containers:
-        - name: minizinc-app
-          image: minizinc-app:latest
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 5000
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: minizinc-solver-service
-spec:
-  selector:
-    app: minizinc-solver
-  ports:
-    - protocol: "TCP"
-      port: 7000
-      targetPort: 5000
-  type: LoadBalancer
-
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: minizinc-solver
-spec:
-  selector:
-    matchLabels:
-      app: minizinc-solver
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: minizinc-solver
-    spec:
-      containers:
-        - name: minizinc-solver
-          image: minizinc-solver:latest
-          imagePullPolicy: Never
-          ports:
-            - containerPort: 5000
+      - name: minizinc-app
+        image: minizinc-app:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000

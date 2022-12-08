@@ -14,8 +14,6 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-COPY ./main.py /solver
-
-EXPOSE 5000
+COPY ./solver/main.py /solver
 
 CMD ["python", "main.py"]

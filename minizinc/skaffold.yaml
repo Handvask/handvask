@@ -8,7 +8,6 @@ build:
     context: app
     docker:
       dockerfile: Dockerfile
-
 manifests:
   rawYaml:
     - deployment.yaml
