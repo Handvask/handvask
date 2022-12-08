@@ -23,6 +23,20 @@ router = APIRouter(
 @router.post("/register", response_model=SuccessT)
 @db_session
 def register_user(username: str = Form(), password: str = Form()):
+    """Registers a new user
+
+    Args:
+        username (str, optional): The username of the user..
+        password (str, optional): The password of the user.
+
+    Raises:
+        HTTPException: Username already exists
+        HTTPException: Passowrd not set
+
+    Returns:
+        dict: A simple dictionary with the property "success": true
+    """
+    # print([user.to_dict() for user in select(u for u in User)[:]])
     # Check if user already exists
     existing_user = select(u for u in User if u.username == username)[:]
     if len(existing_user) != 0:
@@ -46,25 +60,41 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
 @router.post("/login", response_model=LoginRespT)
-@db_session()
+@db_session
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    """Logs the user in
+
+    Args:
+        form_data (OAuth2PasswordRequestForm, optional): The form data,
+        has username and password as properties.
+
+    Raises:
+        HTTPException: Incorrect username or password
+
+    Returns:
+        dict: A dictionary telling if the login attempt was successful, as well as an included
+        access token and token_type
+    """
     user = select(u for u in User if u.username == form_data.username)[:]
     if len(user) == 0:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     user: User = user[0]
     if not checkpw(form_data.password.encode("utf-8"), user.password.encode("utf-8")):
         raise HTTPException(status_code=400, detail="Incorrect username or password")
-    with open(f"{dirname(__file__)}/../../jwtRS256.key", "r") as f:
-        token = jwt.encode(
-            {
-                "user_id": user.id,
-                "is_sys_admin": True if user.sys_admin else False,
-                "exp": datetime.now().timestamp() + 86400,
-            },
-            f.read(),
-            algorithm="RS256",
-        )
-        return {"success": True, "access_token": token, "token_type": "bearer"}
+    try:
+        with open(f"{dirname(__file__)}/../../jwtRS256.key", "r") as f:
+            token = jwt.encode(
+                {
+                    "user_id": user.id,
+                    "is_sys_admin": True if user.sys_admin else False,
+                    "exp": datetime.now().timestamp() + 86400,
+                },
+                f.read(),
+                algorithm="RS256",
+            )
+            return {"success": True, "access_token": token, "token_type": "bearer"}
+    except:
+        pass
 
     # Some kind of error occoured
     return {"success": False, "access_token": None, "token_type": None}
@@ -74,14 +104,5 @@ class Mzn_instanceT(SuccessT):
     name: str
 
 
-@router.post("/createMzn", response_model=Mzn_instanceT)
-@db_session
-def createMznInstance(form_mzn: Mzn_instanceT = Depends()):
-    Mzn_instanceT(
-        name=form_mzn.name,
-        description=form_mzn.description,
-        mzn=form_mzn.mzn,
-        dzn=form_mzn.dzn,
-        user_id=form_mzn.user_id,
-    )
-    return {"success": True}
+class Dzn_instanceT(SuccessT):
+    name: str

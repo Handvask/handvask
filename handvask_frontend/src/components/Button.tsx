@@ -1,14 +1,16 @@
+import React from "react";
+
 export type ButtonPropT = {
   kind:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "danger"
-    | "warning"
-    | "info"
-    | "light"
-    | "dark"
-    | "link";
+  | "primary"
+  | "secondary"
+  | "success"
+  | "danger"
+  | "warning"
+  | "info"
+  | "light"
+  | "dark"
+  | "link";
   outline?: boolean;
   disabled?: boolean;
   large?: boolean;
@@ -35,9 +37,8 @@ export default function Button({
   return (
     <button
       type={type}
-      className={`btn btn-${outline ? "outline-" : ""}${kind} ${
-        disabled ? "disabled" : ""
-      } ${large ? "btn-lg" : ""} ${small ? "btn-sm" : ""} ${className}`}
+      className={`btn btn-${outline ? "outline-" : ""}${kind} ${disabled ? "disabled" : ""
+        } ${large ? "btn-lg" : ""} ${small ? "btn-sm" : ""} ${className}`}
       onClick={onClick}
       disabled={disabled}
       style={style}

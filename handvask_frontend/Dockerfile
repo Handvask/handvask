@@ -7,12 +7,16 @@ COPY ["package.json", "./"]
 
 RUN npm install
 
-COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", ".env", "./"]
+COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "./"]
 
-RUN npx next build 
+ARG API_URL
+
+ENV NEXT_PUBLIC_API_URL ${API_URL}
+
+RUN npx next build
 
 EXPOSE 3000
-
-# CMD ["nslookup", "backend-service"]
+# 
+# CMD ["sh", "-c",  "${NEXT_PUBLIC_API_URL}"]
 
 CMD ["npx", "next","start", "-H", "0.0.0.0", "-p", "3000"]

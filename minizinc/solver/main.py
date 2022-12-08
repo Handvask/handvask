@@ -9,9 +9,14 @@ MASTER_URL = "http://minizinc-app-service:8383"
 result = {}
 solved: bool = False
 
+<<<<<<< HEAD
 async def find_solutions( inst: mz.Instance ):
     global solved
 
+=======
+
+async def find_solutions(inst: mz.Instance):
+>>>>>>> 749ccb08d1ffccb8ddf699f3fe16b88da0b335ed
     s = ""
     async for r in inst.solutions():
         if r is None:
@@ -19,8 +24,8 @@ async def find_solutions( inst: mz.Instance ):
 
         if r.solution:
             s = r
-            print( r.solution )
-            print( "-"*10 )
+            print(r.solution)
+            print("-" * 10)
         elif r.status.has_solution():
             solved = True
             result['solution'] = str(s)
@@ -28,8 +33,8 @@ async def find_solutions( inst: mz.Instance ):
             result['time'] = r.statistics.get( "solveTime" ).microseconds
             print( "="*10 )
         else:
-            result['status'] = r.status.name
-            print( "="*5, r.status.name, "="*5, sep="" )
+            result["status"] = r.status.name
+            print("=" * 5, r.status.name, "=" * 5, sep="")
 
 
 if __name__ == '__main__':

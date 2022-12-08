@@ -3,6 +3,7 @@ import useAPI from "../../hooks/useAPI";
 import AsyncBtn from "../AsyncBtn";
 import Button from "../Button";
 import Modal from "../Modal";
+import React from "react";
 
 type InstanceModalPropT = {
   onClose: () => void;
@@ -17,6 +18,7 @@ export default function InstanceModal({
   originalContents,
   originalName,
   id,
+  type,
   onUpdate,
 }: InstanceModalPropT) {
   const [contents, setContents] = useState(originalContents);
@@ -27,7 +29,7 @@ export default function InstanceModal({
   function handleSave() {
     setSaving(true);
     post(
-      `/instances/mzn/${id}`,
+      `/instances/${type}/${id}`,
       { contents: contents, friendly_name: name },
       (r) => {
         if (r.success) {

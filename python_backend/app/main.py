@@ -5,14 +5,16 @@ from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .Models import make_conn
-from .routes import auth, instances, users
+from .Models import DBHandler
+from .routes import auth, instances, runs, solvers, users
 
 load_dotenv(dirname(__file__) + "/../.env")
 
 origins = [getenv("HANDVASK_FRONTEND_ORIGIN")]
 
-make_conn()
+dbh = DBHandler()
+dbh.make_conn()
+dbh.make_conn()
 
 
 app = FastAPI()
@@ -29,8 +31,10 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(auth.router)
 app.include_router(instances.router)
+app.include_router(runs.router)
+app.include_router(solvers.router)
 
 
 @app.get("/")
 def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello From Handvask Backend!"}

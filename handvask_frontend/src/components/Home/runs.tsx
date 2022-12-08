@@ -1,4 +1,5 @@
 import { HomeSubpageBasePropT } from ".";
+import React from "react";
 
 export default function Runs({ user }: HomeSubpageBasePropT) {
   return (

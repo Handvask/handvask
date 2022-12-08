@@ -5,6 +5,7 @@ import { setCookie, hasCookie } from "cookies-next";
 import useAPI from "../hooks/useAPI";
 import AsyncBtn from "../components/AsyncBtn";
 import Link from "next/link";
+import React from "react";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -95,7 +96,7 @@ export default function Login() {
                   Login
                 </AsyncBtn>
                 <Link href="/register" className="mt-2">
-                  I don't have an account yet man
+                  I dont have an account
                 </Link>
               </div>
             </form>

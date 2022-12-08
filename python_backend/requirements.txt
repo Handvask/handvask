@@ -7,3 +7,5 @@ python-multipart
 pony
 pyjwt
 python-dotenv
+httpx
+pytest

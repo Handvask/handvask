@@ -15,3 +15,5 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 COPY ./solver/main.py /solver
+
+CMD ["python", "main.py"]
