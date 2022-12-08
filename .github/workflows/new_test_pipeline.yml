@@ -17,7 +17,7 @@ jobs:
           docker \
           build \
           -t handvask_backend_test \
-          -f ./python_backend/Dockerfile.test \
+          -f ./python_backend/Dockerfile.backend \
           ./python_backend
       - name: run pytest
         run: |
