@@ -51,9 +51,6 @@ jobs:
         run: |
           docker \
           push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Set region, since Github Actions does not support it.
-        run: |
-          gcloud config set compute/zone europe-north1
       - name: Deploy backend image.
         run: |
           gcloud \
@@ -65,14 +62,15 @@ jobs:
           --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
           --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }} \
           --region=europe-north1 \
-      - name: Fail build if deployment failed.
-        id: check
-        run: |
-          response = $(curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200') &&
-          echo "::set-output name=response::$response"
-      - name: Check if deployment succeeded.
-        if: ${{ steps.check.outputs.response != 'HTTP/2 200' }} || ${{ steps.check.outputs.response != 'HTTP/3 200' }}
-        run: |
-          echo "Deployment failed."
-          exit 1
+      # Work in progress, dont look at it!
+      # - name: Curl for a response, to check if deployment succeeded.
+      #   id: check
+      #   run: |
+      #     response = $(curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200') &&
+      #     echo "::set-output name=response::$response"
+      # - name: Check if deployment succeeded.
+      #   if: ${{ steps.check.outputs.response != 'HTTP/2 200' }} || ${{ steps.check.outputs.response != 'HTTP/3 200' }}
+      #   run: |
+      #     echo "Deployment failed."
+      #     exit 1
       
