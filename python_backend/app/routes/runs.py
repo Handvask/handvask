@@ -3,19 +3,18 @@ from typing import List, Optional
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pony.orm import db_session, select
 
-from ..middleware.auth import get_current_user_id
 from ..middleware.api_key import check_api_key
+from ..middleware.auth import get_current_user_id
 from ..Models import (
-    SuccessT,
     Dzn_instance,
     Mzn_instance,
-    Solver,
     Run,
     Run_status,
     RunT,
+    Solver,
+    SuccessT,
     User,
 )
-
 
 router = APIRouter(
     prefix="/runs",

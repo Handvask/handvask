@@ -1,6 +1,7 @@
-from fastapi.security.api_key import APIKeyHeader, APIKey
-from fastapi import Security, HTTPException
 from os import getenv
+
+from fastapi import HTTPException, Security
+from fastapi.security.api_key import APIKey, APIKeyHeader
 
 key_header = APIKeyHeader(name="X-Api-Key", auto_error=True)
 
