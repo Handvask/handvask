@@ -9,14 +9,9 @@ MASTER_URL = "http://minizinc-app-service:8383"
 result = {}
 solved: bool = False
 
-<<<<<<< HEAD
 async def find_solutions( inst: mz.Instance ):
     global solved
 
-=======
-
-async def find_solutions(inst: mz.Instance):
->>>>>>> 749ccb08d1ffccb8ddf699f3fe16b88da0b335ed
     s = ""
     async for r in inst.solutions():
         if r is None:
