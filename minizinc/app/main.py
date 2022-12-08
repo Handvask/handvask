@@ -29,6 +29,15 @@ def hello():
     return {"message": "Hello from minizinc-app!"}
 
 
+@app.post( "/test" )
+def test():
+    job = create_job( BATCHV1, test_problem, test_data, test_solvers, "test" )
+
+    if job:
+        return {"message": "Succesfully started job", "name": job.metadata.name}
+
+    return {"message": "Couldn't create job", "name": ""}
+
 # TODO: should have problem, data, and solvers posted
 @app.post( "/solve" )
 def solve( id: str = Body(), problem: str = Body(), data: str = Body(), solvers: list[str] = Body() ):
