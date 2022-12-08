@@ -1,4 +1,5 @@
 import os
+import base64
 import argparse
 import asyncio
 import requests
@@ -38,29 +39,31 @@ if __name__ == '__main__':
 
     config = parser.parse_args()
 
-    solver: str
+    instance: mz.Instance
     try:
-        f = open( '/input/solvers.txt', 'r' )
-        solver = f.read().splitlines()[int(os.getenv( 'JOB_COMPLETION_INDEX' ))]
-    except:
-        requests.post( MASTER_URL + "/error", json={"id": config.id, "error": "Couldn't get solver"} )
-
-    instance = mz.Instance( mz.Solver.lookup( solver.strip() ), mz.Model() )
-    instance.add_file( '/input/model.mzn' )
-    instance.add_file( '/input/data.dzn' )
-    """
-    instance = mz.Instance( mz.Solver.lookup( 'gecode' ), mz.Model() )
-    instance.add_string( 'int: i; array[1..2] of var 0..i: x; constraint x[1] < i /\ x[2] < i; solve maximize x[1] + x[2];' )
-    instance.add_string( "i = 10;" )
-    """
-    try:
-        asyncio.run( find_solutions( instance ) )
+        with open( '/input/solvers.txt', 'r' ) as f:
+            solver = f.read().splitlines()[int(os.getenv( 'JOB_COMPLETION_INDEX' ))]
+            instance = mz.Instance( mz.Solver.lookup( solver.strip() ), mz.Model() )
+        with open( '/input/model.b64.mzn', 'r' ) as f:
+            instance.add_string( base64.b64decode(f.read().encode("ascii")).decode("utf8") )
+        with open( '/input/data.b64.dzn', 'r' ) as f:
+            instance.add_string( base64.b64decode(f.read().encode("ascii")).decode("utf8") )
     except Exception as e:
         requests.post( MASTER_URL + "/error", json={"id": config.id, "error": str(e)} )
+    else:
+        """
+        instance = mz.Instance( mz.Solver.lookup( 'gecode' ), mz.Model() )
+        instance.add_string( 'int: i; array[1..2] of var 0..i: x; constraint x[1] < i /\ x[2] < i; solve maximize x[1] + x[2];' )
+        instance.add_string( "i = 10;" )
+        """
+        try:
+            asyncio.run( find_solutions( instance ) )
+        except Exception as e:
+            requests.post( MASTER_URL + "/error", json={"id": config.id, "error": str(e)} )
+        else:
+            result["id"] = config.id
 
-    result["id"] = config.id
-
-    if not solved:
-        requests.post( MASTER_URL + "/error", json=result )
-
-    requests.post( MASTER_URL + "/result", json=result )
+            if not solved:
+                requests.post( MASTER_URL + "/error", json=result )
+            else:
+                requests.post( MASTER_URL + "/result", json=result )
