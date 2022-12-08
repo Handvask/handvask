@@ -1,35 +1,39 @@
-name: Docker python_backend_handvask
-
+name: Pull-request main branch
 on:
-  # push:
-  #   branches: ["main"]
   pull_request:
-    branches: 
-    - "main"
+    branches:
+      - "main"
     paths:
       - "python_backend/**"
-      - ".github/workflows/pull_request_main_branch.yml"
       - "minizinc/**"
       - "handvask_frontend/**"
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Build env file
+      - name: run pytest
         run: |
-          touch ./python_backend/.env
-          touch ./handvask_frontend/.env
-          echo "DB_HOST=${{secrets.DB_HOST}}" >> ./python_backend/.env
-          echo "DB_USER=${{secrets.DB_USER}}" >> ./python_backend/.env
-          echo "DB_PASS=${{secrets.DB_PASS}}" >> ./python_backend/.env
-          echo "DB_NAME=${{secrets.DB_NAME}}" >> ./python_backend/.env
-          echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./handvask_frontend/.env
-      - name: Build python_backend image.
+          docker \
+          build \
+          -t handvask_backend_test \
+          -f ./python_backend/Dockerfile.backend \
+          ./python_backend
+        continue-on-error: true
+      - name: Build backend image.
+        id: "build-image"
         run: |
-          docker build ./python_backend --tag handvask_backend_python:latest
+          docker \
+          compose \
+          build
+        env:
+          DB_HOST: "${{secrets.DB_HOST}}"
+          DB_USER: "${{secrets.DB_USER}}"
+          DB_PASS: "${{secrets.DB_PASS}}"
+          DB_NAME: "${{secrets.DB_NAME}}"
+          HANDVASK_FRONTEND_ORIGIN: "*"
+          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
       - name: Build frontend docker image.
         run: |
           docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
