@@ -14,8 +14,8 @@ jobs:
         uses: actions/checkout@v3
       - name: run pytest
         run: |
-          chmod +x ./gen_key.sh
-          ./gen_key.sh
+          chmod +x ./python_backend/gen_key.sh
+          ./python_backend/gen_key.sh
           pip install -r python_backend/requirements.txt
           python -m pytest
       - name: Build backend image.
