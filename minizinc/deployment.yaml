@@ -1,6 +1,5 @@
----
-kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
 metadata:
   name: job-handling
 rules:
@@ -12,8 +11,8 @@ rules:
   verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 
 ---
-kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
 metadata:
   name: job-handling
 subjects:
