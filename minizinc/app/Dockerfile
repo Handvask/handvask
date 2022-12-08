@@ -8,11 +8,11 @@ COPY utils.py /app/
 
 COPY requirements.txt /app/
 
-COPY .env /app/
-
 RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
+
+COPY ./.env /app/.env
 
 EXPOSE 5000
 

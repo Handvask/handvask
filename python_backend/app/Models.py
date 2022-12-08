@@ -104,7 +104,9 @@ class Run(db.Entity):
     submit_time = Required(datetime, default=datetime.now)
     start_time = Optional(datetime)
     end_time = Optional(datetime)
+    execution_time = Optional(int)
     result = Optional(str, nullable=True)
+    mzn_status = Optional(str, nullable=True)
     solvers = Set("Solver")
     mzn_instance = Required(Mzn_instance)
     dzn_instance = Optional(Dzn_instance)
@@ -134,6 +136,8 @@ class RunT(BaseModel):
     start_time: OptionalT[datetime]
     end_time: OptionalT[datetime]
     result: OptionalT[str]
+    mzn_status: OptionalT[str]
+    execution_time: OptionalT[int]
     solvers: list["SolverT"]
     mzn_instance: "Mzn_instanceT_slim"
     dzn_instance: OptionalT["Dzn_instanceT_slim"]
@@ -186,12 +190,6 @@ class DBHandler(object):
 
     def make_conn(self):
         if not self.bound:
-            print(
-                getenv("DB_HOST"),
-                getenv("DB_USER"),
-                getenv("DB_PASS"),
-                getenv("DB_NAME"),
-            )
             db.bind(
                 provider="mysql",
                 host=getenv("DB_HOST"),
