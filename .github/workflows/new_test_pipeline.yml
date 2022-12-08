@@ -66,10 +66,12 @@ jobs:
           --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }} \
           --region=europe-north1 \
       - name: Fail build if deployment failed.
-        if: |
-          (curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200' != 'HTTP/(2) 200')
-          ||
-          (curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200' != 'HTTP/(3) 200') 
+        id: check
+        run: |
+          response = $(curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200') &&
+          echo "::set-output name=response::$response"
+      - name: Check if deployment succeeded.
+        if: ${{ steps.check.outputs.response != 'HTTP/2 200' }} || ${{ steps.check.outputs.response != 'HTTP/3 200' }}
         run: |
           echo "Deployment failed."
           exit 1
