@@ -1,4 +1,4 @@
-name: testing-pipeline
+name: Backend Deploy - Serverless
 on:
   push:
     branches:
@@ -65,7 +65,12 @@ jobs:
           --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
           --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }} \
           --region=europe-north1 \
-      # - name: testing backend image.
-      #   run: |
-      #     docker run -d -p 8080:8080 ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: Fail build if deployment failed.
+        if: |
+          (curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200' != 'HTTP/(2) 200')
+          ||
+          (curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200' != 'HTTP/(3) 200') 
+        run: |
+          echo "Deployment failed."
+          exit 1
       
