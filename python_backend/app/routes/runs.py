@@ -58,9 +58,10 @@ def create_run(
     return {"success": True}
 
 
-# @router.get("", response_model=SuccessT)
-# def test(key=Depends(check_api_key)):
-#     return {"success": True}
+@router.get("secure_path", response_model=SuccessT)
+def test(key=Depends(check_api_key)):
+    print(key)
+    return {"success": True}
 
 
 @router.get("", response_model=List[RunT])
