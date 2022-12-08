@@ -84,7 +84,9 @@ export default function Home() {
             {(currentPage == "runs" && <Runs user={user} />) ||
               (currentPage == "dzn" && <Dzn user={user} />) ||
               (currentPage == "mzn" && <Mzn user={user} />) ||
-              (currentPage == "createRun" && <CreateRun user={user} />) ||
+              (currentPage == "createRun" && (
+                <CreateRun user={user} setCurrentPage={setCurrentPage} />
+              )) ||
               null}
           </div>
           {/* <Table hover>

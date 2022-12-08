@@ -240,3 +240,6 @@ def delete_dzn(
         raise HTTPException(status_code=401, detail="Access denied")
     instance.delete()
     return {"success": True}
+
+
+# endregion
