@@ -14,10 +14,17 @@ jobs:
         uses: actions/checkout@v3
       - name: run pytest
         run: |
-          chmod +x ./python_backend/gen_key.sh
-          ./python_backend/gen_key.sh
-          pip install -r python_backend/requirements.txt
-          python -m pytest
+          docker \
+          build \
+          -t handvask_backend_test \
+          -f ./python_backend/Dockerfile.test \
+          ./python_backend
+      - name: run pytest
+        run: |
+          docker \
+          run \
+          --rm \
+          handvask_backend_test
       - name: Build backend image.
         id: "build-image"
         run: |
