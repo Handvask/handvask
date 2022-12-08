@@ -1,7 +1,7 @@
 from os import getenv
 
 from fastapi import HTTPException, Security
-from fastapi.security.api_key import APIKey, APIKeyHeader
+from fastapi.security.api_key import APIKeyHeader
 
 key_header = APIKeyHeader(name="X-Api-Key", auto_error=True)
 

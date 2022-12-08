@@ -101,7 +101,7 @@ class Run_statusT(BaseModel):
 class Run(db.Entity):
     id = PrimaryKey(int, auto=True)
     user = Required(User)
-    submit_time = Required(datetime, default=lambda: datetime.now())
+    submit_time = Required(datetime, default=datetime.now)
     start_time = Optional(datetime)
     end_time = Optional(datetime)
     result = Optional(str, nullable=True)
