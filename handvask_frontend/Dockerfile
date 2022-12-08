@@ -7,11 +7,13 @@ COPY ["package.json", "./"]
 
 RUN npm install
 
-COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "./"]
+COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "prepare.sh", "./"]
 
 ARG API_URL
 
-ENV NEXT_PUBLIC_API_URL ${API_URL}
+# ENV API_URL ${API_URL}
+
+RUN sh ./prepare.sh
 
 RUN npx next build
 
