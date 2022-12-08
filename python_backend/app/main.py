@@ -38,4 +38,4 @@ app.include_router(minizinc.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello From Handvask Backend!"}
+    return {"message": "Hello From Morten Skal i Seng!"}

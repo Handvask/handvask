@@ -1,0 +1,22 @@
+name: testing env variables
+
+on:
+  push:
+    branches:
+      - "pipeline_1"
+jobs:
+  mortens_test:
+    name: Mortens Job
+    runs-on: ubuntu-latest
+    steps:
+      - name: print ENV variable
+        env:
+          FIRST_NAME: "Morten"
+          SECOND_NAME: "Jakobsen"
+          Title: "Mr"
+          Gender: "Male"
+          project_id: "${{secrets.PROJECT_ID}}"
+        run: |
+          echo "Hello $FIRST_NAME $SECOND_NAME $Title $Gender"
+          echo "${{secrets.PROJECT_ID}}"
+        shell: bash
