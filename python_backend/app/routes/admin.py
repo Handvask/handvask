@@ -40,7 +40,7 @@ def update_quota(
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
 
     curr_user = User[curr_user_id]  # check whether current user is admin
-    if bool(curr_user.sys_admin) == False:
+    if bool(curr_user.sys_admin) is None:
         raise HTTPException(status_code=401, detail="Not Authorized")
 
     user.max_cpu = int(max_cpu)
@@ -69,7 +69,7 @@ def update_permission(user_id: int, curr_user_id: int = Depends(get_current_user
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
 
     curr_user = User[curr_user_id]  # check whether current user is admin
-    if bool(curr_user.sys_admin) == False:
+    if bool(curr_user.sys_admin) is None:
         raise HTTPException(status_code=401, detail="Not Authorized")
 
     is_admin = select(u for u in Sys_admin if u.user == user)[:]
