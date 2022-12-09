@@ -1,7 +1,10 @@
+from datetime import datetime
+from os import getenv
 from typing import List, Optional
 
+import requests
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
-from pony.orm import db_session, select, commit
+from pony.orm import commit, db_session, select
 
 from ..middleware.auth import get_current_user_id
 from ..Models import (
@@ -14,9 +17,6 @@ from ..Models import (
     SuccessT,
     User,
 )
-import requests
-from os import getenv
-from datetime import datetime
 
 router = APIRouter(
     prefix="/runs",

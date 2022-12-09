@@ -1,12 +1,12 @@
+import base64
 import os
 from os.path import dirname
-from dotenv import load_dotenv
-import base64
-import requests
 from tempfile import NamedTemporaryFile
-from kubernetes import client, config
-from fastapi import FastAPI, Body, HTTPException
 
+import requests
+from dotenv import load_dotenv
+from fastapi import Body, FastAPI, HTTPException
+from kubernetes import client, config
 from utils import create_job, delete_job
 
 load_dotenv(dirname(__file__) + "/.env")

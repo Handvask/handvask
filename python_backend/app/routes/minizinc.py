@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
@@ -5,7 +6,6 @@ from pony.orm import commit, db_session, select
 
 from ..middleware.api_key import check_api_key
 from ..Models import Run, Run_status
-from datetime import datetime
 
 router = APIRouter(
     prefix="/minizinc",
