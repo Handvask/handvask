@@ -1,17 +1,19 @@
 FROM python as minizinc-app
 
-RUN mkdir /app
-
 WORKDIR /app
 
-COPY ./requirements.txt /app
+COPY main.py /app/
+
+COPY utils.py /app/
+
+COPY requirements.txt /app/
 
 RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-COPY ./main.py /app
+COPY ./.env /app/.env
 
 EXPOSE 5000
 
-CMD ["python", "main.py"]
+CMD [ "uvicorn", "main:app", "--host=0.0.0.0", "--port=5000" ]

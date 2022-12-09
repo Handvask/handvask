@@ -1,0 +1,61 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: job-handling
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: job-handling
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: job-handling
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minizinc-app-service
+spec:
+  selector:
+    app: minizinc-app
+  ports:
+    - protocol: "TCP"
+      port: 8383
+      targetPort: 5000
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minizinc-app
+spec:
+  selector:
+    matchLabels:
+      app: minizinc-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: minizinc-app
+    spec:
+      containers:
+        - name: minizinc-app
+          image: minizinc-app:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000

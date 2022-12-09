@@ -1,9 +1,11 @@
+from datetime import datetime
+from os import getenv
 from typing import List, Optional
 
+import requests
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
-from pony.orm import db_session, select
+from pony.orm import commit, db_session, select
 
-from ..middleware.api_key import check_api_key
 from ..middleware.auth import get_current_user_id
 from ..Models import (
     Dzn_instance,
@@ -26,7 +28,11 @@ router = APIRouter(
 )
 
 
-@router.post("/create", response_model=SuccessT)
+class create_runT(SuccessT):
+    id: int
+
+
+@router.post("/create", response_model=create_runT)
 @db_session
 def create_run(
     user_id: int = Depends(get_current_user_id),
@@ -47,28 +53,31 @@ def create_run(
         solvers
     ):  # One or more of the specified solvers is invalid
         raise HTTPException(401, "Access denied")
-    Run(
+    run = Run(
         user=user_id,
         solvers=db_solvers,
         mzn_instance=mzn,
         dzn_instance=dzn,
         status=Run_status.SUBMITTED,
     )
-    return {"success": True}
-
-
-@router.get("secure_path", response_model=SuccessT)
-def test(key=Depends(check_api_key)):
-    """Just a test to see if API_key is working
-
-    Args:
-        key (None, optional): Defaults to Depends(check_api_key).
-
-    Returns:
-        SuccessT: A success response
-    """
-    print(key)
-    return {"success": True}
+    commit()
+    resp = requests.post(
+        f"{getenv('MZN_MN_HOST')}/solve",
+        json={
+            "id": run.id,
+            "problem": mzn.contents,
+            "data": "" if not dzn else dzn.contents,
+            "solvers": [solver.name for solver in db_solvers],
+        },
+    )
+    if resp.ok:
+        run.start_time = datetime.now()
+        run.status = Run_status.RUNNING
+    else:
+        run.end_time = datetime.now()
+        run.status = Run_status.EXCEPTION
+        run.result = resp.text
+    return {"success": resp.ok, "id": run.id}
 
 
 @router.get("", response_model=List[RunT])

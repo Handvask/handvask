@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Button from "../Button";
 import Select from "react-select";
 import useAPI from "../../hooks/useAPI";
-import { listToUrlEncoded } from "../../functions";
+import { listToUrlEncoded, SuccessResponse } from "../../functions";
 import PageLoader from "../PageLoader";
 import type { SingleValue, MultiValue } from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -127,7 +127,7 @@ export default function CreateRun({
   function submitRun() {
     if (!selectedMzn || selectedSolvers.length === 0) return;
     setCreatingRun(true);
-    post(
+    post<SuccessResponse & { id: number }>(
       "/runs/create",
       {
         mzn_id: selectedMzn.id,
@@ -136,6 +136,7 @@ export default function CreateRun({
       },
       (r) => {
         setCreatingRun(false);
+        user.addRun(r.id);
         if (r.success) {
           setCurrentPage("runs");
         }

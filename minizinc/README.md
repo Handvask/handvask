@@ -1,10 +1,9 @@
-# Simple flask app in python which solves minizinc instances sent in json format
+# Simple version of minizinc solver that can spawn jobs to solve instances
 
-To run a local example build the image
-docker build . -t app
-run a container
-docker run -p 5000:5000 app
-then, in a different terminal, do the following curl to start solving a test instance
-curl -X POST -H "Content-Type: application/json" -d '{"model": "int: n; var int: x; constraint x = n; solve satisfy;", "data": "n = 2;", "solver": "gecode"}' http://127.0.0.1:5000/solve
-the status/result of which can be gotten from the following curl
-curl -X GET http://127.0.0.1:5000/result
+With docker and kubernetes set up properly can be started locally by running
+bash deploy.sh
+which starts a webhost which should be exposed on port 6000 with the possible paths being:
+POST /solve
+POST /result
+POST /delete
+Currently only a single job can exist at a time and the /solve just solves a hardcoded example

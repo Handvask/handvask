@@ -4,18 +4,12 @@ RUN apt-get update -y
 
 RUN apt-get install -y minizinc
 
-RUN mkdir /solver
+RUN pip install --upgrade pip
 
 WORKDIR /solver
 
-COPY ./requirements.txt /solver
-
-RUN pip install --upgrade pip
+COPY requirements.txt /solver/
 
 RUN pip install -r requirements.txt
 
-COPY ./main.py /solver
-
-EXPOSE 5000
-
-CMD ["python", "main.py"]
+COPY main.py /solver/
