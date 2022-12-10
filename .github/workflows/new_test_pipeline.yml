@@ -4,48 +4,50 @@ on:
     branches:
       - "pipeline_1"
 jobs:
-  # frontend-image-build:
-  #   needs: Authenticate-GKE
-  #   runs-on: ubuntu-latest
-  #   permissions:
-  #     contents: "read"
-  #     id-token: "write"
-  #   steps:
+  test-running-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Test 1
+        run: |
+          echo "Still need implementation"
 
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Echo 1
-  #       run: |
-  #         echo "Hello World, 1"
-  #     - name: list gcloud auth, to see if it works
-  #       run: |
-  #         gcloud auth list
-  #     - name: Authenticate to Google Cloud
-  #       id: "auth"
-  #       uses: google-github-actions/auth@v1
-  #       with:
-  #         workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
-  #         service_account: "morten-service@handvask.iam.gserviceaccount.com"
-  #     - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
-  #       run: |
-  #         gcloud \
-  #         auth \
-  #         configure-docker europe-north1-docker.pkg.dev
-  #     - name: Docker-compose build frontend image.
-  #       run: |
-  #         cd handvask_frontend && \
-  #         docker \
-  #         compose \
-  #         build
-  #     - name: Tag DockerImage
-  #       run: |
-  #         docker \
-  #         tag handvask-frontend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-  #     - name: Push DockerImage
-  #       run: |
-  #         docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+  frontend-image-build:
+    needs: test-running-service
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: "auth"
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+        run: |
+          gcloud \
+          auth \
+          configure-docker europe-north1-docker.pkg.dev
+      - name: Docker-compose build frontend image.
+        run: |
+          cd handvask_frontend && \
+          docker \
+          compose \
+          build
+      - name: Tag DockerImage
+        run: |
+          docker \
+          tag handvask-frontend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: Push DockerImage
+        run: |
+          docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
   deploy-to-GKE:
-    # needs: frontend-image-build
+    needs: frontend-image-build
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
