@@ -81,7 +81,9 @@ jobs:
         run: |
           kubectl \
           set \
-          image handvask-frontend \
+          image \
+          deployment \
+          handvask-frontend \
           handvask-frontend=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
           kubectl \
           rollout status deployment/handvask-frontend
