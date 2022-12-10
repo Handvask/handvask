@@ -59,12 +59,30 @@ jobs:
         with:
           workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
           service_account: "morten-service@handvask.iam.gserviceaccount.com"
-      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+      - name: set compute region
         run: |
           gcloud \
-          get \
-          cluster \ 
+          config \
+          set compute/region europe-north1
+      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+        run: | 
+          gcloud \
+          container \
+          clusters \
           get-credentials handvask-cluster
-  
+      - name: kubectl apply for deployment
+        run: |
+          kubectl \
+          apply \
+          -f handvask_frontend/k8s/
+      - name: Deploy to GKE
+        run: |
+          kubectl \
+          set \
+          image handvask-frontend \
+          handvask-frontend=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          kubectl \
+          rollout status deployment/handvask-frontend
+
 
 
