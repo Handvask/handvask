@@ -6,7 +6,7 @@ on:
     paths:
       - "handvask_frontend/**"
 jobs:
-  build:
+  Frontend-Deploy-k8s:
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
