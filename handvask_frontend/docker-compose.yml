@@ -4,9 +4,9 @@ services:
   react-frontend-image:
     image: handvask-frontend-image
     build:
-      context: ./handvask_frontend
+      context: .
       dockerfile: Dockerfile
       args:
-        API_URL: http://localhost:8080/
+        API_URL: https://api.handvask.tech/
     ports:
       - "3000:3000"
