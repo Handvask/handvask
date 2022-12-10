@@ -27,7 +27,7 @@ jobs:
           DB_PASS: "${{secrets.DB_PASS}}"
           DB_NAME: "${{secrets.DB_NAME}}"
           HANDVASK_FRONTEND_ORIGIN: "https://handvask.tech/**"
-          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
+          # ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
           MZN_API_KEY: "${{secrets.API_KEY}}"
           MZN_MN_HOST: "http://localhost:8383"
       - id: "auth"
