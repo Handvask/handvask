@@ -35,5 +35,5 @@ jobs:
           configure-docker europe-north1-docker.pkg.dev
       - name: Push DockerImage
         run: |
-          docker push $${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{github.sha}}
+          docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
 
