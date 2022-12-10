@@ -1,8 +1,10 @@
-name: "pipeline_1, test file"
+name: Frontend deployment to Google k8s
 on:
   push:
     branches:
-      - "pipeline_1"
+      - "main"
+    paths:
+      - "handvask_frontend/**"
 jobs:
   test-running-service:
     runs-on: ubuntu-latest
