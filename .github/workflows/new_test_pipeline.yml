@@ -4,7 +4,7 @@ on:
     branches:
       - "pipeline_1"
 jobs:
-  build:
+  frontend-image-build:
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -31,15 +31,16 @@ jobs:
       #   with:
       #     workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
       #     service_account: "morten-service@handvask.iam.gserviceaccount.com"
-      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
-        run: |
-          gcloud \
-          auth \
-          configure-docker europe-north1-docker.pkg.dev
-      - name: Push DockerImage
-        run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      # - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+      #   run: |
+      #     gcloud \
+      #     auth \
+      #     configure-docker europe-north1-docker.pkg.dev
+      # - name: Push DockerImage
+      #   run: |
+      #     docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
   deploy-to-GKE:
+    needs: frontend-image-build
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
