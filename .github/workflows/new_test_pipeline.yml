@@ -20,7 +20,8 @@ jobs:
           build
       - name: Tag DockerImage
         run: |
-          docker tag handvask-frontend-image $${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{github.sha}}'
+          docker \
+          tag handvask-frontend-image $${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{github.sha}}
       - name: Authenticate to Google Cloud
         id: "auth"
         uses: google-github-actions/auth@v1
