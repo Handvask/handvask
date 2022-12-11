@@ -4,44 +4,89 @@ on:
     branches:
       - "pipeline_1"
 jobs:
-  build:
+  test-running-service:
     runs-on: ubuntu-latest
-    permissions:
-      contents: "read"
-      id-token: "write"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: run pytest
+      - name: Test 1
         run: |
-          docker \
-          build \
-          -t handvask_backend_test \
-          -f ./python_backend/Dockerfile.backend \
-          ./python_backend
-        continue-on-error: true
-      # - name: Build backend image.
-      #   id: "build-image"
-      #   run: |
-      #     docker \
-      #     compose \
-      #     build
-      #   env:
-      #     DB_HOST: "${{secrets.DB_HOST}}"
-      #     DB_USER: "${{secrets.DB_USER}}"
-      #     DB_PASS: "${{secrets.DB_PASS}}"
-      #     DB_NAME: "${{secrets.DB_NAME}}"
-      #     HANDVASK_FRONTEND_ORIGIN: "*"
-      #     ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
+          echo "Still need implementation"
 
-      #      Work in progress, dont look at it!
-      # - name: Curl for a response, to check if deployment succeeded.
-      #   id: check
-      #   run: |
-      #     response = $(curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200') &&
-      #     echo "::set-output name=response::$response"
-      # - name: Check if deployment succeeded.
-      #   if: ${{ steps.check.outputs.response != 'HTTP/2 200' }} || ${{ steps.check.outputs.response != 'HTTP/3 200' }}
-      #   run: |
-      #     echo "Deployment failed."
-      #     exit 1
+  # frontend-image-build:
+  #   needs: test-running-service
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: "read"
+  #     id-token: "write"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Authenticate to Google Cloud
+  #       id: "auth"
+  #       uses: google-github-actions/auth@v1
+  #       with:
+  #         workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+  #         service_account: "morten-service@handvask.iam.gserviceaccount.com"
+  #     - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+  #       run: |
+  #         gcloud \
+  #         auth \
+  #         configure-docker europe-north1-docker.pkg.dev
+  #     - name: Docker-compose build frontend image.
+  #       run: |
+  #         cd handvask_frontend && \
+  #         docker \
+  #         compose \
+  #         build
+  #     - name: Tag DockerImage
+  #       run: |
+  #         docker \
+  #         tag handvask-frontend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+  #     - name: Push DockerImage
+  #       run: |
+  #         docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+  # deploy-to-GKE:
+  #   needs: frontend-image-build
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: "read"
+  #     id-token: "write"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Authenticate to Google Cloud
+  #       id: "auth"
+  #       uses: google-github-actions/auth@v1
+  #       with:
+  #         workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+  #         service_account: "morten-service@handvask.iam.gserviceaccount.com"
+  #     - name: set compute region
+  #       run: |
+  #         gcloud \
+  #         config \
+  #         set compute/region europe-north1
+  #     - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+  #       run: | 
+  #         gcloud \
+  #         container \
+  #         clusters \
+  #         get-credentials handvask-cluster
+  #     - name: kubectl apply for deployment
+  #       run: |
+  #         kubectl \
+  #         apply \
+  #         -f handvask_frontend/k8s/
+  #     - name: Deploy to GKE
+  #       run: |
+  #         kubectl \
+  #         set \
+  #         image \
+  #         deployment \
+  #         handvask-frontend \
+  #         handvask-frontend=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+  #         kubectl \
+  #         rollout status deployment/handvask-frontend
+
+
+

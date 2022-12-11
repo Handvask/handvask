@@ -57,7 +57,7 @@ export default function Login() {
     <>
       <Head>
         <title>Handvask login page</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="favicon.ico" />
       </Head>
       <div className="vw-100 vh-100 d-flex flex-column justify-content-around align-items-center bg-light px-5">
         <h1 className="display-1 fw-bold">HANDVASK</h1>

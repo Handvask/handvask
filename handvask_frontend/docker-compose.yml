@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  react-frontend-image:
+    image: handvask-frontend-image
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        API_URL: https://api.handvask.tech/
+    ports:
+      - "3000:3000"
