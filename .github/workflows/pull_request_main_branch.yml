@@ -8,11 +8,57 @@ on:
       - "minizinc/**"
       - "handvask_frontend/**"
 jobs:
-  build:
+  frontend-pull_request-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Control if changes in frontend been made
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            frontend:
+              - 'handvask_frontend/**'
+      - name: If no changes stop workflow
+        if: steps.changes.outputs.frontend == 'false'
+        run: |
+          echo "No changes in frontend, stop workflow"
+          exit 78
+      - name: Build frontend image.
+        id: "build-image"
+        run: |
+          cd handvask_frontend && \
+          docker \
+          compose \
+          build
+        env:
+          REACT_APP_BACKEND_URL: "${{secrets.API_URL}}"
+          ARTIFACT_LOCATION_FRONTEND: "${{secrets.ARTIFACT_LOCATION_FRONTEND}}"
+        continue-on-error: true
+      - name: Docker image build fail, exit.
+        if: steps.build-image.outcome == 'failure'
+        run: |
+          docker \
+          compose \
+          logs
+  backend-pull_request-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Control if changes in backend been made
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            backend:
+              - 'python_backend/**'
+      - name: If no changes stop workflow
+        if: steps.changes.outputs.backend == 'false'
+        run: |
+          echo "No changes in backend, stop workflow"
+          exit 78
       - name: run pytest
         run: |
           docker \
@@ -20,10 +66,11 @@ jobs:
           -t handvask_backend_test \
           -f ./python_backend/Dockerfile.backend \
           ./python_backend
-        continue-on-error: true
+        continue-on-error: false
       - name: Build backend image.
         id: "build-image"
         run: |
+          cd python_backend && \
           docker \
           compose \
           build
@@ -34,6 +81,10 @@ jobs:
           DB_NAME: "${{secrets.DB_NAME}}"
           HANDVASK_FRONTEND_ORIGIN: "*"
           ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
-      - name: Build frontend docker image.
+        continue-on-error: true
+      - name: Docker image build fail, exit.
+        if: steps.build-image.outcome == 'failure'
         run: |
-          docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
+          docker \
+          compose \
+          logs
