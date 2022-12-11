@@ -18,4 +18,6 @@ RUN bash /server/gen_key.sh
 
 COPY ./start.sh /server/start.sh
 
+# CMD [ "curl", "-i", "http://host.docker.internal:8383/" ]
+
 CMD ["bash", "/server/start.sh"]

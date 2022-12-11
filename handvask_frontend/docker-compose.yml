@@ -7,6 +7,9 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        API_URL: https://api.handvask.tech/
+        API_URL: ${NEXT_PUBLIC_API_URL}
+    environment:
+      - ARTIFACT_LOCATION_FRONTEND=${ARTIFACT_LOCATION_FRONTEND}
+      - COMMIT_SHA=${COMMIT_SHA}
     ports:
       - "3000:3000"

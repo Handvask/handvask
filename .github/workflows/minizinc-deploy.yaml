@@ -1,0 +1,54 @@
+name: minizinc deployment to Google k8s
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "minizinc/**"
+jobs:
+  test-running-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Test 1
+        run: |
+          echo "Still need implementation"
+
+  frontend-image-build:
+    needs: test-running-service
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: "auth"
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+        run: |
+          gcloud \
+          auth \
+          configure-docker europe-north1-docker.pkg.dev
+      - name: Docker-compose build frontend image.
+        run: |
+          cd minizinc && \
+          docker \
+          compose \
+          build
+        env:
+         API_KEY=${{ secrets.API_URL }}
+         BACKEND_HOST=${{ secrets.BACKEND_HOST }}
+      - name: Tag DockerImage
+        run: |
+          docker \
+          tag handvask-minizinc-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
+          && \
+          docker \
+          tag handvask-minizinc-solver-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      

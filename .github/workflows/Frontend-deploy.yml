@@ -79,6 +79,9 @@ jobs:
           kubectl \
           apply \
           -f handvask_frontend/k8s/
+        env:
+          ARTIFACT_LOCATION_FRONTEND: ${{secrets.ARTIFACT_LOCATION_BACKEND}}
+          COMMIT_SHA: ${{ github.sha }}
       - name: Deploy to GKE
         run: |
           kubectl \
