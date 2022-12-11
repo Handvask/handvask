@@ -24,8 +24,8 @@ jobs:
         if: steps.changes.outputs.frontend == 'false'
         run: |
           echo "No changes in frontend, stop workflow"
-          exit 78
       - name: Build frontend image.
+        if: steps.changes.outputs.frontend == 'true'
         id: "build-image"
         run: |
           cd handvask_frontend && \
@@ -37,7 +37,7 @@ jobs:
           ARTIFACT_LOCATION_FRONTEND: "${{secrets.ARTIFACT_LOCATION_FRONTEND}}"
         continue-on-error: true
       - name: Docker image build fail, exit.
-        if: steps.build-image.outcome == 'failure'
+        if: steps.build-image.outcome == 'failure' && steps.changes.outputs.frontend == 'true'
         run: |
           docker \
           compose \
@@ -58,8 +58,8 @@ jobs:
         if: steps.changes.outputs.backend == 'false'
         run: |
           echo "No changes in backend, stop workflow"
-          exit 78
       - name: run pytest
+        if: steps.changes.outputs.backend == 'true'
         run: |
           docker \
           build \
@@ -68,6 +68,7 @@ jobs:
           ./python_backend
         continue-on-error: false
       - name: Build backend image.
+        if: steps.changes.outputs.backend == 'true'
         id: "build-image"
         run: |
           cd python_backend && \
@@ -83,7 +84,7 @@ jobs:
           ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
         continue-on-error: true
       - name: Docker image build fail, exit.
-        if: steps.build-image.outcome == 'failure'
+        if: steps.build-image.outcome == 'failure' &&  steps.changes.outputs.backend == 'true'
         run: |
           docker \
           compose \
