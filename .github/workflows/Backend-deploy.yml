@@ -6,7 +6,7 @@ on:
     paths:
       - "python_backend/**"
 jobs:
-  build:
+  Backend-Deploy-Serverless:
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -17,6 +17,7 @@ jobs:
       - name: Build backend image.
         id: "build-image"
         run: |
+          cd python_backend && \
           docker \
           compose \
           build
@@ -25,8 +26,10 @@ jobs:
           DB_USER: "${{secrets.DB_USER}}"
           DB_PASS: "${{secrets.DB_PASS}}"
           DB_NAME: "${{secrets.DB_NAME}}"
-          HANDVASK_FRONTEND_ORIGIN: "*"
-          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
+          HANDVASK_FRONTEND_ORIGIN: "https://handvask.tech/**"
+          # ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
+          MZN_API_KEY: "${{secrets.API_KEY}}"
+          MZN_MN_HOST: "http://localhost:8383"
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v1"
