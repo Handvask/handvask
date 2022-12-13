@@ -4,7 +4,7 @@ WORKDIR /server
 
 COPY ./requirements.txt /server/requirements.txt
 
-RUN pip install --upgrade pip --quiet
+RUN pip install --upgrade pip
 
 RUN pip install --no-cache-dir --upgrade --default-timeout=100 -r /server/requirements.txt --quiet
 
@@ -18,4 +18,6 @@ RUN bash /server/gen_key.sh
 
 COPY ./start.sh /server/start.sh
 
-CMD ["bash", "/server/start.sh"]
+CMD ["sh", "-c", "echo $DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, HEJSA"]
+
+# CMD ["bash", "/server/start.sh"]

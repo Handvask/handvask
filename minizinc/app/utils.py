@@ -1,5 +1,6 @@
-from kubernetes import client
 import base64
+
+from kubernetes import client
 
 JOBNAME = lambda id: f"minizinc-job-{id}"
 

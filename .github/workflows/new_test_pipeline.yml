@@ -1,5 +1,4 @@
-name: testing-pipeline
-
+name: "pipeline_1, test file"
 on:
   push:
     branches:
@@ -11,18 +10,38 @@ jobs:
       contents: "read"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v3
-      - id: "auth"
-        name: "Authenticate to Google Cloud"
-        uses: "google-github-actions/auth@v1"
-        with:
-          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
-          service_account: "morten-service@handvask.iam.gserviceaccount.com"
-      - name: Build frontend docker image.
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: run pytest
         run: |
-          docker build ./python_backend -t python_backend:latest
-      - name: push image to google artifacty registry
-        run: |
-          gcloud auth configure-docker europe-north1-docker.pkg.dev
-          docker tag python_backend europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest
-          docker push europe-north1-docker.pkg.dev/handvask/handvask-artifacts/python_backend:latest
+          docker \
+          build \
+          -t handvask_backend_test \
+          -f ./python_backend/Dockerfile.backend \
+          ./python_backend
+        continue-on-error: true
+      # - name: Build backend image.
+      #   id: "build-image"
+      #   run: |
+      #     docker \
+      #     compose \
+      #     build
+      #   env:
+      #     DB_HOST: "${{secrets.DB_HOST}}"
+      #     DB_USER: "${{secrets.DB_USER}}"
+      #     DB_PASS: "${{secrets.DB_PASS}}"
+      #     DB_NAME: "${{secrets.DB_NAME}}"
+      #     HANDVASK_FRONTEND_ORIGIN: "*"
+      #     ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
+
+      #      Work in progress, dont look at it!
+      # - name: Curl for a response, to check if deployment succeeded.
+      #   id: check
+      #   run: |
+      #     response = $(curl -i https://handvask-giawyejmea-lz.a.run.app/ | grep -E 'HTTP/(2|3) 200') &&
+      #     echo "::set-output name=response::$response"
+      # - name: Check if deployment succeeded.
+      #   if: ${{ steps.check.outputs.response != 'HTTP/2 200' }} || ${{ steps.check.outputs.response != 'HTTP/3 200' }}
+      #   run: |
+      #     echo "Deployment failed."
+      #     exit 1

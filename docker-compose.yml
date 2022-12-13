@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  python-backend-image:
+    image: python-backend-image
+    build:
+      context: ./python_backend
+      dockerfile: Dockerfile
+    environment:
+      - "DB_HOST=${DB_HOST}"
+      - "DB_USER=${DB_USER}"
+      - "DB_PASS=${DB_PASS}"
+      - "DB_NAME=${DB_NAME}"
+      - "HANDVASK_FRONTEND_ORIGIN=${HANDVASK_FRONTEND_ORIGIN}"
+      # - "REGION=${ARTIFACT_LOCATION_BACKEND}"
+    ports:
+      - "8080:8080"
+  react-frontend-image:
+    image: handvask-frontend-image
+    build:
+      context: ./handvask_frontend
+      dockerfile: Dockerfile
+      args:
+        API_URL: http://localhost:8080/
+    ports:
+      - "3000:3000"

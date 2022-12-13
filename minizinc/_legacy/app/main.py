@@ -1,9 +1,9 @@
-from flask import Flask
 import requests
-from kubernetes import config, client
+from flask import Flask
+from kubernetes import client, config
 from kubernetes.stream import stream
 
-app = Flask( __name__ )
+app = Flask(__name__)
 
 solving_url = "http://minizinc-solver-service:7000"
 
@@ -11,31 +11,42 @@ test_problem = "int: i; array[1..2] of var 0..i: x; constraint x[1] < i /\ x[2] 
 test_data = "i = 10;"
 test_solver = "gecode"
 
-@app.route( "/", methods=["GET"] )
+
+@app.route("/", methods=["GET"])
 def hello():
     return "Hello World!!", 200
 
-@app.route( "/solve", methods=["GET"] )
+
+@app.route("/solve", methods=["GET"])
 def solve():
-    return requests.post( solving_url, json={ 'problem': test_problem, 'data': test_data, 'solver': test_solver }, headers={ 'Content-Type': 'application/json' } ).content, 200
+    return (
+        requests.post(
+            solving_url,
+            json={"problem": test_problem, "data": test_data, "solver": test_solver},
+            headers={"Content-Type": "application/json"},
+        ).content,
+        200,
+    )
 
 
-@app.route( "/test", methods=["GET"] )
+@app.route("/test", methods=["GET"])
 def test():
     try:
         config.load_incluster_config()
         v1 = client.CoreV1Api()
-        pod_name = 'minizinc-cmd'
-        namespace = 'default'
-        exec_command = [ "echo", test_problem ]
+        pod_name = "minizinc-cmd"
+        namespace = "default"
+        exec_command = ["echo", test_problem]
         resp = stream(
             v1.connect_get_namespaced_pod_exec,
             pod_name,
             namespace,
             command=exec_command,
-            stderr=True, stdin=False,
-            stdout=True, tty=False,
-            _preload_content=False
+            stderr=True,
+            stdin=False,
+            stdout=True,
+            tty=False,
+            _preload_content=False,
         )
         return resp, 200
 

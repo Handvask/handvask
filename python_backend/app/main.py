@@ -6,7 +6,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .Models import DBHandler
-from .routes import auth, instances, runs, solvers, users, minizinc
+from .routes import admin, auth, instances, minizinc, runs, solvers, users
 
 load_dotenv(dirname(__file__) + "/../.env")
 
@@ -34,8 +34,9 @@ app.include_router(instances.router)
 app.include_router(runs.router)
 app.include_router(solvers.router)
 app.include_router(minizinc.router)
+app.include_router(admin.router)
 
 
 @app.get("/")
 def root():
-    return {"message": "Hello From Handvask Backend!"}
+    return {"message": "Hello From Morten Skal i Seng!"}
