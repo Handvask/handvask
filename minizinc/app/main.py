@@ -8,14 +8,6 @@ from kubernetes import client, config
 from utils import create_job, delete_job, configure
 
 load_dotenv(dirname(__file__) + "/.env")
-print(
-    os.getenv("API_KEY"),
-    os.getenv("BACKEND_HOST"),
-    os.getenv("SOLVER_IMAGE"),
-    os.getenv("HOST_URL"),
-    os.getenv("CACERT"),
-    os.getenv("TOKEN"),
-)
 
 app = FastAPI()
 
@@ -55,8 +47,9 @@ def solve(
     data: str = Body(),
     solvers: list[str] = Body(),
 ):
+    print("Creating job")
     job = create_job(BATCHV1, problem, data, solvers, id, SOLVER_NAME)
-
+    print("Job created")
     if not job:
         raise HTTPException(500, "It failed lol git gud")
 
