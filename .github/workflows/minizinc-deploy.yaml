@@ -6,6 +6,7 @@ on:
       - "pipeline_1"
     paths:
       - "minizinc/**"
+      - ".github/**"
 jobs:
   test-running-service:
     runs-on: ubuntu-latest
