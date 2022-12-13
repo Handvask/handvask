@@ -5,6 +5,7 @@ on:
       - "main"
     paths:
       - "handvask_frontend/**"
+      - ".github/Frontend-deploy.yml"
 jobs:
   test-running-service:
     runs-on: ubuntu-latest
@@ -36,6 +37,10 @@ jobs:
           auth \
           configure-docker europe-north1-docker.pkg.dev
       - name: Docker-compose build frontend image.
+        env:
+          NEXT_PUBLIC_API_URL: "${{ secrets.NEXT_PUBLIC_API_URL }}"
+          ARTIFACT_LOCATION_FRONTEND: "${{ secrets.ARTIFACT_LOCATION_FRONTEND }}"
+          COMMIT_SHA: "${{ github.sha }}"
         run: |
           cd handvask_frontend && \
           docker \
@@ -44,10 +49,10 @@ jobs:
       - name: Tag DockerImage
         run: |
           docker \
-          tag handvask-frontend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          tag handvask-frontend-image ${{secrets.ARTIFACT_LOCATION_FRONTEND}}:${{ github.sha }}
       - name: Push DockerImage
         run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          docker push ${{secrets.ARTIFACT_LOCATION_FRONTEND}}:${{ github.sha }}
   deploy-to-GKE:
     needs: frontend-image-build
     runs-on: ubuntu-latest
@@ -89,6 +94,6 @@ jobs:
           image \
           deployment \
           handvask-frontend \
-          handvask-frontend=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          handvask-frontend=${{secrets.ARTIFACT_LOCATION_FRONTEND}}:${{ github.sha }}
           kubectl \
           rollout status deployment/handvask-frontend
