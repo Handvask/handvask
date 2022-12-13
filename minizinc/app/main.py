@@ -2,10 +2,12 @@ import os
 from os.path import dirname
 
 import requests
+from dotenv import load_dotenv
 from fastapi import Body, FastAPI, HTTPException
 from kubernetes import client, config
 from utils import create_job, delete_job, configure
 
+load_dotenv(dirname(__file__) + "/.env")
 print(
     os.getenv("API_KEY"),
     os.getenv("BACKEND_HOST"),

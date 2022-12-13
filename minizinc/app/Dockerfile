@@ -2,6 +2,17 @@ FROM python as minizinc-app
 
 WORKDIR /app
 
+ARG API_KEY
+ARG BACKEND_HOST
+ARG SOLVER_IMAGE
+ARG HOST_URL
+ARG CACERT
+ARG TOKEN
+
+COPY prepare.sh /app/prepare.sh
+
+RUN sh /app/prepare.sh
+
 COPY main.py /app/
 
 COPY utils.py /app/
@@ -16,6 +27,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
-CMD [ "echo", "$API_KEY" ]
-
-# CMD [ "uvicorn", "main:app", "--host=0.0.0.0", "--port=5000" ]
+CMD [ "uvicorn", "main:app", "--host=0.0.0.0", "--port=5000" ]
