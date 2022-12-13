@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=List[SolverT])
+@router.get("", response_model=List[SolverT])
 @db_session
 def get_solvers(user_id: int = Depends(get_current_user_id)):
     if not user_id:
