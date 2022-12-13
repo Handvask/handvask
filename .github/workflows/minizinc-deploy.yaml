@@ -44,8 +44,8 @@ jobs:
           compose \
           build
         env:
-         API_KEY=${{ secrets.API_KEY }}
-         BACKEND_HOST=${{ secrets.BACKEND_HOST }}/minizinc
+         API_KEY: "${{ secrets.API_KEY }}"
+         BACKEND_HOST: "${{ secrets.BACKEND_HOST }}/minizinc"
       - name: Tag DockerImage
         run: |
           docker \
