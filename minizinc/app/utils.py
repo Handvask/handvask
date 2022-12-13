@@ -60,6 +60,7 @@ def _create_job_object(
     problem: str, data: str, solvers: list[str], id: str, image_name: str
 ):
     solvers_string = "\n".join(solvers)
+    # Configurate init container
     init_container = client.V1Container(
         name="init",
         image="docker.io/library/bash",
@@ -76,6 +77,7 @@ def _create_job_object(
         image=image_name,
         command=["python", "main.py", id],
         volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
+        resources={"limits": {"cpu": "300m", "memory": "512Mi"}},
     )
     # Create volume
     volume = client.V1Volume(name="input", empty_dir={})

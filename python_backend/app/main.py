@@ -39,4 +39,4 @@ app.include_router(admin.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello From Handvask Backend!"}
+    return {"message": "Hello From Handvask Backend Morten skal snart i seng!"}

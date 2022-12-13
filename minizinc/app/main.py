@@ -52,9 +52,18 @@ def solve(
     job = create_job(BATCHV1, problem, data, solvers, id, SOLVER_NAME)
     print("Job created")
     if not job:
-        raise HTTPException(500, "It failed lol git gud")
+        raise HTTPException(500, "Couldn't create job")
 
     return {"message": "Succesfully started job"}
+
+
+@app.post("/delete")
+def delete(
+    id: str = Body()
+):
+    if not delete_job( BATCHV1, id ):
+        raise HTTPException( 500, "Couldn't delete job" )
+    return {"message": "Successfully deleted job"}
 
 
 @app.post("/result")
