@@ -13,7 +13,8 @@ spec:
     spec:
       containers:
         - name: handvask-frontend
-          image: europe-north1-docker.pkg.dev/handvask/handvask-backend-artifacts/handvask_backend_python:$COMMIT_SHA
+          image: ${ARTIFACT_LOCATION_FRONTEND}:${COMMIT_SHA}
+          imagePullPolicy: IfNotPresent
           resources:
             limits:
               cpu: 300m

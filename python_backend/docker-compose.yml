@@ -13,5 +13,7 @@ services:
       - "DB_NAME=${DB_NAME}"
       - "HANDVASK_FRONTEND_ORIGIN=${HANDVASK_FRONTEND_ORIGIN}"
       - "REGION=${ARTIFACT_LOCATION_BACKEND}"
+      - "MZN_API_KEY=${API_KEY}"
+      - "MZN_MN_HOST=${MZN_MN_HOST}"
     ports:
       - "8080:8080"

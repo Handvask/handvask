@@ -1,6 +1,8 @@
 import base64
 
 from kubernetes import client
+from tempfile import NamedTemporaryFile
+
 
 JOBNAME = lambda id: f"minizinc-job-{id}"
 
@@ -11,11 +13,13 @@ def create_job(
     data: str,
     solvers: list[str],
     id: str,
+    image_name: str,
 ) -> client.V1Job:
-    job_object = _create_job_object(problem, data, solvers, id)
+    job_object = _create_job_object(problem, data, solvers, id, image_name)
     try:
         return api_instance.create_namespaced_job(body=job_object, namespace="default")
-    except:
+    except Exception as e:
+        print(f"Got exception while creating job: {e}")
         return None
 
 
@@ -52,10 +56,11 @@ def log_pod(api_instance: client.CoreV1Api, pod: client.V1Pod) -> str:
         return None
 
 
-def _create_job_object(problem: str, data: str, solvers: list[str], id: str):
+def _create_job_object(
+    problem: str, data: str, solvers: list[str], id: str, image_name: str
+):
     solvers_string = "\n".join(solvers)
     # Configurate init container
-    print(base64.b64encode(problem.encode("utf-8")))
     init_container = client.V1Container(
         name="init",
         image="docker.io/library/bash",
@@ -69,9 +74,10 @@ def _create_job_object(problem: str, data: str, solvers: list[str], id: str):
     # Configurate Pod template container
     container = client.V1Container(
         name="minizinc-solver",
-        image="jonasplesner/minizinc-solver:latest",
+        image=image_name,
         command=["python", "main.py", id],
         volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
+        resources={"limits": {"cpu": "300m", "memory": "512Mi"}},
     )
     # Create volume
     volume = client.V1Volume(name="input", empty_dir={})
@@ -99,5 +105,22 @@ def _create_job_object(problem: str, data: str, solvers: list[str], id: str):
         metadata=client.V1ObjectMeta(name=JOBNAME(id)),
         spec=spec,
     )
-
     return job
+
+
+# TODO: look at later
+def configure(host_url, cacert, token):
+    try:
+        # Set the configuration
+        configuration = client.Configuration()
+        with NamedTemporaryFile(delete=False) as cert:
+            cert.write(base64.b64decode(cacert))
+            configuration.ssl_ca_cert = cert.name
+        configuration.host = host_url
+        configuration.verify_ssl = True
+        configuration.debug = False
+        configuration.api_key = {"authorization": "Bearer " + token}
+        client.Configuration.set_default(configuration)
+
+    except Exception as e:
+        print(f"Got exception while configuring: {e}")

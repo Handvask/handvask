@@ -1,10 +1,12 @@
-name: Frontend deployment to Google k8s
+name: minizinc deployment to Google k8s
 on:
   push:
     branches:
       - "main"
+      - "pipeline_1"
     paths:
-      - "handvask_frontend/**"
+      - "minizinc/**"
+      - ".github/**"
 jobs:
   test-running-service:
     runs-on: ubuntu-latest
@@ -15,7 +17,7 @@ jobs:
         run: |
           echo "Still need implementation"
 
-  frontend-image-build:
+  minizinc-images-build:
     needs: test-running-service
     runs-on: ubuntu-latest
     permissions:
@@ -37,19 +39,32 @@ jobs:
           configure-docker europe-north1-docker.pkg.dev
       - name: Docker-compose build frontend image.
         run: |
-          cd handvask_frontend && \
+          cd minizinc && \
           docker \
           compose \
           build
+        env:
+         API_KEY: "${{ secrets.API_KEY }}"
+         BACKEND_HOST: "${{ secrets.BACKEND_HOST }}/minizinc"
+         SOLVER_IMAGE: "${{ secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER }}:${{ github.sha }}"
+         HOST_URL: "${{ secrets.KUBE_HOST }}"
+         CACERT: "${{ secrets.KUBE_CACERT }}"
+         TOKEN: "${{ secrets.KUBE_TOKEN }}"
       - name: Tag DockerImage
         run: |
           docker \
-          tag handvask-frontend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Push DockerImage
+          tag handvask-minizinc-image ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }} \
+          && \
+          docker \
+          tag handvask-minizinc-solver-image ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
+      - name: Push minizinc-image
         run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }} 
+      - name: Push minizinc-solver-image
+        run: |
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }} 
   deploy-to-GKE:
-    needs: frontend-image-build
+    needs: minizinc-images-build
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -78,9 +93,9 @@ jobs:
         run: |
           kubectl \
           apply \
-          -f handvask_frontend/k8s/
+          -f minizinc/k8s/
         env:
-          ARTIFACT_LOCATION_FRONTEND: ${{secrets.ARTIFACT_LOCATION_FRONTEND}}
+          ARTIFACT_LOCATION_MINIZINC: ${{secrets.ARTIFACT_LOCATION_MINIZINC}}
           COMMIT_SHA: ${{ github.sha }}
       - name: Deploy to GKE
         run: |
@@ -88,7 +103,7 @@ jobs:
           set \
           image \
           deployment \
-          handvask-frontend \
-          handvask-frontend=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          minizinc-app \
+          minizinc-app=${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }}
           kubectl \
-          rollout status deployment/handvask-frontend
+          rollout status deployment/minizinc-app

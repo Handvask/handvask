@@ -9,6 +9,6 @@ spec:
       port: 80
       targetPort: 3000
   selector:
-    app: "handvask-frontend"
+    app: handvask-frontend
   type: "LoadBalancer"
   loadBalancerIP: ""

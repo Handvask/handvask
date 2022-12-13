@@ -34,6 +34,7 @@ async def find_solutions(inst: mz.Instance):
         else:
             result["status"] = r.status.name
             print("=" * 5, r.status.name, "=" * 5, sep="")
+            print(r.statistics.get("solveTime").microseconds)
 
 
 if __name__ == "__main__":
@@ -58,7 +59,8 @@ if __name__ == "__main__":
                 base64.b64decode(f.read().encode("ascii")).decode("utf8")
             )
     except Exception as e:
-        requests.post(MASTER_URL + "/error", json={"id": config.id, "error": str(e)})
+        print(e, type(e))
+        requests.post(MASTER_URL + "/error", json={"id": config.id, "status": str(e)})
     else:
         """
         instance = mz.Instance( mz.Solver.lookup( 'gecode' ), mz.Model() )
@@ -68,8 +70,10 @@ if __name__ == "__main__":
         try:
             asyncio.run(find_solutions(instance))
         except Exception as e:
+            print(e, type(e))
             requests.post(
-                MASTER_URL + "/error", json={"id": config.id, "error": str(e)}
+                MASTER_URL + "/error",
+                json={"id": config.id, "status": str(e)},
             )
         else:
             result["id"] = config.id

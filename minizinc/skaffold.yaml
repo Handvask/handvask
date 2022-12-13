@@ -10,4 +10,4 @@ build:
         dockerfile: Dockerfile
 manifests:
   rawYaml:
-    - deployment.yaml
+    - k8s/deployment.yaml
