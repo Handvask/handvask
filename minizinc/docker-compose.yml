@@ -9,12 +9,12 @@ services:
       context: app/
       dockerfile: Dockerfile
     environment:
-      - API_KEY=${API_KEY}
-      - BACKEND_HOST=${BACKEND_HOST}
-      - SOLVER_IMAGE=${SOLVER_IMAGE}
-      - HOST_URL=${HOST_URL}
-      - CACERT=${CACERT}
-      - TOKEN=${TOKEN}
+      - "API_KEY=${API_KEY}"
+      - "BACKEND_HOST=${BACKEND_HOST}"
+      - "SOLVER_IMAGE=${SOLVER_IMAGE}"
+      - "HOST_URL=${HOST_URL}"
+      - "CACERT=${CACERT}"
+      - "TOKEN=${TOKEN}"
     ports:
       - 5000:8383
 

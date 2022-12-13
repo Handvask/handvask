@@ -8,6 +8,14 @@ from kubernetes import client, config
 from utils import create_job, delete_job, configure
 
 load_dotenv(dirname(__file__) + "/.env")
+print(
+    os.getenv("API_KEY"),
+    os.getenv("BACKEND_HOST"),
+    os.getenv("SOLVER_IMAGE"),
+    os.getenv("HOST_URL"),
+    os.getenv("CACERT"),
+    os.getenv("TOKEN"),
+)
 
 app = FastAPI()
 
