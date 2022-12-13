@@ -47,7 +47,12 @@ jobs:
       - name: Tag DockerImage
         run: |
           docker \
-          tag handvask-minizinc-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
+          tag handvask-minizinc-image ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }} \
           && \
           docker \
-          tag handvask-minizinc-solver-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+          tag handvask-minizinc-solver-image ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
+      - name: Push DockerImage
+        run: |
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }} \
+          && \ 
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
