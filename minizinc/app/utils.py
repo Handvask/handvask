@@ -110,14 +110,26 @@ def configure(host_url, cacert, token):
     try:
         # Set the configuration
         configuration = client.Configuration()
+        print("1")
         with NamedTemporaryFile(delete=False) as cert:
+            print("2")
             cert.write(base64.b64decode(cacert))
+            print("3")
             configuration.ssl_ca_cert = cert.name
+            print("4")
         configuration.host = host_url
+        print("5")
         configuration.verify_ssl = True
+        print("6")
         configuration.debug = False
+        print("7")
         configuration.api_key = {"authorization": "Bearer " + token}
+        print("8")
         client.Configuration.set_default(configuration)
+        print("9")
 
     except Exception as e:
         print(f"Got exception while configuring: {e}")
+        print(host_url)
+        print(cacert)
+        print(token)
