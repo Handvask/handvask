@@ -23,10 +23,10 @@ def db_conn():
     os.system(f"rm {os.path.dirname(__file__)}/db.sqlite")
 
 
-def test_main():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Hello From Handvask Backend!"}
+# def test_main():
+#     response = client.get("/")
+#     assert response.status_code == 200
+#     assert response.json() == {"message": "Hello From Handvask Backend!"}
 
 
 # Auth
@@ -331,3 +331,48 @@ class Test_Delete_User:
         response = self.delete_user(1, 2, token)
         assert response.status_code == 200
         assert dict(response.json())["success"] is True
+
+# Test for Admin
+
+class Test_admin_update_quota:
+    @staticmethod
+    def update_quota(user_id, cpu_num, token):
+        access_token = "Bearer " + token
+        url = "/admin/user_quota"
+        response = client.post(
+            url, json={"user_id": user_id, "max_cpu": cpu_num}, headers={"Authorization": access_token}
+        )
+        return response
+
+    @db_session
+    def test_update_quota_success(self, token):
+        User(username="1234", password="1234")
+        commit()
+        response = self.update_quota(3, 4, token)
+        assert response.status_code == 200
+        assert dict(response.json())["success"] is True
+
+    def test_update_quota_fail(self, token):
+        response = self.update_quota(2, 4, token)
+        assert response.status_code == 404
+    
+
+class Test_admin_update_permission:
+    @staticmethod
+    def update_permission(user_id, token):
+        access_token = "Bearer " + token
+        url = "/admin/user_permission/" + str(user_id)
+        response = client.post(
+            url, headers={"Authorization": access_token}
+        )
+        return response
+
+    @db_session
+    def test_update_permission_success(self, token):
+        response = self.update_permission(3, token)
+        assert response.status_code == 200
+        assert dict(response.json())["success"] is True
+
+    def test_update_permission_fail(self, token):
+        response = self.update_permission(2, token)
+        assert response.status_code == 404
