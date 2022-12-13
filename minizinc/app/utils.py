@@ -10,8 +10,9 @@ def create_job(
     data: str,
     solvers: list[str],
     id: str,
+    image_name: str
 ) -> client.V1Job:
-    job_object = _create_job_object(problem, data, solvers, id)
+    job_object = _create_job_object(problem, data, solvers, id, image_name)
     try:
         return api_instance.create_namespaced_job(body=job_object, namespace="default")
     except:
@@ -51,7 +52,7 @@ def log_pod(api_instance: client.CoreV1Api, pod: client.V1Pod) -> str:
         return None
 
 
-def _create_job_object(problem: str, data: str, solvers: list[str], id: str):
+def _create_job_object(problem: str, data: str, solvers: list[str], id: str, image_name: str ):
     solvers_string = "\n".join(solvers)
     # Configurate init container
     print(base64.b64encode(problem.encode("utf-8")))
@@ -68,7 +69,7 @@ def _create_job_object(problem: str, data: str, solvers: list[str], id: str):
     # Configurate Pod template container
     container = client.V1Container(
         name="minizinc-solver",
-        image="jonasplesner/minizinc-solver:latest",
+        image=image_name,
         command=["python", "main.py", id],
         volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
     )

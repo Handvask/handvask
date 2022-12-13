@@ -19,6 +19,7 @@ BATCHV1 = client.BatchV1Api()
 
 BACKEND_URL = os.getenv("BACKEND_HOST")
 HEADERS = {"X-Api-Key": os.getenv("API_KEY")}
+SOLVER_NAME = os.getenv( "SOLVER_IMAGE" )
 
 test_problem = "int: i; array[1..2] of var 0..i: x; constraint x[1] < i /\ x[2] < i; solve maximize x[1] + x[2];"
 test_data = "i = 10;"
@@ -48,7 +49,7 @@ def solve(
     data: str = Body(),
     solvers: list[str] = Body(),
 ):
-    job = create_job(BATCHV1, problem, data, solvers, id)
+    job = create_job( BATCHV1, problem, data, solvers, id, SOLVER_NAME )
 
     if not job:
         raise HTTPException(500, "It failed lol git gud")
