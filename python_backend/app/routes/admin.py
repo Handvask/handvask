@@ -34,14 +34,13 @@ def update_quota(
     Returns:
         dict: A success flag in a dictionary
     """
+
+    if not bool(User[curr_user_id].sys_admin):
+        raise HTTPException(status_code=401, detail="Access denied")
     try:
         user = User[int(user_id)]
     except:
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
-
-    curr_user = User[curr_user_id]  # check whether current user is admin
-    if bool(curr_user.sys_admin) is None:
-        raise HTTPException(status_code=401, detail="Not Authorized")
 
     user.max_cpu = int(max_cpu)
 
@@ -63,21 +62,18 @@ def update_permission(user_id: int, curr_user_id: int = Depends(get_current_user
     Returns:
         dict: A success flag in a dictionary
     """
+    if not bool(User[curr_user_id].sys_admin):
+        raise HTTPException(status_code=401, detail="Access denied")
     try:
         user = User[user_id]
     except:
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
 
-    curr_user = User[curr_user_id]  # check whether current user is admin
-    if bool(curr_user.sys_admin) is None:
-        raise HTTPException(status_code=401, detail="Not Authorized")
-
-    is_admin = select(u for u in Sys_admin if u.user == user)[:]
-    if len(is_admin) != 0:
-        admin = Sys_admin[is_admin[0].id]
-        admin.delete()
+    is_admin = select(u for u in Sys_admin if u.user == user).first()
+    if bool(is_admin) :
+        is_admin.delete()
     else:
-        admin = Sys_admin(user=user_id)
+        Sys_admin(user=user_id)
         commit()
 
     return {"success": True}
