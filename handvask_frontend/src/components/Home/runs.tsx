@@ -34,7 +34,7 @@ export default function Runs({ user }: HomeSubpageBasePropT) {
       <table className="table table-striped table-hover">
         <thead>
           <tr>
-            <td>Status</td>
+            <td>Status1</td>
             <td>ID</td>
             <td>Minizinc</td>
             <td>Data</td>
