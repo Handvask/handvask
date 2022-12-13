@@ -11,7 +11,7 @@ load_dotenv(dirname(__file__) + "/.env")
 
 app = FastAPI()
 
-configure(os.environ["HOST_URL"], os.environ["CACERT"], os.environ["TOKEN"])
+configure(os.getenv("HOST_URL"), os.getenv("CACERT"), os.getenv("TOKEN"))
 COREV1 = client.CoreV1Api()
 BATCHV1 = client.BatchV1Api()
 
