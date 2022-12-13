@@ -17,7 +17,7 @@ jobs:
         run: |
           echo "Still need implementation"
 
-  frontend-image-build:
+  minizinc-images-build:
     needs: test-running-service
     runs-on: ubuntu-latest
     permissions:
@@ -60,3 +60,47 @@ jobs:
       - name: Push minizinc-solver-image
         run: |
           docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }} 
+  deploy-to-GKE:
+    needs: minizinc-images-build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: "auth"
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: set compute region
+        run: |
+          gcloud \
+          config \
+          set compute/region europe-north1
+      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+        run: | 
+          gcloud \
+          container \
+          clusters \
+          get-credentials handvask-cluster
+      - name: kubectl apply for deployment
+        run: |
+          kubectl \
+          apply \
+          -f minizinc/k8s/
+        env:
+          ARTIFACT_LOCATION_MINIZINC: ${{secrets.ARTIFACT_LOCATION_MINIZINC}}
+          COMMIT_SHA: ${{ github.sha }}
+      - name: Deploy to GKE
+        run: |
+          kubectl \
+          set \
+          image \
+          deployment \
+          handvask-minizinc \
+          handvask-minizinc=${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }}
+          kubectl \
+          rollout status deployment/handvask-minizinc

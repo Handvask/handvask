@@ -80,7 +80,7 @@ jobs:
           apply \
           -f handvask_frontend/k8s/
         env:
-          ARTIFACT_LOCATION_FRONTEND: ${{secrets.ARTIFACT_LOCATION_BACKEND}}
+          ARTIFACT_LOCATION_FRONTEND: ${{secrets.ARTIFACT_LOCATION_FRONTEND}}
           COMMIT_SHA: ${{ github.sha }}
       - name: Deploy to GKE
         run: |

@@ -55,7 +55,11 @@ spec:
     spec:
       containers:
         - name: minizinc-app
-          image: minizinc-app:latest
-          imagePullPolicy: Never
+          image: ${ARTIFACT_LOCATION_MINIZINC}:${COMMIT_SHA}
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
+          resources:
+            limits:
+              cpu: 300m
+              memory: 512Mi
