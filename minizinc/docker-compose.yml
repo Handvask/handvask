@@ -9,7 +9,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - API_KEY=${API_KEY}
-      - API_URL=${API_URL}
+      - BACKEND_HOST=${BACKEND_HOST}
     ports:
       - 5000:8383
 
