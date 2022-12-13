@@ -1,6 +1,7 @@
 version: '3.7'
 
 
+
 services:
   handvask-minizinc-image:
     image: handvask-minizinc-image
