@@ -100,7 +100,7 @@ jobs:
           set \
           image \
           deployment \
-          handvask-minizinc \
-          handvask-minizinc=${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }}
+          minizinc-app \
+          minizinc-app=${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }}
           kubectl \
-          rollout status deployment/handvask-minizinc
+          rollout status deployment/minizinc-app
