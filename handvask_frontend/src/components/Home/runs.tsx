@@ -66,7 +66,7 @@ export default function Runs({ user }: HomeSubpageBasePropT) {
                 </td>
                 <td>{e.id}</td>
                 <td>{e.mzn_instance.friendly_name}</td>
-                <td>{e.dzn_instance.friendly_name}</td>
+                <td>{e.dzn_instance?.friendly_name ?? "No data"}</td>
                 <td>{e.submit_time}</td>
                 <td>{e.start_time ?? "Not started"}</td>
                 <td>{e.end_time ?? "Not done"}</td>
