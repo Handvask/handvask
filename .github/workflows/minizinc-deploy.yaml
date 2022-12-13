@@ -51,6 +51,3 @@ jobs:
           && \
           docker \
           tag handvask-minizinc-solver-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: quick dirty test
-        run: |
-          echo ${{secrets.ARTIFACT_LOCATION_BACKEND}}

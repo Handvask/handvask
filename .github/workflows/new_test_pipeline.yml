@@ -12,6 +12,9 @@ jobs:
       - name: Test 1
         run: |
           echo "Still need implementation"
+      - name: quick dirty test
+        run: |
+          echo ${{secrets.ARTIFACT_LOCATION_BACKEND}}
 
   # frontend-image-build:
   #   needs: test-running-service
