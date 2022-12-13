@@ -22,6 +22,8 @@ export default function useAPI() {
     callback?: (x: T) => void,
     headers: Record<string, string> = {}
   ) {
+    console.log(baseURL);
+    console.log(baseURL + url.replace(/^\//, ""));
     httpGet<T>(
       baseURL + url.replace(/^\//, ""),
       (resp, code) => {
