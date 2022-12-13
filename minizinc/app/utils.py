@@ -56,7 +56,6 @@ def log_pod(api_instance: client.CoreV1Api, pod: client.V1Pod) -> str:
 def _create_job_object(problem: str, data: str, solvers: list[str], id: str, image_name: str ):
     solvers_string = "\n".join(solvers)
     # Configurate init container
-    print(base64.b64encode(problem.encode("utf-8")))
     init_container = client.V1Container(
         name="init",
         image="docker.io/library/bash",
@@ -73,6 +72,7 @@ def _create_job_object(problem: str, data: str, solvers: list[str], id: str, ima
         image=image_name,
         command=["python", "main.py", id],
         volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
+        resources={ "limits": { "cpu": "300m", "memory": "512Mi" } }
     )
     # Create volume
     volume = client.V1Volume(name="input", empty_dir={})
