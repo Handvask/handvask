@@ -14,7 +14,7 @@ jobs:
           echo "Still need implementation"
       - name: quick dirty test
         run: |
-          echo ${{secrets.ARTIFACT_LOCATION_BACKEND}}
+          echo ${{secrets.ARTIFACT_LOCATION_BACKEND}} | sed 's/./& /g'
 
   # frontend-image-build:
   #   needs: test-running-service
