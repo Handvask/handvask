@@ -53,8 +53,9 @@ jobs:
           && \
           docker \
           tag handvask-minizinc-solver-image ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
-      - name: Push DockerImage
+      - name: Push minizinc-image
         run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }} \
-          && \ 
-          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }} 
+      - name: Push minizinc-solver-image
+        run: |
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }} 
