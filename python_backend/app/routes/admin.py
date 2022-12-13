@@ -70,7 +70,7 @@ def update_permission(user_id: int, curr_user_id: int = Depends(get_current_user
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
 
     is_admin = select(u for u in Sys_admin if u.user == user).first()
-    if bool(is_admin) :
+    if bool(is_admin):
         is_admin.delete()
     else:
         Sys_admin(user=user_id)
