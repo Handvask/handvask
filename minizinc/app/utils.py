@@ -11,7 +11,7 @@ def create_job(
     data: str,
     solvers: list[str],
     id: str,
-    image_name: str
+    image_name: str,
 ) -> client.V1Job:
     job_object = _create_job_object(problem, data, solvers, id, image_name)
     try:
@@ -53,52 +53,63 @@ def log_pod(api_instance: client.CoreV1Api, pod: client.V1Pod) -> str:
         return None
 
 
-def _create_job_object(problem: str, data: str, solvers: list[str], id: str, image_name: str ):
-    solvers_string = "\n".join(solvers)
-    # Configurate init container
-    print(base64.b64encode(problem.encode("utf-8")))
-    init_container = client.V1Container(
-        name="init",
-        image="docker.io/library/bash",
-        command=["bash"],
-        args=[
-            "-c",
-            f'echo "{solvers_string}" > /input/solvers.txt && echo "{base64.b64encode(problem.encode("utf8")).decode("ascii")}" > /input/model.b64.mzn && echo "{base64.b64encode(data.encode("utf8")).decode("ascii")}" > /input/data.b64.dzn',
-        ],
-        volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
-    )
-    # Configurate Pod template container
-    container = client.V1Container(
-        name="minizinc-solver",
-        image=image_name,
-        command=["python", "main.py", id],
-        volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
-    )
-    # Create volume
-    volume = client.V1Volume(name="input", empty_dir={})
-    # Create and configurate a spec section
-    template = client.V1PodTemplateSpec(
-        metadata=client.V1ObjectMeta(labels={"name": "minizinc-pod"}),
-        spec=client.V1PodSpec(
-            restart_policy="Never",
-            init_containers=[init_container],
-            containers=[container],
-            volumes=[volume],
-        ),
-    )
-    # Create the specification of deployment
-    spec = client.V1JobSpec(
-        completions=len(solvers),
-        parallelism=len(solvers),
-        completion_mode="Indexed",
-        template=template,
-    )
-    # Instantiate the job object
-    job = client.V1Job(
-        api_version="batch/v1",
-        kind="Job",
-        metadata=client.V1ObjectMeta(name=JOBNAME(id)),
-        spec=spec,
-    )
-
-    return job
+def _create_job_object(
+    problem: str, data: str, solvers: list[str], id: str, image_name: str
+):
+    try:
+        solvers_string = "\n".join(solvers)
+        # Configurate init container
+        print(base64.b64encode(problem.encode("utf-8")))
+        init_container = client.V1Container(
+            name="init",
+            image="docker.io/library/bash",
+            command=["bash"],
+            args=[
+                "-c",
+                f'echo "{solvers_string}" > /input/solvers.txt && echo "{base64.b64encode(problem.encode("utf8")).decode("ascii")}" > /input/model.b64.mzn && echo "{base64.b64encode(data.encode("utf8")).decode("ascii")}" > /input/data.b64.dzn',
+            ],
+            volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
+        )
+        print("Created init_container")
+        # Configurate Pod template container
+        container = client.V1Container(
+            name="minizinc-solver",
+            image=image_name,
+            command=["python", "main.py", id],
+            volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
+        )
+        print("Created container", image_name)
+        # Create volume
+        volume = client.V1Volume(name="input", empty_dir={})
+        print("Created volume")
+        # Create and configurate a spec section
+        template = client.V1PodTemplateSpec(
+            metadata=client.V1ObjectMeta(labels={"name": "minizinc-pod"}),
+            spec=client.V1PodSpec(
+                restart_policy="Never",
+                init_containers=[init_container],
+                containers=[container],
+                volumes=[volume],
+            ),
+        )
+        print("Created template")
+        # Create the specification of deployment
+        spec = client.V1JobSpec(
+            completions=len(solvers),
+            parallelism=len(solvers),
+            completion_mode="Indexed",
+            template=template,
+        )
+        print("Created spec")
+        # Instantiate the job object
+        job = client.V1Job(
+            api_version="batch/v1",
+            kind="Job",
+            metadata=client.V1ObjectMeta(name=JOBNAME(id)),
+            spec=spec,
+        )
+        print("Created job")
+        return job
+    except Exception as e:
+        print(e)
+        exit()
