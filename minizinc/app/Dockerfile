@@ -12,7 +12,7 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-COPY ./.env /app/.env
+# COPY ./.env /app/.env
 
 EXPOSE 5000
 
