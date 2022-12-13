@@ -1,19 +1,17 @@
-import base64
 import os
 from os.path import dirname
-from tempfile import NamedTemporaryFile
 
 import requests
 from dotenv import load_dotenv
 from fastapi import Body, FastAPI, HTTPException
 from kubernetes import client, config
-from utils import create_job, delete_job
+from utils import create_job, delete_job, configure
 
 load_dotenv(dirname(__file__) + "/.env")
 
 app = FastAPI()
 
-config.load_kube_config()
+configure(os.environ["HOST_URL"], os.environ["CACERT"], os.environ["TOKEN"])
 COREV1 = client.CoreV1Api()
 BATCHV1 = client.BatchV1Api()
 
@@ -75,25 +73,3 @@ def error(id: str = Body(), error: str = Body()):
     requests.post(
         BACKEND_URL + "/error", json={"id": id, "error": error}, headers=HEADERS
     )
-
-
-# TODO: look at later
-def configure():
-    try:
-        host_url = os.environ["HOST_URL"]
-        cacert = os.environ["CACERT"]
-        token = os.environ["TOKEN"]
-
-        # Set the configuration
-        configuration = client.Configuration()
-        with NamedTemporaryFile(delete=False) as cert:
-            cert.write(base64.b64decode(cacert))
-            configuration.ssl_ca_cert = cert.name
-        configuration.host = host_url
-        configuration.verify_ssl = True
-        configuration.debug = False
-        configuration.api_key = {"authorization": "Bearer " + token}
-        client.Configuration.set_default(configuration)
-
-    except Exception as e:
-        print(f"Got exception while configuring: {e}")

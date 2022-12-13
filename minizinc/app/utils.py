@@ -1,6 +1,8 @@
 import base64
 
 from kubernetes import client
+from tempfile import NamedTemporaryFile
+
 
 JOBNAME = lambda id: f"minizinc-job-{id}"
 
@@ -101,3 +103,21 @@ def _create_job_object(
         spec=spec,
     )
     return job
+
+
+# TODO: look at later
+def configure(host_url, cacert, token):
+    try:
+        # Set the configuration
+        configuration = client.Configuration()
+        with NamedTemporaryFile(delete=False) as cert:
+            cert.write(base64.b64decode(cacert))
+            configuration.ssl_ca_cert = cert.name
+        configuration.host = host_url
+        configuration.verify_ssl = True
+        configuration.debug = False
+        configuration.api_key = {"authorization": "Bearer " + token}
+        client.Configuration.set_default(configuration)
+
+    except Exception as e:
+        print(f"Got exception while configuring: {e}")
