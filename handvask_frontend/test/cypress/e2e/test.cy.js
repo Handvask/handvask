@@ -612,7 +612,7 @@ describe('Crete new run file', () => {
       .children('li')
       .should('contain', 'gecode')
 
-    // Run
+    // Run 
     cy.get('#__next')
       .children('div')
       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
