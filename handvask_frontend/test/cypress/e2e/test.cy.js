@@ -76,22 +76,19 @@ describe('Register page', () => {
 
     cy.visit(base_url + 'register')
 
-    // Type into username and verify
-    // that the value has been updated
+    // Type username 
     cy.get('#userInput')
       .clear()
       .type('test_frontend' + random_int)
       .should('have.value', 'test_frontend' + random_int)
 
-    // Type into password and verify
-    // that the value has been updated
+    // Type password
     cy.get('#passwordInput')
       .clear()
       .type('test_frontend' + random_int)
       .should('have.value', 'test_frontend' + random_int)
 
-    // Type into password and verify
-    // that the value has been updated
+    // Type password 
     cy.get('#confirmPasswordInput')
       .clear()
       .type('test_frontend' + random_int)
