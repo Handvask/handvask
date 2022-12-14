@@ -1,24 +1,24 @@
-import base64
 import os
 from os.path import dirname
-from tempfile import NamedTemporaryFile
 
 import requests
 from dotenv import load_dotenv
 from fastapi import Body, FastAPI, HTTPException
 from kubernetes import client, config
-from utils import create_job, delete_job
+from utils import create_job, delete_job, configure
 
 load_dotenv(dirname(__file__) + "/.env")
 
 app = FastAPI()
 
+# configure(os.getenv("HOST_URL"), os.getenv("CACERT"), os.getenv("TOKEN"))
 config.load_incluster_config()
 COREV1 = client.CoreV1Api()
 BATCHV1 = client.BatchV1Api()
 
 BACKEND_URL = os.getenv("BACKEND_HOST")
 HEADERS = {"X-Api-Key": os.getenv("API_KEY")}
+SOLVER_NAME = os.getenv("SOLVER_IMAGE")
 
 test_problem = "int: i; array[1..2] of var 0..i: x; constraint x[1] < i /\ x[2] < i; solve maximize x[1] + x[2];"
 test_data = "i = 10;"
@@ -48,12 +48,22 @@ def solve(
     data: str = Body(),
     solvers: list[str] = Body(),
 ):
-    job = create_job(BATCHV1, problem, data, solvers, id)
-
+    print("Creating job")
+    job = create_job(BATCHV1, problem, data, solvers, id, SOLVER_NAME)
+    print("Job created")
     if not job:
-        raise HTTPException(500, "It failed lol git gud")
+        raise HTTPException(500, "Couldn't create job")
 
     return {"message": "Succesfully started job"}
+
+
+@app.post("/delete")
+def delete(
+    id: str = Body()
+):
+    if not delete_job( BATCHV1, id ):
+        raise HTTPException( 500, "Couldn't delete job" )
+    return {"message": "Successfully deleted job"}
 
 
 @app.post("/result")
@@ -74,25 +84,3 @@ def error(id: str = Body(), error: str = Body()):
     requests.post(
         BACKEND_URL + "/error", json={"id": id, "error": error}, headers=HEADERS
     )
-
-
-# TODO: look at later
-def configure():
-    try:
-        host_url = os.environ["HOST_URL"]
-        cacert = os.environ["CACERT"]
-        token = os.environ["TOKEN"]
-
-        # Set the configuration
-        configuration = client.Configuration()
-        with NamedTemporaryFile(delete=False) as cert:
-            cert.write(base64.b64decode(cacert))
-            configuration.ssl_ca_cert = cert.name
-        configuration.host = host_url
-        configuration.verify_ssl = True
-        configuration.debug = False
-        configuration.api_key = {"authorization": "Bearer " + token}
-        client.Configuration.set_default(configuration)
-
-    except Exception as e:
-        print(f"Got exception while configuring: {e}")

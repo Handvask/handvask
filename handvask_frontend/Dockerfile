@@ -11,7 +11,7 @@ COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "p
 
 ARG API_URL
 
-# ENV API_URL ${API_URL}
+ENV API_URL ${API_URL}
 
 RUN sh ./prepare.sh
 
