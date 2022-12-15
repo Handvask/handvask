@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import Base from "../components/Base";
 import useAPI from "../hooks/useAPI";
 import useUser from "../hooks/useUser";
@@ -24,6 +24,32 @@ export default function admin() {
     });
   }
 
+  function handleUserCPUChange(user: User, new_max: number) {
+    if (data) {
+      setUsers((v) => {
+        if (!v) {
+          return;
+        }
+        const tmp = [...v];
+        tmp[tmp.findIndex((u) => u.id === user.id)].max_cpu =
+          new_max >= 0 ? new_max : 0;
+        return tmp;
+      });
+    }
+  }
+
+  function updateUserMaxCPU(user: User, event: ChangeEvent<HTMLInputElement>) {
+    const new_max = Number(event.target.value);
+    if (new_max !== user.max_cpu) {
+      console.log("Calling backend");
+      post(`/admin/user_quota/${user.id}`, { max_cpu: new_max }, (r) => {
+        if (r.success) {
+          handleUserCPUChange(user, new_max);
+        }
+      });
+    }
+  }
+
   function deleteUser(user_tbd: User) {
     setDeletingUser(true);
     post<SuccessResponse>(`users/delete_user/${user_tbd.id}`, "", (r) => {
@@ -45,6 +71,7 @@ export default function admin() {
   }
 
   if (user.sys_admin) {
+    console.log("test");
     return (
       <Base>
         <Button onClick={getAllUsers} kind={"link"}>
@@ -56,6 +83,7 @@ export default function admin() {
               <tr>
                 <td>ID</td>
                 <td>Username</td>
+                <td>vCPU</td>
                 <td />
               </tr>
             </thead>
@@ -71,6 +99,17 @@ export default function admin() {
                   <tr key={e.id} style={{ lineHeight: "31px" }}>
                     <td>{e.id}</td>
                     <td>{e.username}</td>
+                    <td>
+                      <div>
+                        <input
+                          id="max_cpu"
+                          type="number"
+                          min="0"
+                          defaultValue={e.max_cpu}
+                          onBlur={(event) => updateUserMaxCPU(e, event)}
+                        />
+                      </div>
+                    </td>
                     <td className="text-end">
                       <div className="btn-group btn-group-sm">
                         <AsyncBtn
