@@ -27,4 +27,4 @@ jobs:
           echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./handvask_frontend/.env
       - name: Start test
         run: |
-          docker build ./handvask_frontend --tag -f Dockerfile.testing .
+          docker build --tag ./handvask_frontend -f Dockerfile.testing .
