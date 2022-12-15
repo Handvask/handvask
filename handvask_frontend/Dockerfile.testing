@@ -25,4 +25,4 @@ COPY test .
 
 RUN npm install cypress --save-dev
 
-RUN cypress run
+RUN npx cypress run
