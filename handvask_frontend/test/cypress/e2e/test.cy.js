@@ -5,7 +5,7 @@ var base_url = 'https://handvask.tech/'
 //     it('Gets, types and asserts', () => {
 //       cy.visit(base_url)
 
-//       // Username field 
+//       // Username field
 //       cy.get('#userInput')
   
 //       // Password field 
