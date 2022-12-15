@@ -1,28 +1,30 @@
-FROM node:14-alpine
-ENV NODE_ENV=production
+# FROM node:14-alpine
+# ENV NODE_ENV=production
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY ["package.json", "./"]
+# COPY ["package.json", "./"]
 
-RUN npm install
+# RUN npm install
 
-COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "prepare.sh", "./"]
+# COPY ["./src","./public",".eslintrc.json", "next.config.cjs","tsconfig.json", "prepare.sh", "./"]
 
-ARG API_URL
+# ARG API_URL
 
-ENV API_URL ${API_URL}
+# ENV API_URL ${API_URL}
 
-RUN sh ./prepare.sh
+# RUN sh ./prepare.sh
 
-RUN npx next build
+# RUN npx next build
 
-EXPOSE 3000
+# EXPOSE 3000
 # 
 # CMD ["sh", "-c",  "${NEXT_PUBLIC_API_URL}"]
 
+FROM cypress/base
+
 COPY test .
 
-RUN npm install cypress --save-dev
+RUN npm install
 
-RUN npx cypress run
+RUN $(npm bin)/cypress run--config video=false --project ./test
