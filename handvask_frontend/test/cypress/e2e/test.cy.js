@@ -175,7 +175,7 @@ describe('Homepage', () => {
       .children('button')
       .should('contain', 'Login').click()
 
-    // Check table contains right attributes  
+    // Check table contains right attributes 
     cy.get('#__next')
       .children('div')
       .get('div')
@@ -687,3 +687,64 @@ describe('Homepage', () => {
 //       .get('button.btn.btn-success.px.fw-bold').click()
 //   })
 // })
+
+
+// describe('Admin page', () => {
+//   it('Gets, types and asserts', () => {
+//     cy.visit(base_url)
+
+//     // Log in
+//     cy.get('#userInput')
+//       .type('asdf')
+
+//     cy.get('#passwordInput')
+//       .type('asdf')
+
+//     cy.get('#__next')
+//       .children('div')
+//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+//       .children('div')
+//       .children('form')
+//       .children('div')
+//       .children('button')
+//       .should('contain', 'Login').click()
+
+//     cy.get('#mainNavbar')
+//       .children('ul.navbar-nav.me-auto.mb-2.mb-lg-0')
+//       .get('a')
+//       .contains('Admin').click()
+
+//     // Check table contains IDs
+//     cy.get('#__next')
+//       .children('div')
+//       .get('table')
+//       .children('thead')
+//       .get('tr')
+//       .should('contain', 'ID')
+
+//     // Check table contains usernames
+//     cy.get('#__next')
+//       .children('div')
+//       .get('table')
+//       .children('thead')
+//       .get('tr')
+//       .should('contain', 'Username')
+    
+//     // Check table contains newly created user
+//     cy.get('#__next')
+//       .children('div')
+//       .get('table')
+//       .children('tbody')
+//       .should('contain', 'test_frontend' + random_int)
+
+//     // Delete newly created user
+//     cy.get('#__next >')
+//       .children('div')
+//       .get('table')
+//       .children('tbody')
+//       .get('td.text-end')
+//       .children('div')
+//       .children('button')
+//       .last().click()
+  })
+})
