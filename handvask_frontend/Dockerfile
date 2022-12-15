@@ -21,8 +21,8 @@ EXPOSE 3000
 # 
 # CMD ["sh", "-c",  "${NEXT_PUBLIC_API_URL}"]
 
-CMD ["npx", "next","start", "-H", "0.0.0.0", "-p", "3000"]
-
 COPY test .
 
 RUN npm install cypress 
+
+CMD ["npx", "next","start", "-H", "0.0.0.0", "-p", "3000"]

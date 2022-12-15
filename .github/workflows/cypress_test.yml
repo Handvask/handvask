@@ -28,4 +28,9 @@ jobs:
       - name: Build frontend docker image.
         run: |
           docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
+      - name: Start container.
+        run: |
+          docker run handvask_frontend_handvask:latest
+      - name: Start test.
+        run: |
           npx cypress run --config video=false --project ./test
