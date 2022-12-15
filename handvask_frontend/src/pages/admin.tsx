@@ -159,7 +159,7 @@ export default function Admin() {
                       <td>
                         <div className="btn-group btn-group-sm">
                           <AsyncBtn
-                            kind="danger"
+                            kind="success"
                             className=""
                             loading={deletingUser}
                             outline
