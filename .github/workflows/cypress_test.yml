@@ -28,3 +28,4 @@ jobs:
       - name: Build frontend docker image.
         run: |
           docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
+          npx cypress run --config video=false --project ./test
