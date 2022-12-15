@@ -23,7 +23,9 @@
 
 FROM cypress/base
 
-COPY test .
+WORKDIR /test
+
+COPY test test
 
 RUN npm install
 
