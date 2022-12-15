@@ -25,4 +25,4 @@ COPY test .
 
 RUN npm install cypress --save-dev
 
-RUN npx cypress run --config video=false --project ./test
+RUN cypress run
