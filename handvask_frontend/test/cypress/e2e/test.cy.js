@@ -685,9 +685,8 @@ describe('Homepage', () => {
 //       .children('div')
 //       .children('div.card-header.d-flex.justify-content-between')
 //       .get('button.btn.btn-success.px.fw-bold').click()
-//   })
+//   }) 
 // })
-
 
 // describe('Admin page', () => {
 //   it('Gets, types and asserts', () => {
