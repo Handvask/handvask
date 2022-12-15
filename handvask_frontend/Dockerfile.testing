@@ -23,6 +23,8 @@
 
 FROM cypress/base
 
+COPY ["package.json", "./"]
+
 COPY test .
 
 RUN npm install
