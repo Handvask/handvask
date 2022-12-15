@@ -5,32 +5,62 @@ problems in the cloud. A users should be able to submit an optimization problem 
 be solved, select one or more solvers to use to solve it in parallel,
 and get the answer using the solver that return a solution first.
 
-## How to run the project
+# How to run the project
 
-### env files and the database
+If you dont want to know how to run it just start the project by running the following commands:
 
-The database is already running in the cloud, and the information is posted in the discord channel.
-just follow the env file, and you should be good to go.
+1. First create .env files in the following directories:
 
-###
+   1. `~/handvask/python_backend/.env`
+   2. `~/handvask/handvask_frontend/.env`
+   3. `~/handvask/minizinc_backend/.env`
+
+if these are not created, the project will not run. Env for the cloud is much more sophisticated, i'll try to explain how to run the cloud version later.
+
+```bash
+local_run.sh
+```
+
+## Backend
 
 Starting the backend
 
 The backend is a [FastAPI](https://fastapi.tiangolo.com/) application. To start it, run:
 
-Go to the directory `/python_backend` and run:
+Stay in the handvask directory (home directory for the repository) and run the following commands:
+
+1. Create a file called `~/python_backend/.env` and add the following content, The content of these files are secret, so you will have to ask someone to get them. They will either be provided in the hand-in or in the discord channel:
+
+   1. export DB_HOST="127.0.0.1"
+   2. export DB_USER="username"
+   3. export DB_PASS="password"
+   4. export DB_NAME="database"
+   5. export HANDVASK_FRONTEND_ORIGIN="\*"
+   6. export MZN_API_KEY="1234"
+   7. export MZN_MN_HOST="http://localhost:8383"
+
+2. Run the following commands:
 
 ```bash
+source /python_backend/.env
 sudo apt install mysql-server
 pip3 install -r requirements.txt
-uvicorn main:app --reload
+uvicorn python_backend.app.main:app --reload
 ```
 
-This will start the backend on port 8000.
-There might be problem, if there is just follow the error codes, and do not
-build docker image. It's not necessary atm.
+3. [localhost_backend](http://localhost:8080/docs) here you can see the API documentation.
 
-### Starting the frontend
+4. If you rather want to run the backend in a docker container, run the following commands:
+
+```bash
+cd python_backend
+docker compose build
+docker compose up
+```
+
+5. Running the backend in the cloud is allready done, so you don't have to do anything. If you would like to Integrate a new version and deploy, all you will have to do is make a change and push it to the github main branch. Github workflow will then integrate and then deploy the new version to the cloud.
+
+## Starting the frontend
 
 The frontend is a [React](https://reactjs.org/) and [Next](https://nextjs.org/) application. To start it, run:
 
