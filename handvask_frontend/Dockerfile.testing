@@ -37,7 +37,7 @@ ENV API_URL ${API_URL}
 
 RUN sh ./prepare.sh
 
-RUN npx next build
+# RUN npx next build
 
 COPY test .
 
