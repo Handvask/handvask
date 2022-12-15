@@ -23,6 +23,8 @@
 
 FROM cypress/base
 
+COPY test .
+
 RUN npm install
 
-RUN $(npm bin)/cypress run 
+RUN npx cypress run--config video=false --project ./test
