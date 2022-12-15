@@ -17,6 +17,7 @@ export default function Admin() {
   const user = useUser();
   const [data, setUsers] = useState<User[]>();
   const [deletingUser, setDeletingUser] = useState(false);
+  const [updatingUser, setUpdatingUser] = useState(false);
 
   function getAllUsers() {
     get<User[]>(`users/getall`, (r) => {
@@ -41,15 +42,41 @@ export default function Admin() {
   function updateUserMaxCPU(user: User, event: ChangeEvent<HTMLInputElement>) {
     const new_max = Number(event.target.value);
     if (new_max !== user.max_cpu) {
+      setUpdatingUser(true);
       console.log("Calling backend");
       post(`/admin/user_quota/${user.id}`, { max_cpu: new_max }, (r) => {
         if (r.success) {
           handleUserCPUChange(user, new_max);
         }
       });
+      setUpdatingUser(false);
     }
   }
 
+  function handleUserPermissionChange(user: User) {
+    if (data) {
+      setUsers((v) => {
+        if (!v) {
+          return;
+        }
+        const tmp = [...v];
+        tmp[tmp.findIndex((u) => u.id === user.id)].sys_admin =
+          user.sys_admin !== null ? null : { id: 2, user: "a" };
+        return tmp;
+      });
+    }
+  }
+
+  function updatePermissions(user: User) {
+    setUpdatingUser(true);
+    post(`/admin/user_permission/${user.id}`, {}, (r) => {
+      if (r.success) {
+        handleUserPermissionChange(user);
+      }
+    });
+
+    setUpdatingUser(false);
+  }
   function deleteUser(user_tbd: User) {
     setDeletingUser(true);
     post<SuccessResponse>(`users/delete_user/${user_tbd.id}`, "", (r) => {
@@ -84,6 +111,8 @@ export default function Admin() {
                 <td>ID</td>
                 <td>Username</td>
                 <td>vCPU</td>
+                <td>Is Admin</td>
+                <td>Permissions</td>
                 <td />
               </tr>
             </thead>
@@ -110,6 +139,37 @@ export default function Admin() {
                         />
                       </div>
                     </td>
+
+                    {e.sys_admin !== null ? <td> Yes </td> : <td> No </td>}
+                    {e.sys_admin !== null ? (
+                      <td>
+                        <div className="btn-group btn-group-sm">
+                          <AsyncBtn
+                            kind="danger"
+                            className=""
+                            loading={deletingUser}
+                            outline
+                            onClick={() => updatePermissions(e)}
+                          >
+                            Demote
+                          </AsyncBtn>
+                        </div>
+                      </td>
+                    ) : (
+                      <td>
+                        <div className="btn-group btn-group-sm">
+                          <AsyncBtn
+                            kind="danger"
+                            className=""
+                            loading={deletingUser}
+                            outline
+                            onClick={() => updatePermissions(e)}
+                          >
+                            Promote
+                          </AsyncBtn>
+                        </div>
+                      </td>
+                    )}
                     <td className="text-end">
                       <div className="btn-group btn-group-sm">
                         <AsyncBtn
