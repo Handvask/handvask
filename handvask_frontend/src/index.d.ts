@@ -44,4 +44,16 @@ type Run = {
     id: 1 | 2 | 3 | 4 | 5 | 6;
     name: string;
   };
+  execution_time: string;
+  mzn_status: string;
 };
+
+type bootstrapColours =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "danger"
+  | "warning"
+  | "info"
+  | "light"
+  | "dark";

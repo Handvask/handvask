@@ -9,6 +9,7 @@ export type ExpandedUser = {
   removeMzn: (id: number) => void;
   removeDzn: (id: number) => void;
   addRun: (id: number) => void;
+  removeRun: (id: number) => void;
 } & User;
 
 export default function useUser() {
@@ -59,6 +60,15 @@ export default function useUser() {
         });
       },
       addRun(id) {
+        setUser((v) => {
+          if (!v) return v;
+          return {
+            ...v,
+            runs: [...v.runs.filter((i) => i != id), id],
+          };
+        });
+      },
+      removeRun(id) {
         setUser((v) => {
           if (!v) return v;
           return {

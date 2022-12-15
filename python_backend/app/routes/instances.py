@@ -1,7 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
-from pony.orm import commit, db_session, select
+from pony.orm import commit, db_session, select, desc
 
 from ..middleware.auth import get_current_user_id
 from ..Models import (
@@ -41,7 +41,9 @@ def get_mzn(
     Returns:
         List[Mzn_InstanceT]: A list of mzn instances
     """
-    response = select(i for i in Mzn_instance if i.id in instance_ids)[:]
+    response = select(i for i in Mzn_instance if i.id in instance_ids).order_by(
+        desc(Mzn_instance.id)
+    )[:]
     res = []
     for instance in response:
         if instance.user.id != user_id:
@@ -151,7 +153,9 @@ def get_dzn(
     Returns:
         List[Dzn_InstanceT]: A list of dzn instances
     """
-    response = select(i for i in Dzn_instance if i.id in instance_ids)[:]
+    response = select(i for i in Dzn_instance if i.id in instance_ids).order_by(
+        desc(Dzn_instance.id)
+    )[:]
     res = []
     for instance in response:
         if instance.user.id != user_id:

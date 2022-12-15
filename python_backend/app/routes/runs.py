@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import requests
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
-from pony.orm import commit, db_session, select
+from pony.orm import commit, db_session, select, desc
 
 from ..middleware.auth import get_current_user_id
 from ..Models import (
@@ -96,7 +96,7 @@ def get_runs(user_id=Depends(get_current_user_id), run_ids: List[int] = Query(No
     Returns:
         List[RunT]: A list of runs
     """
-    runs = select(r for r in Run if r.id in run_ids)[:]
+    runs = select(r for r in Run if r.id in run_ids).order_by(desc(Run.id))[:]
 
     res = []
     for run in runs:
@@ -104,3 +104,29 @@ def get_runs(user_id=Depends(get_current_user_id), run_ids: List[int] = Query(No
             raise HTTPException(status_code=401, detail="Access denied")
         res.append(run.get_resp_type())
     return res
+
+
+@router.post("/delete/{run_id}", response_model=SuccessT)
+@db_session
+def delete_run(run_id: int, user_id=Depends(get_current_user_id)):
+    try:
+        run = Run[run_id]
+    except:
+        raise HTTPException(status_code=404, detail=f"Run {run_id} not found")
+
+    if run.user.id != user_id and not bool(User[user_id].sys_admin):
+        raise HTTPException(status_code=401, detail="Access denied")
+
+    if run.status.id == Run_status.RUNNING:
+        resp = requests.post(
+            f"{getenv('MZN_MN_HOST')}/delete",
+            json=run.id,
+        )
+
+        if resp.ok:
+            run.delete()
+        print(resp)
+        return {"success": resp.ok}
+    else:
+        run.delete()
+        return {"success": True}
