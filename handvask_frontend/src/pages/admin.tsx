@@ -5,6 +5,7 @@ import useUser from "../hooks/useUser";
 import AsyncBtn from "../components/AsyncBtn";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBan,
   faRotate,
   faSpinner,
   faTrash,
@@ -89,6 +90,12 @@ export default function Admin() {
       setDeletingUser(false);
     });
   }
+
+  function stopAllUserSolvers(user: User) {
+    console.log("Stopping solvers");
+    // Implement backend for this function, then call it here
+  }
+
   useEffect(() => {
     if (user) getAllUsers();
   }, [user]);
@@ -113,6 +120,7 @@ export default function Admin() {
                 <td>vCPU</td>
                 <td>Is Admin</td>
                 <td>Permissions</td>
+                <td>Stop solvers</td>
                 <td />
               </tr>
             </thead>
@@ -170,6 +178,19 @@ export default function Admin() {
                         </div>
                       </td>
                     )}
+                    <td>
+                      <div className="btn-group btn-group-sm">
+                        <AsyncBtn
+                          kind="danger"
+                          className=""
+                          loading={deletingUser}
+                          outline
+                          onClick={() => stopAllUserSolvers(e)}
+                        >
+                          <FontAwesomeIcon icon={faBan} />
+                        </AsyncBtn>
+                      </div>
+                    </td>
                     <td className="text-end">
                       <div className="btn-group btn-group-sm">
                         <AsyncBtn
