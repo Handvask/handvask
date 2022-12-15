@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import requests
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
-from pony.orm import commit, db_session, select, desc
+from pony.orm import commit, db_session, desc, select
 
 from ..middleware.auth import get_current_user_id
 from ..Models import (
