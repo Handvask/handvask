@@ -25,12 +25,6 @@ jobs:
         run: |
           touch ./handvask_frontend/.env
           echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./handvask_frontend/.env
-      - name: Build frontend docker image.
+      - name: Start test
         run: |
-          docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
-      - name: Start container.
-        run: |
-          docker run handvask_frontend_handvask:latest
-      - name: Start test.
-        run: |
-          npx cypress run --config video=false --project ./test
+          docker build -tag handvask_backend_python:latest -f Dockerfile.testing .
