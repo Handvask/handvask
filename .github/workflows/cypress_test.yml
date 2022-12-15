@@ -1,0 +1,30 @@
+name: cypress testing.
+on:
+  push:
+    branches:
+      - "cypress_frontend_testing"
+    paths:
+      - "handvask_frontend/**"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@v3
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+      - name: Build env file
+        run: |
+          touch ./handvask_frontend/.env
+          echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./handvask_frontend/.env
+      - name: Build frontend docker image.
+        run: |
+          docker build ./handvask_frontend --tag handvask_frontend_handvask:latest
