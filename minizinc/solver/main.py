@@ -38,18 +38,18 @@ async def find_solutions(inst: mz.Instance):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Give the id for the job.")
+    parser = argparse.ArgumentParser(description="Give the id for the run and the solver this job should use.")
     parser.add_argument(
-        "id", metavar="ID", type=str, action="store", help="The id of the job"
+        "id", metavar="ID", type=str, action="store", help="The id of the run"
+    )
+    parser.add_argument(
+        "solver", metavar="SOLVER", type=str, action="store", help="The solver used by this job"
     )
 
     config = parser.parse_args()
 
-    instance: mz.Instance
+    instance = mz.Instance(mz.Solver.lookup(config.solver.strip()), mz.Model())
     try:
-        with open("/input/solvers.txt", "r") as f:
-            solver = f.read().splitlines()[int(os.getenv("JOB_COMPLETION_INDEX"))]
-            instance = mz.Instance(mz.Solver.lookup(solver.strip()), mz.Model())
         with open("/input/model.b64.mzn", "r") as f:
             instance.add_string(
                 base64.b64decode(f.read().encode("ascii")).decode("utf8")
@@ -73,10 +73,11 @@ if __name__ == "__main__":
             print(e, type(e))
             requests.post(
                 MASTER_URL + "/error",
-                json={"id": config.id, "status": str(e)},
+                json={"id": config.id, "solver": config.solver, "status": str(e)},
             )
         else:
             result["id"] = config.id
+            result["solver"] = config.solver
 
             if not solved:
                 requests.post(MASTER_URL + "/error", json=result)
