@@ -38,15 +38,15 @@ jobs:
           auth \
           configure-docker europe-north1-docker.pkg.dev
       - name: Docker-compose build frontend image.
-        env:
-          NEXT_PUBLIC_API_URL: "${{ secrets.NEXT_PUBLIC_API_URL }}"
-          ARTIFACT_LOCATION_FRONTEND: "${{ secrets.ARTIFACT_LOCATION_FRONTEND }}"
-          COMMIT_SHA: "${{ github.sha }}"
         run: |
           cd handvask_frontend && \
           docker \
           compose \
           build
+        env:
+          NEXT_PUBLIC_API_URL: "${{ secrets.NEXT_PUBLIC_API_URL }}"
+          ARTIFACT_LOCATION_FRONTEND: "${{ secrets.ARTIFACT_LOCATION_FRONTEND }}"
+          COMMIT_SHA: "${{ github.sha }}"
       - name: Tag DockerImage
         run: |
           docker \
@@ -75,11 +75,14 @@ jobs:
           install_components: 'gke-gcloud-auth-plugin'
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: set compute region
         run: |
           gcloud \
           config \
           set compute/region europe-north1
+        env:
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
         run: |
           sudo apt-get \
