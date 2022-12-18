@@ -78,17 +78,28 @@ jobs:
         with:
           workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
           service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: Set up gcloud Cloud SDK environment
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          install_components: 'gke-gcloud-auth-plugin'
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: set compute region
         run: |
           gcloud \
           config \
           set compute/region europe-north1
+        env:
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
         run: | 
           gcloud \
           container \
           clusters \
           get-credentials handvask-cluster
+        env:
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: kubectl apply for deployment
         run: |
           kubectl \
@@ -97,6 +108,7 @@ jobs:
         env:
           ARTIFACT_LOCATION_MINIZINC: ${{secrets.ARTIFACT_LOCATION_MINIZINC}}
           COMMIT_SHA: ${{ github.sha }}
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: Deploy to GKE
         run: |
           kubectl \
@@ -107,3 +119,6 @@ jobs:
           minizinc-app=${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }}
           kubectl \
           rollout status deployment/minizinc-app
+        env:
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
+        

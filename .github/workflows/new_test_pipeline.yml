@@ -17,93 +17,93 @@ jobs:
           echo "shit"
         continue-on-error: True
 
-  frontend-image-build:
-    needs: test-running-service
-    runs-on: ubuntu-latest
-    permissions:
-      contents: "read"
-      id-token: "write"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Authenticate to Google Cloud
-        id: "auth"
-        uses: google-github-actions/auth@v1
-        with:
-          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
-          service_account: "morten-service@handvask.iam.gserviceaccount.com"
-      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
-        run: |
-          gcloud \
-          auth \
-          configure-docker europe-north1-docker.pkg.dev
-      - name: Docker-compose build frontend image.
-        run: |
-          cd handvask_frontend && \
-          docker \
-          compose \
-          build
-        env:
-            NEXT_PUBLIC_API_URL: "${{ secrets.NEXT_PUBLIC_API_URL }}"
-            ARTIFACT_LOCATION_FRONTEND: "${{ secrets.ARTIFACT_LOCATION_FRONTEND }}"
-            COMMIT_SHA: "${{ github.sha }}"
-      - name: Tag DockerImage
-        run: |
-          docker \
-          tag handvask-frontend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Push DockerImage
-        run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-  deploy-to-GKE:
-    needs: frontend-image-build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: "read"
-      id-token: "write"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Authenticate to Google Cloud
-        id: "auth"
-        uses: google-github-actions/auth@v1
-        with:
-          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
-          service_account: "morten-service@handvask.iam.gserviceaccount.com"
-      - name: Set up gcloud Cloud SDK environment
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          install_components: 'gke-gcloud-auth-plugin'
-        env:
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      - name: set compute region
-        run: |
-          gcloud \
-          config \
-          set compute/region europe-north1
-      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
-        run: | 
-          gcloud \
-          container \
-          clusters \
-          get-credentials handvask-cluster
-        env:
-          USE_GKE_GCLOUD_AUTH_PLUGIN: True
-      - name: kubectl apply for deployment
-        run: |
-          kubectl \
-          apply \
-          -f handvask_frontend/k8s/
-        env:
-          USE_GKE_GCLOUD_AUTH_PLUGIN: True
-      - name: Deploy to GKE
-        run: |
-          kubectl \
-          set \
-          image \
-          deployment \
-          handvask-frontend \
-          handvask-frontend=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-          kubectl \
-          rollout status deployment/handvask-frontend
-        env:
-          USE_GKE_GCLOUD_AUTH_PLUGIN: True
+  # frontend-image-build:
+  #   needs: test-running-service
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: "read"
+  #     id-token: "write"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Authenticate to Google Cloud
+  #       id: "auth"
+  #       uses: google-github-actions/auth@v1
+  #       with:
+  #         workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+  #         service_account: "morten-service@handvask.iam.gserviceaccount.com"
+  #     - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+  #       run: |
+  #         gcloud \
+  #         auth \
+  #         configure-docker europe-north1-docker.pkg.dev
+  #     - name: Docker-compose build frontend image.
+  #       run: |
+  #         cd handvask_frontend && \
+  #         docker \
+  #         compose \
+  #         build
+  #       env:
+  #           NEXT_PUBLIC_API_URL: "${{ secrets.NEXT_PUBLIC_API_URL }}"
+  #           ARTIFACT_LOCATION_FRONTEND: "${{ secrets.ARTIFACT_LOCATION_FRONTEND }}"
+  #           COMMIT_SHA: "${{ github.sha }}"
+  #     - name: Tag DockerImage
+  #       run: |
+  #         docker \
+  #         tag handvask-frontend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+  #     - name: Push DockerImage
+  #       run: |
+  #         docker push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+  # deploy-to-GKE:
+  #   needs: frontend-image-build
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: "read"
+  #     id-token: "write"
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #     - name: Authenticate to Google Cloud
+  #       id: "auth"
+  #       uses: google-github-actions/auth@v1
+  #       with:
+  #         workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+  #         service_account: "morten-service@handvask.iam.gserviceaccount.com"
+  #     - name: Set up gcloud Cloud SDK environment
+  #       uses: google-github-actions/setup-gcloud@v1
+  #       with:
+  #         install_components: 'gke-gcloud-auth-plugin'
+  #       env:
+  #         PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  #     - name: set compute region
+  #       run: |
+  #         gcloud \
+  #         config \
+  #         set compute/region europe-north1
+  #     - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+  #       run: | 
+  #         gcloud \
+  #         container \
+  #         clusters \
+  #         get-credentials handvask-cluster
+  #       env:
+  #         USE_GKE_GCLOUD_AUTH_PLUGIN: True
+  #     - name: kubectl apply for deployment
+  #       run: |
+  #         kubectl \
+  #         apply \
+  #         -f handvask_frontend/k8s/
+  #       env:
+  #         USE_GKE_GCLOUD_AUTH_PLUGIN: True
+  #     - name: Deploy to GKE
+  #       run: |
+  #         kubectl \
+  #         set \
+  #         image \
+  #         deployment \
+  #         handvask-frontend \
+  #         handvask-frontend=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+  #         kubectl \
+  #         rollout status deployment/handvask-frontend
+  #       env:
+  #         USE_GKE_GCLOUD_AUTH_PLUGIN: True
