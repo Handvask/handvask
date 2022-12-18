@@ -79,6 +79,8 @@ jobs:
           container \
           clusters \
           get-credentials handvask-cluster
+        env:
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: kubectl apply for deployment
         run: |
           kubectl \
@@ -87,6 +89,7 @@ jobs:
         env:
           ARTIFACT_LOCATION_FRONTEND: ${{secrets.ARTIFACT_LOCATION_FRONTEND}}
           COMMIT_SHA: ${{ github.sha }}
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: Deploy to GKE
         run: |
           kubectl \
@@ -97,3 +100,6 @@ jobs:
           handvask-frontend=${{secrets.ARTIFACT_LOCATION_FRONTEND}}:${{ github.sha }}
           kubectl \
           rollout status deployment/handvask-frontend
+        env:
+          USE_GKE_GCLOUD_AUTH_PLUGIN: True
+          

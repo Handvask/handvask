@@ -1,11 +1,12 @@
 import base64
+from typing import Iterable
 from kubernetes import client
 
 
 JOBNAME = lambda id, solver: f"minizinc-job-{id}-{solver}"
 
 
-def create_job(
+def create_jobs(
     api_instance: client.BatchV1Api,
     problem: str,
     data: str,
@@ -13,7 +14,7 @@ def create_job(
     id: str,
     image_name: str,
 ) -> client.V1Job:
-    for job_object in _create_job_object(problem, data, solvers, id, image_name):
+    for job_object in _create_job_objects(problem, data, solvers, id, image_name):
         try:
             api_instance.create_namespaced_job(body=job_object, namespace="default")
         except Exception as e:
@@ -23,17 +24,23 @@ def create_job(
     return True
 
 
-def delete_job(api_instance: client.BatchV1Api, name: str ) -> bool:
-    try:
-        return api_instance.delete_namespaced_job(
-            name=name,
-            namespace="default",
-            body=client.V1DeleteOptions(
-                propagation_policy="Foreground", grace_period_seconds=0
-            ),
-        )
-    except:
-        return False
+def delete_jobs(api_instance: client.BatchV1Api, names: Iterable[str] ) -> bool:
+    success = True
+
+    for name in names:
+        try:
+            if api_instance.delete_namespaced_job(
+                name=name,
+                namespace="default",
+                body=client.V1DeleteOptions(
+                    propagation_policy="Foreground", grace_period_seconds=0
+                ),
+            ) is None:
+                success = False
+        except:
+            success = False
+
+    return success
 
 
 def list_jobs( api_instance: client.BatchV1Api, id: str ) -> client.V1JobList:
@@ -46,7 +53,7 @@ def list_jobs( api_instance: client.BatchV1Api, id: str ) -> client.V1JobList:
         return None
 
 
-def _create_job_object(
+def _create_job_objects(
     problem: str, data: str, solvers: list[str], id: str, image_name: str
 ):
     jobs = []

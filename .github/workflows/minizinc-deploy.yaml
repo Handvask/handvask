@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - "main"
-      - "pipeline_1"
+      # - "pipeline_1"
     paths:
       - "minizinc/**"
-      - ".github/**"
+      # - ".github/**"
 jobs:
   test-running-service:
     runs-on: ubuntu-latest
