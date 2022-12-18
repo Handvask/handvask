@@ -6,7 +6,7 @@ import requests
 from dotenv import load_dotenv
 from fastapi import Body, FastAPI, HTTPException
 from kubernetes import client, config
-from utils import create_jobs, delete_jobs, list_jobs, JOBNAME
+from utils import JOBNAME, create_jobs, delete_jobs, list_jobs
 
 load_dotenv(dirname(__file__) + "/.env")
 
@@ -33,7 +33,9 @@ def hello():
 
 @app.post("/test")
 def test():
-    if not create_jobs(BATCHV1, test_problem, test_data, test_solvers, "test", SOLVER_NAME):
+    if not create_jobs(
+        BATCHV1, test_problem, test_data, test_solvers, "test", SOLVER_NAME
+    ):
         raise HTTPException(500, "Couldn't create one or more jobs")
 
     return {"message": "Succesfully started jobs"}
@@ -54,34 +56,28 @@ def solve(
 
 
 @app.post("/delete")
-def delete(
-    id: str = Body(),
-    solvers: Optional[list[str]] = Body( default=None )
-):
+def delete(id: str = Body(), solvers: Optional[list[str]] = Body(default=None)):
     names: list[str]
 
     if solvers is None:
-        jobs = list_jobs( BATCHV1, id )
+        jobs = list_jobs(BATCHV1, id)
 
         if jobs is None:
-            raise HTTPException( 400, "Couldn't find jobs with given id" )
+            raise HTTPException(400, "Couldn't find jobs with given id")
 
-        names = [ job.metadata.name for job in jobs.items ]
+        names = [job.metadata.name for job in jobs.items]
 
     else:
-        names = [ JOBNAME(id, solver) for solver in solvers ]
+        names = [JOBNAME(id, solver) for solver in solvers]
 
-    if not delete_jobs( BATCHV1, names ):
-        raise HTTPException( 500, "Couldn't delete one or more jobs" )
+    if not delete_jobs(BATCHV1, names):
+        raise HTTPException(500, "Couldn't delete one or more jobs")
 
     return {"message": "Successfully deleted jobs"}
 
 
 @app.post("/progress")
-def progress(
-    id: str = Body(),
-    solver: str = Body()
-):
+def progress(id: str = Body(), solver: str = Body()):
     requests.post(
         BACKEND_URL + "/progress",
         json={"id": id, "solver": solver},
@@ -95,15 +91,21 @@ def result(
     solver: str = Body(),
     status: str = Body(),
     solution: str = Body(),
-    time: Optional[int] = Body( default=None )
+    time: Optional[int] = Body(default=None),
 ):
-    jobs = list_jobs( BATCHV1, id )
+    jobs = list_jobs(BATCHV1, id)
 
     if jobs:
-        delete_jobs( BATCHV1, [ job.metadata.name for job in jobs.items ] )
+        delete_jobs(BATCHV1, [job.metadata.name for job in jobs.items])
 
     requests.post(
         BACKEND_URL + "/result",
-        json={"id": id, "solver": solver, "status": status, "solution": solution, "time": time},
+        json={
+            "id": id,
+            "solver": solver,
+            "status": status,
+            "solution": solution,
+            "time": time,
+        },
         headers=HEADERS,
     )
