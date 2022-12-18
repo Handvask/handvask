@@ -18,8 +18,8 @@ jobs:
         with:
           workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
           service_account: "morten-service@handvask.iam.gserviceaccount.com"
-      - name: Google Cloud Platform (GCP) CLI - gcloud  
-        uses: actions-hub/gcloud@360.0.0
+      - name: Set up gcloud Cloud SDK environment
+        uses: google-github-actions/setup-gcloud@v1
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
       - name: Setup GKE Auth
@@ -30,7 +30,7 @@ jobs:
           cluster: handvask-cluster
       - name: Test 4
         run: |
-          kubectl version --short --client
+          kubectl version --client
       - name: Check version
         run: |
           gke-gcloud-auth-plugin --version
