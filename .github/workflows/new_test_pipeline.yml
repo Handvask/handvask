@@ -12,9 +12,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Test 1 - gcloud install gke-gcloud-auth-plugin
+      - name: Test 1
         run: |
-          gcloud components install gke-gcloud-auth-plugin
+          echo "shit"
         continue-on-error: True
 
   frontend-image-build:
@@ -43,6 +43,10 @@ jobs:
           docker \
           compose \
           build
+        env:
+            NEXT_PUBLIC_API_URL: "${{ secrets.NEXT_PUBLIC_API_URL }}"
+            ARTIFACT_LOCATION_FRONTEND: "${{ secrets.ARTIFACT_LOCATION_FRONTEND }}"
+            COMMIT_SHA: "${{ github.sha }}"
       - name: Tag DockerImage
         run: |
           docker \
