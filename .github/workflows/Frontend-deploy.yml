@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - "main"
-      - "pipeline_1"
+      # - "pipeline_1"
     paths:
       - "handvask_frontend/**"
       - ".github/workflows/Frontend-deploy.yml"
@@ -69,6 +69,12 @@ jobs:
         with:
           workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
           service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: Set up gcloud Cloud SDK environment
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          install_components: 'gke-gcloud-auth-plugin'
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
       - name: set compute region
         run: |
           gcloud \
