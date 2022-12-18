@@ -154,7 +154,7 @@ var base_url = 'https://handvask.tech/'
 //       cy.url().should('not.include', '/login')
 //   })
 // })
-
+ 
 describe('Homepage', () => {
   it('Login to page', () => {
     cy.visit(base_url)
