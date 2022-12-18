@@ -89,3 +89,41 @@ jobs:
           docker \
           compose \
           logs
+  minizinc-pull_request-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Control if changes in minizinc been made
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            minizinc:
+              - 'minizinc/**'
+      - name: If no changes stop workflow
+        if: steps.changes.outputs.minizinc == 'false'
+        run: |
+          echo "No changes in minizinc, stop workflow"
+      - name: Build minizinc image.
+        if: steps.changes.outputs.minizinc == 'true'
+        id: "build-image"
+        run: |
+          cd minizinc && \
+          docker \
+          compose \
+          build
+        env:
+          API_KEY: "${{ secrets.API_KEY }}"
+          BACKEND_HOST: "${{ secrets.BACKEND_HOST }}/minizinc"
+          SOLVER_IMAGE: "${{ secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER }}:${{ github.sha }}"
+          HOST_URL: "${{ secrets.KUBE_HOST }}"
+          CACERT: "${{ secrets.KUBE_CACERT }}"
+          TOKEN: "${{ secrets.KUBE_TOKEN }}"
+        continue-on-error: true
+      - name: Docker image build fail, exit.
+        if: steps.build-image.outcome == 'failure' &&  steps.changes.outputs.minizinc == 'true'
+        run: |
+          docker \
+          compose \
+          logs
