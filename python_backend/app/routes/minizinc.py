@@ -22,6 +22,7 @@ router = APIRouter(
 def get_solvers(
     key=Depends(check_api_key),
     id: str = Body(),
+    solver: str = Body(),
     status: str = Body(),
 ):
     run = Run[id]
@@ -37,6 +38,7 @@ def get_solvers(
 def get_solvers(
     key=Depends(check_api_key),
     id: str = Body(),
+    solver: str = Body(), # TODO: it should be visible to the user which solver solved the problem (project.md line 96)
     solution: str = Body(),
     status: str = Body(),
     time: int = Body(),
