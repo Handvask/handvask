@@ -12,21 +12,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Google Cloud Platform (GCP) CLI - gcloud  
-        uses: actions-hub/gcloud@360.0.0
       - name: Authenticate to Google Cloud
         id: "auth"
         uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
           service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: Google Cloud Platform (GCP) CLI - gcloud  
+        uses: actions-hub/gcloud@360.0.0
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
       # - name: gcloud
       #   uses: google-github-actions/setup-gcloud@master
       #   with:
       #     project_id: ${{ secrets.PROJECT_ID }}
       #     service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
       #     export_default_credentials: true
-      - name: Test 1
+      - name: Test 1 - gcloud install gke-gcloud-auth-plugin
         run: |
           gcloud components install gke-gcloud-auth-plugin
 
