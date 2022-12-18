@@ -27,9 +27,9 @@ jobs:
       - name: Setup GKE Auth
         uses: imjasonh/gke-auth@v0.2.0
         with:
-          project: handvask
+          project: ${{ secrets.PROJECT_ID }}
           location: europe-north1
-          cluster: handvask-cluster
+          cluster: ${{ secrets.GKE_CLUSTER_NAME }}
       - name: Test 4
         run: |
           kubectl version --client
