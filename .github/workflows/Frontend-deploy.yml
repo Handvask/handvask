@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "main"
+      - "pipeline_1"
     paths:
       - "handvask_frontend/**"
       - ".github/Frontend-deploy.yml"
@@ -74,7 +75,9 @@ jobs:
           config \
           set compute/region europe-north1
       - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
-        run: | 
+        run: |
+          sudo apt-get \
+          install google-cloud-sdk-gke-gcloud-auth-plugin && \
           gcloud \
           container \
           clusters \
