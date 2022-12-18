@@ -27,6 +27,10 @@ WORKDIR /test
 
 COPY test test
 
+COPY package.json package.json
+
 RUN npm install
+
+RUN npm install cypress --save-dev
 
 RUN npx cypress run --project ./test

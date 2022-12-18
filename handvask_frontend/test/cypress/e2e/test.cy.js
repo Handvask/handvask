@@ -693,7 +693,7 @@ describe('Homepage', () => {
 //     cy.visit(base_url)
 
 //     // Log in
-//     cy.get('#userInput')
+//     cy.get('#userInput') 
 //       .type('asdf')
 
 //     cy.get('#passwordInput')
