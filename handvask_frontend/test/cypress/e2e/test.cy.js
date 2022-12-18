@@ -156,7 +156,7 @@ var base_url = 'https://handvask.tech/'
 // })
 
 describe('Homepage', () => {
-  it('Gets, types and asserts', () => {
+  it('Login to page', () => {
     cy.visit(base_url)
 
     // Log in
@@ -174,8 +174,9 @@ describe('Homepage', () => {
       .children('div')
       .children('button')
       .should('contain', 'Login').click()
+  })
 
-    // Check table contains right attributes 
+  it('Check table contains right attributes ', () => { 
     cy.get('#__next')
       .children('div')
       .get('div')
@@ -239,7 +240,9 @@ describe('Homepage', () => {
       .children('thead')
       .children('tr')
       .should('contain', 'Result')
+  })
 
+  it('Side menu', () => { 
     // Side menu: Runs
     cy.get('#__next')
       .children('div')
@@ -271,7 +274,9 @@ describe('Homepage', () => {
       .children('div')
       .get('p')
       .should('contain', '.dzn instances')
+  })
 
+  it('Log out', () => { 
     // Test log out 
     cy.get('#userDropdownMenu')
     .children('ul')
