@@ -22,22 +22,12 @@ jobs:
         uses: actions-hub/gcloud@360.0.0
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      # - name: gcloud
-      #   uses: google-github-actions/setup-gcloud@master
-      #   with:
-      #     project_id: ${{ secrets.PROJECT_ID }}
-      #     service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
-      #     export_default_credentials: true
-      # - name: Test 1
-      #   run: |
-      #     grep -rhE ^deb /etc/apt/sources.list* | grep "cloud-sdk"
-      # - name: Test 2
-      #   run: |
-      #     deb  [signed-by=/usr/share/keyrings/cloud.google.gpg]  https://packages.cloud.google.com/apt cloud-sdk main
-      # - name: Test 3
-      #   run: |
-      #     apt-get update
-      #     apt-get install -y kubectl
+      - name: Setup GKE Auth
+        uses: imjasonh/gke-auth@v0.2.0
+        with:
+          project: ${{ secrets.PROJECT_ID }}
+          location: europe-north1
+          cluster: ${{ secrets.PROJECT_ID }}-cluster
       - name: Test 4
         run: |
           kubectl version --short --client
@@ -130,3 +120,20 @@ jobs:
 
 
 
+
+      # - name: gcloud
+      #   uses: google-github-actions/setup-gcloud@master
+      #   with:
+      #     project_id: ${{ secrets.PROJECT_ID }}
+      #     service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+      #     export_default_credentials: true
+      # - name: Test 1
+      #   run: |
+      #     grep -rhE ^deb /etc/apt/sources.list* | grep "cloud-sdk"
+      # - name: Test 2
+      #   run: |
+      #     deb  [signed-by=/usr/share/keyrings/cloud.google.gpg]  https://packages.cloud.google.com/apt cloud-sdk main
+      # - name: Test 3
+      #   run: |
+      #     apt-get update
+      #     apt-get install -y kubectl
