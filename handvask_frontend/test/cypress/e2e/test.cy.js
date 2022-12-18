@@ -173,7 +173,7 @@ describe('Homepage', () => {
       .children('form')
       .children('div')
       .children('button')
-      .should('contain', 'Login').click()
+      .should('contain', 'Login').click() 
   })
 
   it('Check table contains right attributes ', () => { 

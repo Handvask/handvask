@@ -25,6 +25,16 @@ jobs:
         run: |
           touch ./handvask_frontend/.env
           echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./handvask_frontend/.env
-      - name: Testing frontend
+      # - name: Testing frontend
+      #   run: |
+      #     docker build ./handvask_frontend --tag handvask_frontend_handvask:latest -f ./handvask_frontend/Dockerfile.testing
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
         run: |
-          docker build ./handvask_frontend --tag handvask_frontend_handvask:latest -f ./handvask_frontend/Dockerfile.testing
+        uses: cypress-io/github-action@v4.x.x # use the explicit version number
+        with:
+          build: npm run build
+          start: npm start
