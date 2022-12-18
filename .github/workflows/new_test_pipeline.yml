@@ -24,12 +24,12 @@ jobs:
           install_components: 'gke-gcloud-auth-plugin'
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
-      - name: Setup GKE Auth
-        uses: imjasonh/gke-auth@v0.2.0
-        with:
-          project: ${{ secrets.PROJECT_ID }}
-          location: europe-north1
-          cluster: ${{ secrets.GKE_CLUSTER_NAME }}
+      # - name: Setup GKE Auth
+      #   uses: imjasonh/gke-auth@v0.2.0
+      #   with:
+      #     project: ${{ secrets.PROJECT_ID }}
+      #     location: europe-north1
+      #     cluster: ${{ secrets.GKE_CLUSTER_NAME }}
       - name: Test 4
         run: |
           kubectl version --client
