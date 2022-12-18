@@ -9,9 +9,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Authenticate to Google Cloud
+        id: "auth"
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      # - name: gcloud
+      #   uses: google-github-actions/setup-gcloud@master
+      #   with:
+      #     project_id: ${{ secrets.PROJECT_ID }}
+      #     service_account_key: ${{ secrets.SERVICE_ACCOUNT_KEY }}
+      #     export_default_credentials: true
       - name: Test 1
         run: |
-          echo "Still need implementation"
+          gcloud components install gke-gcloud-auth-plugin
 
   # frontend-image-build:
   #   needs: test-running-service
