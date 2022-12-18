@@ -34,10 +34,10 @@ jobs:
       # - name: Test 2
       #   run: |
       #     deb  [signed-by=/usr/share/keyrings/cloud.google.gpg]  https://packages.cloud.google.com/apt cloud-sdk main
-      - name: Test 3
-        run: |
-          apt-get update
-          apt-get install -y kubectl
+      # - name: Test 3
+      #   run: |
+      #     apt-get update
+      #     apt-get install -y kubectl
       - name: Test 4
         run: |
           kubectl version --short --client
