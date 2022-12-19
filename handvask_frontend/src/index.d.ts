@@ -7,7 +7,7 @@ type User = {
   sys_admin: {
     id: number;
     user: string;
-  };
+  } | null;
   max_cpu: number;
 };
 
