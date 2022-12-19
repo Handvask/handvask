@@ -64,7 +64,8 @@ def create_run(
                 for run in select(
                     run
                     for run in Run
-                    if run.status.id in (Run_status.RUNNING, Run_status.PROVING_OPTIMALITY)
+                    if run.status.id
+                    in (Run_status.RUNNING, Run_status.PROVING_OPTIMALITY)
                     and run.user.id == user_id
                 )[:]
             ]
