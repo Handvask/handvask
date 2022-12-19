@@ -9,6 +9,7 @@ export type ExpandedUser = {
   removeMzn: (id: number) => void;
   removeDzn: (id: number) => void;
   addRun: (id: number) => void;
+  removeRun: (id: number) => void;
 } & User;
 
 export default function useUser() {
@@ -63,11 +64,28 @@ export default function useUser() {
           if (!v) return v;
           return {
             ...v,
+            runs: [...v.runs.filter((i) => i != id), id],
+          };
+        });
+      },
+      removeRun(id) {
+        setUser((v) => {
+          if (!v) return v;
+          return {
+            ...v,
             runs: [...v.runs.filter((i) => i != id)],
           };
         });
       },
     } as ExpandedUser;
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      setCookie("handvask_tmp_user", JSON.stringify([user, token]), {
+        maxAge: 60,
+      });
+    }
   }, [user]);
 
   useEffect(() => {
@@ -85,9 +103,6 @@ export default function useUser() {
     if (!loaded && token.length > 0) {
       get<User>("users/get", (r) => {
         setUser(r);
-        setCookie("handvask_tmp_user", JSON.stringify([r, token]), {
-          maxAge: 60,
-        });
       });
     }
   }, [token]);
