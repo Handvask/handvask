@@ -12,7 +12,7 @@ import {
 import Button from "../components/Button";
 import PageLoader from "../components/PageLoader";
 import { SuccessResponse } from "../functions";
-export default function admin() {
+export default function Admin() {
   const { get, apiReady, post } = useAPI();
   const user = useUser();
   const [data, setUsers] = useState<User[]>();
