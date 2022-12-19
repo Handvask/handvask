@@ -139,7 +139,7 @@ export default function Dzn({ user }: HomeSubpageBasePropT) {
             ) : (
               <tr>
                 <td colSpan={3} className="text-center">
-                  You don't have any Dzn instances yet, why don't you add one?
+                  You don&apos;t have any Dzn instances yet, why don&apos;t you add one?
                 </td>
               </tr>
             )}

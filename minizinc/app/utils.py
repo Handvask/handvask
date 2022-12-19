@@ -1,7 +1,7 @@
 import base64
 from typing import Iterable
-from kubernetes import client
 
+from kubernetes import client
 
 JOBNAME = lambda id, solver: f"minizinc-job-{id}-{solver}"
 
@@ -28,18 +28,21 @@ def create_jobs(
     return True
 
 
-def delete_jobs(api_instance: client.BatchV1Api, names: Iterable[str] ) -> bool:
+def delete_jobs(api_instance: client.BatchV1Api, names: Iterable[str]) -> bool:
     success = True
 
     for name in names:
         try:
-            if api_instance.delete_namespaced_job(
-                name=name,
-                namespace="default",
-                body=client.V1DeleteOptions(
-                    propagation_policy="Foreground", grace_period_seconds=0
-                ),
-            ) is None:
+            if (
+                api_instance.delete_namespaced_job(
+                    name=name,
+                    namespace="default",
+                    body=client.V1DeleteOptions(
+                        propagation_policy="Foreground", grace_period_seconds=0
+                    ),
+                )
+                is None
+            ):
                 success = False
         except:
             success = False
@@ -47,11 +50,10 @@ def delete_jobs(api_instance: client.BatchV1Api, names: Iterable[str] ) -> bool:
     return success
 
 
-def list_jobs( api_instance: client.BatchV1Api, id: str ) -> client.V1JobList:
+def list_jobs(api_instance: client.BatchV1Api, id: str) -> client.V1JobList:
     try:
         return api_instance.list_namespaced_job(
-            namespace="default",
-            label_selector=f"jobgroup={id}"
+            namespace="default", label_selector=f"jobgroup={id}"
         )
     except:
         return None
@@ -114,11 +116,10 @@ def _create_job_objects(
             api_version="batch/v1",
             kind="Job",
             metadata=client.V1ObjectMeta(
-                name=JOBNAME(id, solver),
-                labels={"jobgroup": id}
+                name=JOBNAME(id, solver), labels={"jobgroup": id}
             ),
             spec=spec,
         )
-        jobs.append( job )
+        jobs.append(job)
 
     return jobs

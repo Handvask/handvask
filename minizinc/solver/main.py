@@ -34,7 +34,7 @@ async def find_solutions( inst: mz.Instance, obj: bool, json: bool, p: int, a: b
             continue
 
         # inform master node that a feasible solution has been found
-        if result.get( "status", None ) is None and r.status.has_solution():
+        if result.get("status", None) is None and r.status.has_solution():
             requests.post(MASTER_URL + "/progress", json=result)
 
         result["status"] = r.status.name
@@ -55,12 +55,14 @@ async def find_solutions( inst: mz.Instance, obj: bool, json: bool, p: int, a: b
             result["time"] = r.statistics.get("solveTime").microseconds
             print("=" * 10)
         else:
-            result["solution"] = ("="*5) + r.status.name + ("="*5)
-            print("="*5, r.status.name, "="*5, sep="")
+            result["solution"] = ("=" * 5) + r.status.name + ("=" * 5)
+            print("=" * 5, r.status.name, "=" * 5, sep="")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Give the id for the run and the solver this job should use.")
+    parser = argparse.ArgumentParser(
+        description="Give the id for the run and the solver this job should use."
+    )
     parser.add_argument(
         "-o", "--objective", action="store_true",
         help="Whether the objective should be output"

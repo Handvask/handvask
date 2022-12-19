@@ -6,12 +6,16 @@ on:
 jobs:
   test-running-service:
     runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Test 1
         run: |
-          echo "Still need implementation"
+          echo "shit"
+        continue-on-error: True
 
   # frontend-image-build:
   #   needs: test-running-service
@@ -39,6 +43,10 @@ jobs:
   #         docker \
   #         compose \
   #         build
+  #       env:
+  #           NEXT_PUBLIC_API_URL: "${{ secrets.NEXT_PUBLIC_API_URL }}"
+  #           ARTIFACT_LOCATION_FRONTEND: "${{ secrets.ARTIFACT_LOCATION_FRONTEND }}"
+  #           COMMIT_SHA: "${{ github.sha }}"
   #     - name: Tag DockerImage
   #       run: |
   #         docker \
@@ -61,6 +69,12 @@ jobs:
   #       with:
   #         workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
   #         service_account: "morten-service@handvask.iam.gserviceaccount.com"
+  #     - name: Set up gcloud Cloud SDK environment
+  #       uses: google-github-actions/setup-gcloud@v1
+  #       with:
+  #         install_components: 'gke-gcloud-auth-plugin'
+  #       env:
+  #         PROJECT_ID: ${{ secrets.PROJECT_ID }}
   #     - name: set compute region
   #       run: |
   #         gcloud \
@@ -72,11 +86,15 @@ jobs:
   #         container \
   #         clusters \
   #         get-credentials handvask-cluster
+  #       env:
+  #         USE_GKE_GCLOUD_AUTH_PLUGIN: True
   #     - name: kubectl apply for deployment
   #       run: |
   #         kubectl \
   #         apply \
   #         -f handvask_frontend/k8s/
+  #       env:
+  #         USE_GKE_GCLOUD_AUTH_PLUGIN: True
   #     - name: Deploy to GKE
   #       run: |
   #         kubectl \
@@ -87,6 +105,5 @@ jobs:
   #         handvask-frontend=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
   #         kubectl \
   #         rollout status deployment/handvask-frontend
-
-
-
+  #       env:
+  #         USE_GKE_GCLOUD_AUTH_PLUGIN: True
