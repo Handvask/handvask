@@ -22,7 +22,7 @@ HEADERS = {"X-Api-Key": os.getenv("API_KEY")}
 SOLVER_NAME = os.getenv("SOLVER_IMAGE")
 
 test_problem = "int: i; array[1..2] of var 0..i: x; constraint x[1] < i /\ x[2] < i; solve :: int_search( x, input_order, indomain_min ) maximize x[1] + x[2];"
-test_data = "i = 1000000;"
+test_data = "i = 1000;"
 test_solvers = ["gecode", "gist"]
 
 
@@ -33,9 +33,7 @@ def hello():
 
 @app.post("/test")
 def test():
-    if not create_jobs(
-        BATCHV1, test_problem, test_data, test_solvers, "test", SOLVER_NAME
-    ):
+    if not create_jobs(BATCHV1, test_problem, test_data, test_solvers, "test", SOLVER_NAME, True, True, 2, True):
         raise HTTPException(500, "Couldn't create one or more jobs")
 
     return {"message": "Succesfully started jobs"}
@@ -48,8 +46,12 @@ def solve(
     problem: str = Body(),
     data: str = Body(),
     solvers: list[str] = Body(),
+    objective: Optional[bool] = Body( default=False ),
+    json: Optional[bool] = Body( default=False ),
+    processors: Optional[int] = Body( default=1 ),
+    all: Optional[bool] = Body( default=False )
 ):
-    if not create_jobs(BATCHV1, problem, data, solvers, id, SOLVER_NAME):
+    if not create_jobs( BATCHV1, problem, data, solvers, id, SOLVER_NAME, objective, json, processors, all ):
         raise HTTPException(500, "Couldn't create one or more jobs")
 
     return {"message": "Succesfully started jobs"}

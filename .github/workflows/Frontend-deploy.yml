@@ -85,8 +85,6 @@ jobs:
           USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
         run: |
-          sudo apt-get \
-          install google-cloud-sdk-gke-gcloud-auth-plugin && \
           gcloud \
           container \
           clusters \
