@@ -1,361 +1,357 @@
 var random_int = Math.floor(Math.random() * 100);
 var base_url = "https://handvask.tech/";
 
-// describe('Login page', () => {
-//   it('Checks elements on page', () => {
-//     cy.visit(base_url)
+describe('Login page', () => {
+  it('Checks elements on page', () => {
+    cy.visit(base_url)
 
-//     // Username field
-//     cy.get('#userInput')
+    // Username field
+    cy.get('#userInput')
 
-//     // Password field 
-//     cy.get('#passwordInput')
+    // Password field 
+    cy.get('#passwordInput')
 
-//     // Login button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login')
+    // Login button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .should('contain', 'Login')
 
-//     // Register button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('a')
-//       .should('contain', 'I dont have an account').click()
+    // Register button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('a')
+      .should('contain', 'I dont have an account').click()
 
-//     // Check new URL 
-//     cy.url().should('include', '/register')
+    // Check new URL 
+    cy.url().should('include', '/register')
 
-//     // Go back to login page
-//     cy.visit(base_url + 'login')
+    // Go back to login page
+    cy.visit(base_url + 'login')
 
-//     // Type into username and verify
-//     // that the value has been updated
-//     cy.get('#userInput')
-//       .type('test')
-//       .should('have.value', 'test')
+    // Type into username and verify
+    // that the value has been updated
+    cy.get('#userInput')
+      .type('test')
+      .should('have.value', 'test')
 
-//     // Type into password and verify
-//     // that the value has been updated
-//     cy.get('#passwordInput')
-//       .type('test')
-//       .should('have.value', 'test')
-//   })
-// })
+    // Type into password and verify
+    // that the value has been updated
+    cy.get('#passwordInput')
+      .type('test')
+      .should('have.value', 'test')
+  })
+})
   
-// describe('Register page', () => {
-//   it('Checks elements on page', () => {
-//     cy.visit(base_url + 'register')
+describe('Register page', () => {
+  it('Checks elements on page', () => {
+    cy.visit(base_url + 'register')
 
-//     // Username
-//     cy.get('#userInput')
+    // Username
+    cy.get('#userInput')
 
-//     // Password
-//     cy.get('#passwordInput')
+    // Password
+    cy.get('#passwordInput')
 
-//     // Confirm password
-//     cy.get('#confirmPasswordInput')
+    // Confirm password
+    cy.get('#confirmPasswordInput')
 
-//     // Login
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('a')
-//       .should('contain', 'I already have an account').click()
+    // Login
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('a')
+      .should('contain', 'I already have an account').click()
 
-//     cy.visit(base_url + 'register')
+    cy.visit(base_url + 'register')
 
-//     // Type username
-//     cy.get('#userInput')
-//       .clear()
-//       .type('test_frontend' + random_int)
-//       .should('have.value', 'test_frontend' + random_int)
+    // Type username
+    cy.get('#userInput')
+      .clear()
+      .type('test_frontend' + random_int)
+      .should('have.value', 'test_frontend' + random_int)
 
-//     // Type password
-//     cy.get('#passwordInput')
-//       .clear()
-//       .type('test_frontend' + random_int)
-//       .should('have.value', 'test_frontend' + random_int)
+    // Type password
+    cy.get('#passwordInput')
+      .clear()
+      .type('test_frontend' + random_int)
+      .should('have.value', 'test_frontend' + random_int)
 
-//     // Type password
-//     cy.get('#confirmPasswordInput')
-//       .clear()
-//       .type('test_frontend' + random_int)
-//       .should('have.value', 'test_frontend' + random_int)
+    // Type password
+    cy.get('#confirmPasswordInput')
+      .clear()
+      .type('test_frontend' + random_int)
+      .should('have.value', 'test_frontend' + random_int)
 
-//     // Register button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .contains('Register')
-//       //.click()
-//   })
-// })
+    // Register button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .contains('Register')
+      //.click()
+  })
+})
 
-// describe('Login functionality', () => {
+describe('Login functionality', () => {
+  it('Gets, types and asserts', () => {
+    cy.visit(base_url)
+
+    // Type wrong username
+    cy.get('#userInput')
+      .type('testwrongusername')
+
+    // Type wrong password
+    cy.get('#passwordInput')
+      .type('testwrongpassword')
+
+    // Login button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .should('contain', 'Login').click()
+
+    // Ensure still on log in page
+    cy.url().should('include', '/login')
+
+    // Type correct username
+    cy.get('#userInput')
+      .clear()
+      .type('julie')
+
+    // Type correct password
+    cy.get('#passwordInput')
+      .clear()
+      .type('julie123')
+
+    // Login button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .should('contain', 'Login').click()
+
+      cy.url().should('not.include', '/login')
+  })
+})
+
+describe("Homepage", () => {
+  it("Login to page", () => {
+    cy.visit(base_url);
+
+    // Log in
+    cy.get("#userInput").type("julie");
+
+    cy.get("#passwordInput").type("julie123");
+
+    cy.get("#__next")
+      .children("div")
+      .children(
+        "div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5"
+      )
+      .children("div")
+      .children("form")
+      .children("div")
+      .children("button")
+      .should("contain", "Login")
+      .click();
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Status");
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "ID");
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Minizinc");
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Data");
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Start time");
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "End time");
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Execution time");
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "MZN status");
+
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Result");
+
+    // Side menu: Runs
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("p")
+      .should("contain", "Runs");
+
+    // Side menu: Create new run
+    cy.get('#__next')
+      .children('div')
+      .get('div')
+      .get('p')
+      .should('contain', 'Create new run') 
+
+    // Side menu: .mzn instances
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("p")
+      .should("contain", ".mzn instances");
+
+    // Side menu: .dzn instances
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("p")
+      .should("contain", ".dzn instances");
+
+    // Test log out
+    cy.get("#userDropdownMenu")
+      .children("ul")
+      .children("a")
+      .should("contain", "Log out")
+      .click({ force: true });
+  });
+});
+
+// describe('Minizinc page', () => {
 //   it('Gets, types and asserts', () => {
-//     cy.visit(base_url)
+//     cy.visit(base_url + 'handvask')
 
-//     // Type wrong username
-//     cy.get('#userInput')
-//       .type('testwrongusername')
-
-//     // Type wrong password
-//     cy.get('#passwordInput')
-//       .type('testwrongpassword')
-
-//     // Login button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login').click()
-
-//     // Ensure still on log in page
-//     cy.url().should('include', '/login')
-
-//     // Type correct username
-//     cy.get('#userInput')
-//       .clear()
-//       .type('julie')
-
-//     // Type correct password
-//     cy.get('#passwordInput')
-//       .clear()
-//       .type('julie123')
-
-//     // Login button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login').click()
-
-//       cy.url().should('not.include', '/login')
 //   })
 // })
 
-// describe("Homepage", () => {
-//   it("Login to page", () => {
-//     cy.visit(base_url);
+describe('Admin page', () => {
+  it('Log in on admin user', () => {
+    cy.visit(base_url)
 
-//     // Log in
-//     cy.get("#userInput").type("julie");
+    // Log in
+    cy.get('#userInput')
+      .type('asdf')
 
-//     cy.get("#passwordInput").type("julie123");
+    cy.get('#passwordInput')
+      .type('asdf')
 
-//     cy.get("#__next")
-//       .children("div")
-//       .children(
-//         "div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5"
-//       )
-//       .children("div")
-//       .children("form")
-//       .children("div")
-//       .children("button")
-//       .should("contain", "Login")
-//       .click();
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .should('contain', 'Login').click()
 
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "Status");
+    cy.get('#mainNavbar')
+      .children('ul.navbar-nav.me-auto.mb-2.mb-lg-0')
+      .get('a')
+      .contains('Admin').click()
 
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "ID");
+    // Check table contains IDs
+    cy.get('#__next')
+      .children('div')
+      .get('table')
+      .children('thead')
+      .get('tr')
+      .should('contain', 'ID')
 
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "Minizinc");
+    // Check table contains usernames
+    cy.get('#__next')
+      .children('div')
+      .get('table')
+      .children('thead')
+      .get('tr')
+      .should('contain', 'Username')
 
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "Data");
+    // // Check table contains newly created user
+    // cy.get('#__next')
+    //   .children('div')
+    //   .get('table')
+    //   .children('tbody')
+    //   .should('contain', 'test_frontend' + random_int)
 
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "Start time");
-
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "End time");
-
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "Execution time");
-
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "MZN status");
-
-//     cy.get("#__next")
-//       .children("div")
-//       .get("div")
-//       .get("table")
-//       .children("thead")
-//       .children("tr")
-//       .should("contain", "Result");
-
-//     // Side menu: Runs
-//     cy.get("#__next")
-//       .children("div")
-//       .get(".position-relative")
-//       .children("div")
-//       .get("p")
-//       .should("contain", "Runs");
-
-//     // Side menu: Create new run
-//     cy.get('#__next')
-//       .children('div')
-//       .get('.position-relative')
-//       .children('div')
-//       .get('p')
-//       .should('contain', 'Create new run') 
-
-//     // Side menu: .mzn instances
-//     cy.get("#__next")
-//       .children("div")
-//       .get(".position-relative")
-//       .children("div")
-//       .get("p")
-//       .should("contain", ".mzn instances");
-
-//     // Side menu: .dzn instances
-//     cy.get("#__next")
-//       .children("div")
-//       .get(".position-relative")
-//       .children("div")
-//       .get("p")
-//       .should("contain", ".dzn instances");
-
-//     // Test log out
-//     cy.get("#userDropdownMenu")
-//       .children("ul")
-//       .children("a")
-//       .should("contain", "Log out")
-//       .click({ force: true });
-//   });
-// });
-
-// // describe('Minizinc page', () => {
-// //   it('Gets, types and asserts', () => {
-// //     cy.visit(base_url + 'handvask')
-
-// //   })
-// // })
-
-// describe('Admin page', () => {
-//   it('Log in on admin user', () => {
-//     cy.visit(base_url)
-
-//     // Log in
-//     cy.get('#userInput')
-//       .type('asdf')
-
-//     cy.get('#passwordInput')
-//       .type('asdf')
-
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login').click()
-
-//     cy.get('#mainNavbar')
-//       .children('ul.navbar-nav.me-auto.mb-2.mb-lg-0')
-//       .get('a')
-//       .contains('Admin').click()
-
-//     // Check table contains IDs
-//     cy.get('#__next')
-//       .children('div')
-//       .get('table')
-//       .children('thead')
-//       .get('tr')
-//       .should('contain', 'ID')
-
-//     // Check table contains usernames
-//     cy.get('#__next')
-//       .children('div')
-//       .get('table')
-//       .children('thead')
-//       .get('tr')
-//       .should('contain', 'Username')
-
-//     // // Check table contains newly created user
-//     // cy.get('#__next')
-//     //   .children('div')
-//     //   .get('table')
-//     //   .children('tbody')
-//     //   .should('contain', 'test_frontend' + random_int)
-
-//     // // Delete newly created user
-//     // cy.get('#__next >')
-//     //   .children('div')
-//     //   .get('table')
-//     //   .children('tbody')
-//     //   .get('td.text-end')
-//     //   .children('div')
-//     //   .children('button')
-//     //   .last().click()
-//   })
-// })
+    // // Delete newly created user
+    // cy.get('#__next >')
+    //   .children('div')
+    //   .get('table')
+    //   .children('tbody')
+    //   .get('td.text-end')
+    //   .children('div')
+    //   .children('button')
+    //   .last().click()
+  })
+})
 
 describe('.mzn instances page', () => {
   it('Open page and check contents', () => {
@@ -380,8 +376,7 @@ describe('.mzn instances page', () => {
     // Click .mzn instances
     cy.get('#__next')
       .children('div')
-      .get('.position-relative')
-      .children('div')
+      .get('div')
       .get('p')
       .contains('.mzn instances').click()
 
@@ -511,8 +506,7 @@ describe('.dzn instances page', () => {
     // Click .dzn instances
     cy.get('#__next')
       .children('div')
-      .get('.position-relative')
-      .children('div')
+      .get('div')
       .get('p')
       .contains('.dzn instances').click()
 
@@ -642,8 +636,7 @@ describe('Crete new run file', () => {
     // Click create new run
     cy.get('#__next')
       .children('div')
-      .get('.position-relative')
-      .children('div')
+      .get('div')
       .get('p')
       .contains('Create new run').click()
 
