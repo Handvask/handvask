@@ -137,6 +137,9 @@ class Run(db.Entity):
             for s in run["run__solvers"]
         ]
         run["status"] = run["status"].to_dict()
+        run["best_solver"] = (
+            run["best_solver"].to_dict() if run["best_solver"] else None
+        )
         return run
 
 

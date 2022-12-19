@@ -85,7 +85,9 @@ export default function Home() {
               width: sideOpen ? "calc(100% - 150px)" : "100%",
             }}
           >
-            {(currentPage == "runs" && <Runs user={user} />) ||
+            {(currentPage == "runs" && (
+              <Runs user={user} setNotification={setNotification} />
+            )) ||
               (currentPage == "dzn" && <Dzn user={user} />) ||
               (currentPage == "mzn" && <Mzn user={user} />) ||
               (currentPage == "createRun" && (
@@ -114,11 +116,8 @@ export default function Home() {
               style={{ width: 20, height: 20 }}
             />
             <strong className="me-auto">Create run result</strong>
-            <Button kind="light" small>
-              <FontAwesomeIcon
-                icon={faTimes}
-                onClick={() => setNotification(null)}
-              />
+            <Button kind="light" small onClick={() => setNotification(null)}>
+              <FontAwesomeIcon icon={faTimes} />
             </Button>
           </div>
           <div className="toast-body">{notification.message}</div>

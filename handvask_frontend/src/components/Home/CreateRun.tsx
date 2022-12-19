@@ -141,16 +141,18 @@ export default function CreateRun({
       },
       (r) => {
         setCreatingRun(false);
-        user.addRun(r.id);
+        if (r.hasOwnProperty("id")) {
+          user.addRun(r.id);
+        }
         if (r.success) {
           setCurrentPage("runs");
           setNotification({
-            message: "Succesfully created run!",
+            message: "Succesfully created run! 🤝",
             kind: "success",
           });
         } else {
           setNotification({
-            message: "Something went wrong with creating your run :(",
+            message: "Something went wrong with creating your run. 😭",
             kind: "danger",
           });
         }

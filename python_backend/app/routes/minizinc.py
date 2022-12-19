@@ -23,17 +23,20 @@ def progress(key=Depends(check_api_key), id: str = Body(), solver: str = Body())
     run = Run[id]
     solver = select(s for s in Solver if s.name == solver)[:][0]
     if not solver:
-        print("oh fuck oh no wrong solver supplied")
+        print("oh fuck oh no wrong solver supplied in init solver_select")
         exit()
 
     if run.status != Run_status.DONE:
         run.status = Run_status.PROVING_OPTIMALITY
         run.best_solver = solver
-        run_solver: Run_Solver = run.run__solvers.select(lambda s: s.id == solver.id)
-        if not run_solver:
-            print("oh fuck oh no wrong solver supplied")
+        run_solvers: Run_Solver = run.run__solvers.select(
+            lambda s: s.solver.id == solver.id
+        )
+        if not run_solvers:
+            print("oh fuck oh no wrong solver supplied in run_solver select")
             exit()
-        run_solver.progress = "JA"
+        for run_solver in run_solvers:
+            run_solver.progress = "JA"
 
     return "ok"
 

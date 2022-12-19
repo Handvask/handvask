@@ -109,5 +109,4 @@ def _create_job_objects(
             spec=spec,
         )
         jobs.append(job)
-
     return jobs

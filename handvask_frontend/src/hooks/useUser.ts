@@ -81,6 +81,15 @@ export default function useUser() {
   }, [user]);
 
   useEffect(() => {
+    if (user) {
+      console.log(user);
+      setCookie("handvask_tmp_user", JSON.stringify([user, token]), {
+        maxAge: 60,
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
     let loaded = false;
     if (hasUserCookie) {
       const cached = JSON.parse(getCookie("handvask_tmp_user") as string) as [
@@ -95,9 +104,6 @@ export default function useUser() {
     if (!loaded && token.length > 0) {
       get<User>("users/get", (r) => {
         setUser(r);
-        setCookie("handvask_tmp_user", JSON.stringify([r, token]), {
-          maxAge: 60,
-        });
       });
     }
   }, [token]);

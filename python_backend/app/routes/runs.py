@@ -54,8 +54,29 @@ def create_run(
         solvers
     ):  # One or more of the specified solvers is invalid
         raise HTTPException(401, "Access denied")
+    user = User[user_id]
+
+    if (
+        len(solvers)
+        + sum(
+            [
+                len(run.run__solvers.select(lambda runSolver: not runSolver.terminated))
+                for run in select(
+                    run
+                    for run in Run
+                    if (
+                        run.status.id == Run_status.RUNNING
+                        or run.status.id == Run_status.PROVING_OPTIMALITY
+                    )
+                    and run.user.id == user_id
+                )[:]
+            ]
+        )
+        >= user.max_cpu
+    ):
+        raise HTTPException(403, "Quota full")
     run = Run(
-        user=user_id,
+        user=user,
         mzn_instance=mzn,
         dzn_instance=dzn,
         status=Run_status.SUBMITTED,
@@ -88,29 +109,46 @@ def create_run(
 def terminate_run(
     user_id: int = Depends(get_current_user_id),
     run_id: int = Body(),
-    solvers: Optional[list[int]] = Body(default=None),
+    solver_ids: Optional[list[int]] = Body(default=None),
 ):
     run = Run[run_id]
     admin = User[user_id].sys_admin
-    solvers = [
-        solver.name for solver in run.solvers if solvers is None or solver in solvers
-    ]
+    solvers = (
+        [
+            solver.solver.name
+            for solver in run.run__solvers
+            if solver.solver.id in solver_ids
+        ]
+        if solver_ids
+        else None
+    )
 
     if run.user.id != user_id and not admin:
         raise HTTPException(401, "Access denied")
+
+    print(run_id, solvers)
 
     resp = requests.post(
         f"{getenv('MZN_MN_HOST')}/delete", json={"id": run_id, "solvers": solvers}
     )
 
     if resp.ok:
-        # TODO: make it so it's possible to tell if a run is fully terminated even if done over multiple calls
-        # (e.g. there are 3 solvers and first one call terminates 1 and then another terminates the remaining 2)
-        if len(solvers) == len(run.solvers):
+        if not solvers or len(solvers) == len(
+            run.run__solvers.select(lambda run_solver: not run_solver.terminated)
+        ):
             run.end_time = datetime.now()
             run.status = (
-                Run_status.TERMINATED_USER if not admin else Run_status.TERMINATED_ADMIN
+                Run_status[Run_status.TERMINATED_USER]
+                if not admin
+                else Run_status[Run_status.TERMINATED_ADMIN]
             )
+            for runSolver in run.run__solvers:
+                runSolver.terminated = True
+        else:
+            for runSolver in run.run__solvers.select(
+                lambda s: s.solver.id in solver_ids
+            ):
+                runSolver.terminated = True
 
     return {"success": resp.ok, "id": run_id, "solvers": solvers}
 
@@ -145,7 +183,6 @@ def get_runs(user_id=Depends(get_current_user_id), run_ids: List[int] = Query(No
 @db_session
 def delete_run(
     run_id: int,
-    solver_ids: Optional[List[int]] = Body(embed=True),
     user_id=Depends(get_current_user_id),
 ):
     try:
@@ -155,16 +192,20 @@ def delete_run(
 
     if run.user.id != user_id and not bool(User[user_id].sys_admin):
         raise HTTPException(status_code=401, detail="Access denied")
-
-    if run.status.id == Run_status.RUNNING:
+    if (
+        run.status.id == Run_status.RUNNING
+        or run.status.id == Run_status.PROVING_OPTIMALITY
+    ):
         resp = requests.post(
             f"{getenv('MZN_MN_HOST')}/delete",
-            json=run.id,
+            json={
+                "id": run.id,
+                "solvers": None,
+            },
         )
 
         if resp.ok:
             run.delete()
-        print(resp)
         return {"success": resp.ok}
     else:
         run.delete()
