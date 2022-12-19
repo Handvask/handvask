@@ -14,11 +14,11 @@ router = APIRouter(
 )
 
 
-@router.post("/user_quota", response_model=SuccessT)
+@router.post("/user_quota/{user_id}", response_model=SuccessT)
 @db_session
 def update_quota(
-    user_id: str = Body(""),
-    max_cpu: str = Body(""),
+    user_id: int,
+    max_cpu: int = Body(default=6, embed=True),
     curr_user_id: int = Depends(get_current_user_id),
 ):
     """Update the number of cpu allowed to the user
@@ -42,7 +42,7 @@ def update_quota(
     except:
         raise HTTPException(status_code=404, detail=f"User {user_id} not found")
 
-    user.max_cpu = int(max_cpu)
+    user.max_cpu = max_cpu
 
     return {"success": True}
 
