@@ -13,7 +13,7 @@ jobs:
       id-token: "write"
     steps:
       - name: Checkout
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
       - name: Build env file
         run: |
           touch ./handvask_frontend/.env
