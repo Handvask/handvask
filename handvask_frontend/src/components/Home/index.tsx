@@ -3,7 +3,7 @@ import useUser, { ExpandedUser } from "../../hooks/useUser";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from "../Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Base from "../Base";
 import SideBarButton from "../SideBarButton";
 import Runs from "./runs";
@@ -19,6 +19,10 @@ export default function Home() {
   const [sideOpen, setSideOpen] = useState(true);
   const user = useUser();
   const [currentPage, setCurrentPage] = useState<string>("runs");
+  const [notification, setNotification] = useState<{
+    message: string;
+    kind: bootstrapColours;
+  } | null>(null);
 
   return (
     <Base>
@@ -81,27 +85,44 @@ export default function Home() {
               width: sideOpen ? "calc(100% - 150px)" : "100%",
             }}
           >
-            {(currentPage == "runs" && <Runs user={user} />) ||
+            {(currentPage == "runs" && (
+              <Runs user={user} setNotification={setNotification} />
+            )) ||
               (currentPage == "dzn" && <Dzn user={user} />) ||
               (currentPage == "mzn" && <Mzn user={user} />) ||
               (currentPage == "createRun" && (
-                <CreateRun user={user} setCurrentPage={setCurrentPage} />
+                <CreateRun
+                  user={user}
+                  setCurrentPage={setCurrentPage}
+                  setNotification={setNotification}
+                />
               )) ||
               null}
           </div>
-          {/* <Table hover>
-          <thead>
-            <tr>
-              <th> Dzn instances</th>
-              <th> Mzn Instances</th>
-              <th> Runs</th>
-            </tr>
-          </thead>
-          <tbody>{tableRows}</tbody>
-        </Table> */}
         </div>
       )) ||
         null}
+      {notification ? (
+        <div
+          className="toast show position-fixed"
+          style={{ right: 15, bottom: 15 }}
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+        >
+          <div className="toast-header d-flex align-items-center">
+            <div
+              className={`bg-${notification.kind} rounded me-2`}
+              style={{ width: 20, height: 20 }}
+            />
+            <strong className="me-auto">Create run result</strong>
+            <Button kind="light" small onClick={() => setNotification(null)}>
+              <FontAwesomeIcon icon={faTimes} />
+            </Button>
+          </div>
+          <div className="toast-body">{notification.message}</div>
+        </div>
+      ) : null}
     </Base>
   );
 }

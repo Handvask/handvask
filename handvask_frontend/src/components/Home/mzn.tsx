@@ -32,10 +32,12 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
     post<MznInstance>(`/instances/create_mzn`, "", (r) => {
       setData((v) => {
         if (!v) return v;
-        return [...v, r];
+        return [r, ...v];
       });
       user.addMzn(r.id);
       setAddingMzn(false);
+      setSelectedMzn(r);
+      setShowInstanceModal(true);
     });
   }
 
@@ -139,7 +141,8 @@ export default function Mzn({ user }: HomeSubpageBasePropT) {
             ) : (
               <tr>
                 <td colSpan={3} className="text-center">
-                  You don&apos;t have any mzn instances yet, why don&apos;t you add one?
+                  You don&apos;t have any mzn instances yet, why don&apos;t you
+                  add one?
                 </td>
               </tr>
             )}

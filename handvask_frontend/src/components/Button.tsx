@@ -1,16 +1,7 @@
 import React from "react";
 
 export type ButtonPropT = {
-  kind:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "danger"
-    | "warning"
-    | "info"
-    | "light"
-    | "dark"
-    | "link";
+  kind: bootstrapColours | "link";
   outline?: boolean;
   disabled?: boolean;
   large?: boolean;

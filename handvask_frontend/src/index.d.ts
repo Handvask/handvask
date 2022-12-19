@@ -30,6 +30,14 @@ type Solver = {
   name: string;
 };
 
+type RunSolver = {
+  id: number;
+  run: number;
+  solver: Solver;
+  terminated: boolean;
+  progress: string;
+};
+
 type Run = {
   id: number;
   user: number;
@@ -37,11 +45,23 @@ type Run = {
   start_time: string;
   end_time: string;
   result: string;
-  solvers: Solver[];
+  solvers: RunSolver[];
   mzn_instance: Omit<MznInstance, "runs">;
   dzn_instance: Omit<DznInstance, "runs">;
   status: {
-    id: 1 | 2 | 3 | 4 | 5 | 6;
+    id: 1 | 2 | 3 | 4 | 5 | 6 | 7;
     name: string;
   };
+  execution_time: string;
+  mzn_status: string;
 };
+
+type bootstrapColours =
+  | "primary"
+  | "secondary"
+  | "success"
+  | "danger"
+  | "warning"
+  | "info"
+  | "light"
+  | "dark";

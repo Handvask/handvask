@@ -17,8 +17,13 @@ import AsyncBtn from "../AsyncBtn";
 export default function CreateRun({
   user,
   setCurrentPage,
+  setNotification,
 }: HomeSubpageBasePropT & {
   setCurrentPage: (page: string) => void;
+  setNotification: (notification: {
+    message: string;
+    kind: bootstrapColours;
+  }) => void;
 }) {
   const [mznInstances, setMznInstances] = useState<MznInstance[]>();
   const [dznInstances, setDznInstances] = useState<DznInstance[]>();
@@ -136,9 +141,20 @@ export default function CreateRun({
       },
       (r) => {
         setCreatingRun(false);
-        user.addRun(r.id);
+        if (Object.prototype.hasOwnProperty.call(r, 'id')) {
+          user.addRun(r.id);
+        }
         if (r.success) {
           setCurrentPage("runs");
+          setNotification({
+            message: "Succesfully created run! 🤝",
+            kind: "success",
+          });
+        } else {
+          setNotification({
+            message: "Something went wrong with creating your run. 😭",
+            kind: "danger",
+          });
         }
       }
     );
