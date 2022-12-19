@@ -189,64 +189,56 @@ describe("Homepage", () => {
     cy.get("#__next")
       .children("div")
       .get("div")
-      .get("table")
-      .children("thead")
+      .get("thead")
       .children("tr")
       .should("contain", "Status1");
 
     cy.get("#__next")
       .children("div")
       .get("div")
-      .get("table")
-      .children("thead")
+      .get("thead")
       .children("tr")
       .should("contain", "ID");
 
     cy.get("#__next")
       .children("div")
       .get("div")
-      .get("table")
-      .children("thead")
+      .get("thead")
       .children("tr")
       .should("contain", "Minizinc");
 
     cy.get("#__next")
       .children("div")
       .get("div")
-      .get("table")
-      .children("thead")
+      .get("thead")
       .children("tr")
       .should("contain", "Data");
 
     cy.get("#__next")
       .children("div")
       .get("div")
-      .get("table")
-      .children("thead")
+      .get("thead")
       .children("tr")
       .should("contain", "Submit time");
 
     cy.get("#__next")
       .children("div")
       .get("div")
-      .get("table")
-      .children("thead")
+      .get("thead")
       .children("tr")
       .should("contain", "Start time");
 
     cy.get("#__next")
       .children("div")
       .get("div")
-      .get("table")
-      .children("thead")
+      .get("thead")
       .children("tr")
       .should("contain", "End time");
 
     cy.get("#__next")
       .children("div")
       .get("div")
-      .get("table")
-      .children("thead")
+      .get("thead")
       .children("tr")
       .should("contain", "Result");
 
