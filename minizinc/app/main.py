@@ -82,6 +82,7 @@ def progress(id: str = Body(), solver: str = Body()):
         BACKEND_URL + "/progress",
         json={"id": id, "solver": solver},
         headers=HEADERS,
+        timeout=30
     )
 
 
@@ -108,4 +109,5 @@ def result(
             "time": time,
         },
         headers=HEADERS,
+        timeout=30
     )
