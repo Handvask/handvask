@@ -2,57 +2,62 @@ var random_int = Math.floor(Math.random() * 100);
 var base_url = "https://handvask.tech/";
 
 // describe('Login page', () => {
-//     it('Gets, types and asserts', () => {
-//       cy.visit(base_url)
+//   it('Checks elements on page', () => {
+//     cy.visit(base_url)
 
-//       // Username field
-//       cy.get('#userInput')
+//     // Username field
+//     cy.get('#userInput')
 
-//       // Password field
-//       cy.get('#passwordInput')
+//     // Password field 
+//     cy.get('#passwordInput')
 
-//       // Login button
-//       cy.get('#__next')
-//         .children('div')
-//         .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//         .children('div')
-//         .children('form')
-//         .children('div')
-//         .children('button')
-//         .should('contain', 'Login')
-
-//       // Register button
-//       cy.get('#__next')
-//         .children('div')
-//         .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//         .children('div')
-//         .children('form')
-//         .children('div')
-//         .children('a')
-//         .should('contain', 'I dont have an account').click()
-
-//       // Check new URL
-//       cy.url().should('include', '/register')
-
-//       // Go back to login page
-//       cy.visit(base_url + 'login')
-
-//       // Type into username and verify
-//       // that the value has been updated
-//       cy.get('#userInput')
-//         .type('test')
-//         .should('have.value', 'test')
-
-//       // Type into password and verify
-//       // that the value has been updated
-//       cy.get('#passwordInput')
-//         .type('test')
-//         .should('have.value', 'test')
-//     })
+//     // Login button
+//     cy.get('#__next')
+//       .children('div')
+//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+//       .children('div')
+//       .children('form')
+//       .children('div')
+//       .children('button')
+//       .should('contain', 'Login')
 //   })
 
+//   it('Check link to register page', () => {
+//     // Register button
+//     cy.get('#__next')
+//       .children('div')
+//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+//       .children('div')
+//       .children('form')
+//       .children('div')
+//       .children('a')
+//       .should('contain', 'I dont have an account').click()
+
+//     // Check new URL 
+//     cy.url().should('include', '/register')
+
+//   })
+
+//   it('Check text fields', () => {
+//     // Go back to login page
+//     cy.visit(base_url + 'login')
+
+//     // Type into username and verify
+//     // that the value has been updated
+//     cy.get('#userInput')
+//       .type('test')
+//       .should('have.value', 'test')
+
+//     // Type into password and verify
+//     // that the value has been updated
+//     cy.get('#passwordInput')
+//       .type('test')
+//       .should('have.value', 'test')
+//   })
+// })
+  
 // describe('Register page', () => {
-//   it('Gets, types and asserts', () => {
+//   it('Checks elements on page', () => {
 //     cy.visit(base_url + 'register')
 
 //     // Username
@@ -63,7 +68,9 @@ var base_url = "https://handvask.tech/";
 
 //     // Confirm password
 //     cy.get('#confirmPasswordInput')
+//   })
 
+//   it('Check link to login page', () => {
 //     // Login
 //     cy.get('#__next')
 //       .children('div')
@@ -74,6 +81,9 @@ var base_url = "https://handvask.tech/";
 //       .children('a')
 //       .should('contain', 'I already have an account').click()
 
+//   })
+
+//   it('Checks text fields and register button', () => {
 //     cy.visit(base_url + 'register')
 
 //     // Type username
@@ -295,14 +305,73 @@ describe("Homepage", () => {
 // })
 
 // describe('Admin page', () => {
-//   it('Gets, types and asserts', () => {
-//     cy.visit(base_url + 'admin')
+//   it('Log in on admin user', () => {
+//     cy.visit(base_url)
 
+//     // Log in
+//     cy.get('#userInput')
+//       .type('asdf')
+
+//     cy.get('#passwordInput')
+//       .type('asdf')
+
+//     cy.get('#__next')
+//       .children('div')
+//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+//       .children('div')
+//       .children('form')
+//       .children('div')
+//       .children('button')
+//       .should('contain', 'Login').click()
+
+//   })
+
+//   it('Navigate to admin page and check contents', () => {
+//     cy.get('#mainNavbar')
+//       .children('ul.navbar-nav.me-auto.mb-2.mb-lg-0')
+//       .get('a')
+//       .contains('Admin').click()
+
+//     // Check table contains IDs
+//     cy.get('#__next')
+//       .children('div')
+//       .get('table')
+//       .children('thead')
+//       .get('tr')
+//       .should('contain', 'ID')
+
+//     // Check table contains usernames
+//     cy.get('#__next')
+//       .children('div')
+//       .get('table')
+//       .children('thead')
+//       .get('tr')
+//       .should('contain', 'Username')
+
+//     // Check table contains newly created user
+//     cy.get('#__next')
+//       .children('div')
+//       .get('table')
+//       .children('tbody')
+//       .should('contain', 'test_frontend' + random_int)
+
+//   })
+
+//   it('Check delete user functionality', () => {
+//     // Delete newly created user
+//     cy.get('#__next >')
+//       .children('div')
+//       .get('table')
+//       .children('tbody')
+//       .get('td.text-end')
+//       .children('div')
+//       .children('button')
+//       .last().click()
 //   })
 // })
 
 // describe('.mzn instances page', () => {
-//   it('Gets, types and asserts', () => {
+//   it('Open page and check contents', () => {
 //     cy.visit(base_url)
 
 //     // Log in
@@ -351,6 +420,8 @@ describe("Homepage", () => {
 //       .children('td')
 //       .should('contain', 'Name')
 
+//   })
+//   it('Add, delete, and edit instance', () => {
 //     // Add new instance
 //     cy.get('#__next')
 //       .children('div')
@@ -433,7 +504,7 @@ describe("Homepage", () => {
 // })
 
 // describe('.dzn instances page', () => {
-//   it('Gets, types and asserts', () => {
+//   it('Open page and check contents', () => {
 //     cy.visit(base_url)
 
 //     // Log in
@@ -482,6 +553,8 @@ describe("Homepage", () => {
 //       .children('td')
 //       .should('contain', 'Name')
 
+//   })
+//   it('Add, delete, and edit instance', () => {
 //     // Add new instance
 //     cy.get('#__next')
 //       .children('div')
@@ -564,7 +637,7 @@ describe("Homepage", () => {
 // })
 
 // describe('Crete new run file', () => {
-//   it('Gets, types and asserts', () => {
+//   it('Open page', () => {
 //     cy.visit(base_url)
 
 //     // Log in
@@ -590,7 +663,9 @@ describe("Homepage", () => {
 //       .children('div')
 //       .get('p')
 //       .contains('Create new run').click()
+//   })
 
+//   it('Create new run functionality', () => {
 //     // Open dropdown and select option
 //     cy.get('#__next')
 //       .children('div')
@@ -692,65 +767,5 @@ describe("Homepage", () => {
 //       .children('div')
 //       .children('div.card-header.d-flex.justify-content-between')
 //       .get('button.btn.btn-success.px.fw-bold').click()
-//   })
-// })
-
-// describe('Admin page', () => {
-//   it('Gets, types and asserts', () => {
-//     cy.visit(base_url)
-
-//     // Log in
-//     cy.get('#userInput')
-//       .type('asdf')
-
-//     cy.get('#passwordInput')
-//       .type('asdf')
-
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login').click()
-
-//     cy.get('#mainNavbar')
-//       .children('ul.navbar-nav.me-auto.mb-2.mb-lg-0')
-//       .get('a')
-//       .contains('Admin').click()
-
-//     // Check table contains IDs
-//     cy.get('#__next')
-//       .children('div')
-//       .get('table')
-//       .children('thead')
-//       .get('tr')
-//       .should('contain', 'ID')
-
-//     // Check table contains usernames
-//     cy.get('#__next')
-//       .children('div')
-//       .get('table')
-//       .children('thead')
-//       .get('tr')
-//       .should('contain', 'Username')
-
-//     // Check table contains newly created user
-//     cy.get('#__next')
-//       .children('div')
-//       .get('table')
-//       .children('tbody')
-//       .should('contain', 'test_frontend' + random_int)
-
-//     // Delete newly created user
-//     cy.get('#__next >')
-//       .children('div')
-//       .get('table')
-//       .children('tbody')
-//       .get('td.text-end')
-//       .children('div')
-//       .children('button')
-//       .last().click()
-//   })
+//   })  
 // })
