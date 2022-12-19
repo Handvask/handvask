@@ -50,7 +50,7 @@ var base_url = "https://handvask.tech/";
 
 //     // Type into password and verify
 //     // that the value has been updated
-//     cy.get('#passwordInput') 
+//     cy.get('#passwordInput')
 //       .type('test')
 //       .should('have.value', 'test')
 //   })
@@ -161,16 +161,16 @@ var base_url = "https://handvask.tech/";
 //       .children('button')
 //       .should('contain', 'Login').click()
 
-//       cy.url().should('not.include', '/login'); 
+//       cy.url().should('not.include', '/login')
 //   })
-// }) 
+// })
 
 describe("Homepage", () => {
   it("Login to page", () => {
     cy.visit(base_url);
 
     // Log in
-    cy.get("#userInput").type("julie"); 
+    cy.get("#userInput").type("julie");
 
     cy.get("#passwordInput").type("julie123");
 
@@ -188,111 +188,113 @@ describe("Homepage", () => {
   });
 
   it("Check table contains right attributes ", () => {
-    cy.get("div")
+    cy.get("#__next")
+      .children("div")
       .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
       .should("contain", "Status1");
-  }); 
 
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "ID");
 
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get("div")
-  //     .get("table")
-  //     .children("thead")
-  //     .children("tr")
-  //     .should("contain", "ID"); 
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Minizinc");
 
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get("div")
-  //     .get("table")
-  //     .children("thead")
-  //     .children("tr")
-  //     .should("contain", "Minizinc");
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Data");
 
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get("div")
-  //     .get("table")
-  //     .children("thead")
-  //     .children("tr")
-  //     .should("contain", "Data");
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Submit time");
 
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get("div")
-  //     .get("table")
-  //     .children("thead")
-  //     .children("tr")
-  //     .should("contain", "Submit time");
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Start time");
 
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get("div")
-  //     .get("table")
-  //     .children("thead")
-  //     .children("tr")
-  //     .should("contain", "Start time");
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "End time");
 
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get("div")
-  //     .get("table")
-  //     .children("thead")
-  //     .children("tr")
-  //     .should("contain", "End time");
+    cy.get("#__next")
+      .children("div")
+      .get("div")
+      .get("table")
+      .children("thead")
+      .children("tr")
+      .should("contain", "Result");
+  });
 
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get("div")
-  //     .get("table")
-  //     .children("thead")
-  //     .children("tr")
-  //     .should("contain", "Result");
-  // });
+  it("Side menu", () => {
+    // Side menu: Runs
+    cy.get("#__next")
+      .children("div")
+      .get(".position-relative")
+      .children("div")
+      .get("p")
+      .should("contain", "Runs");
 
-  // it("Side menu", () => {
-  //   // Side menu: Runs
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get(".position-relative")
-  //     .children("div")
-  //     .get("p")
-  //     .should("contain", "Runs");
+    // Side menu: Create new run
+    cy.get('#__next')
+      .children('div')
+      .get('.position-relative')
+      .children('div')
+      .get('p')
+      .should('contain', 'Create new run') 
 
-  //   // Side menu: Create new run
-  //   cy.get('#__next')
-  //     .children('div')
-  //     .get('.position-relative')
-  //     .children('div')
-  //     .get('p')
-  //     .should('contain', 'Create new run') 
+    // Side menu: .mzn instances
+    cy.get("#__next")
+      .children("div")
+      .get(".position-relative")
+      .children("div")
+      .get("p")
+      .should("contain", ".mzn instances");
 
-  //   // Side menu: .mzn instances
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get(".position-relative")
-  //     .children("div") 
-  //     .get("p")
-  //     .should("contain", ".mzn instances");
+    // Side menu: .dzn instances
+    cy.get("#__next")
+      .children("div")
+      .get(".position-relative")
+      .children("div")
+      .get("p")
+      .should("contain", ".dzn instances");
+  });
 
-  //   // Side menu: .dzn instances
-  //   cy.get("#__next")
-  //     .children("div")
-  //     .get(".position-relative")
-  //     .children("div")
-  //     .get("p")
-  //     .should("contain", ".dzn instances");
-  // });
-
-  // it("Log out", () => {
-  //   // Test log out
-  //   cy.get("#userDropdownMenu")
-  //     .children("ul")
-  //     .children("a")
-  //     .should("contain", "Log out")
-  //     .click({ force: true });
-  // });
+  it("Log out", () => {
+    // Test log out
+    cy.get("#userDropdownMenu")
+      .children("ul")
+      .children("a")
+      .should("contain", "Log out")
+      .click({ force: true });
+  });
 });
 
 // describe('Minizinc page', () => {
