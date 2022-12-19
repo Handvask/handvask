@@ -82,7 +82,6 @@ export default function useUser() {
 
   useEffect(() => {
     if (user) {
-      
       setCookie("handvask_tmp_user", JSON.stringify([user, token]), {
         maxAge: 60,
       });
