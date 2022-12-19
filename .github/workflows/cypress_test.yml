@@ -3,8 +3,8 @@ on:
   push:
     branches:
       - "cypress_frontend_testing"
-    paths:
-      - "handvask_frontend/**"
+    # paths:
+    #   - "handvask_frontend/**"
 jobs:
   build:
     runs-on: ubuntu-latest
