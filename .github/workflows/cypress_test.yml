@@ -31,4 +31,4 @@ jobs:
           start: npm start
           record: false
           working-directory: handvask_frontend
-          config-file: test/cypress.config.js
+          config-file: cypress.config.js
