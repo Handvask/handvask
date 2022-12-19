@@ -174,8 +174,8 @@ describe('Homepage', () => {
       .children('div')
       .children('button')
       .should('contain', 'Login').click() 
-  })
-
+  }) 
+ 
   it('Check table contains right attributes ', () => { 
     cy.get('#__next')
       .children('div')
