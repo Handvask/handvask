@@ -162,7 +162,7 @@ describe('Homepage', () => {
     // Log in
     cy.get('#userInput')
       .type('julie')
-
+ 
     cy.get('#passwordInput')  
       .type('julie123')
 
