@@ -1,4 +1,5 @@
 from datetime import datetime
+import sys
 from typing import List, Optional
 
 from fastapi import APIRouter, Body, Depends, HTTPException, Query
@@ -24,7 +25,7 @@ def progress(key=Depends(check_api_key), id: str = Body(), solver: str = Body())
     solver = select(s for s in Solver if s.name == solver)[:][0]
     if not solver:
         print("oh fuck oh no wrong solver supplied in init solver_select")
-        exit()
+        sys.exit()
 
     if run.status != Run_status.DONE:
         run.status = Run_status.PROVING_OPTIMALITY
@@ -34,7 +35,7 @@ def progress(key=Depends(check_api_key), id: str = Body(), solver: str = Body())
         )
         if not run_solvers:
             print("oh fuck oh no wrong solver supplied in run_solver select")
-            exit()
+            sys.exit()
         for run_solver in run_solvers:
             run_solver.progress = "JA"
 
@@ -58,7 +59,7 @@ def get_solvers(
     solver = select(s for s in Solver if s.name == solver)[:][0]
     if not solver:
         print("oh fuck oh no wrong solver supplied")
-        exit()
+        sys.exit()
 
     if run.status != Run_status.DONE:
         run.status = Run_status.DONE if optimal else Run_status.EXCEPTION

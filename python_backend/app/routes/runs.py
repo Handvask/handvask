@@ -64,10 +64,7 @@ def create_run(
                 for run in select(
                     run
                     for run in Run
-                    if (
-                        run.status.id == Run_status.RUNNING
-                        or run.status.id == Run_status.PROVING_OPTIMALITY
-                    )
+                    if run.status.id in (Run_status.RUNNING, Run_status.PROVING_OPTIMALITY)
                     and run.user.id == user_id
                 )[:]
             ]
@@ -207,6 +204,5 @@ def delete_run(
         if resp.ok:
             run.delete()
         return {"success": resp.ok}
-    else:
-        run.delete()
-        return {"success": True}
+    run.delete()
+    return {"success": True}
