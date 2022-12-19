@@ -1,0 +1,34 @@
+name: cypress testing.
+on:
+  push:
+    branches:
+      - "cypress_frontend_testing"
+    # paths:
+    #   - "handvask_frontend/**"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build env file
+        run: |
+          touch ./handvask_frontend/.env
+          echo "NEXT_PUBLIC_API_URL=${{secrets.NEXT_PUBLIC_API_URL}}" >> ./handvask_frontend/.env
+      # - name: Testing frontend
+      #   run: |
+      #     docker build ./handvask_frontend --tag handvask_frontend_handvask:latest -f ./handvask_frontend/Dockerfile.testing
+      - name: NPM install frontend
+        run: |
+          npm install --prefix ./handvask_frontend
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          build: npm run build
+          start: npm start
+          record: false
+          working-directory: handvask_frontend
+          config-file: cypress.config.js

@@ -80,6 +80,39 @@ def create_run(
     return {"success": resp.ok, "id": run.id}
 
 
+# TODO: test for correctness
+@router.post("/terminate")
+@db_session
+def terminate_run(
+    user_id: int = Depends(get_current_user_id),
+    run_id: int = Body(),
+    solvers: Optional[list[int]] = Body(default=None),
+):
+    run = Run[run_id]
+    admin = User[user_id].sys_admin
+    solvers = [
+        solver.name for solver in run.solvers if solvers is None or solver in solvers
+    ]
+
+    if run.user.id != user_id and not admin:
+        raise HTTPException(401, "Access denied")
+
+    resp = requests.post(
+        f"{getenv('MZN_MN_HOST')}/delete", json={"id": run_id, "solvers": solvers}
+    )
+
+    if resp.ok:
+        # TODO: make it so it's possible to tell if a run is fully terminated even if done over multiple calls
+        # (e.g. there are 3 solvers and first one call terminates 1 and then another terminates the remaining 2)
+        if len(solvers) == len(run.solvers):
+            run.end_time = datetime.now()
+            run.status = (
+                Run_status.TERMINATED_USER if not admin else Run_status.TERMINATED_ADMIN
+            )
+
+    return {"success": resp.ok, "id": run_id, "solvers": solvers}
+
+
 @router.get("", response_model=List[RunT])
 @db_session
 def get_runs(user_id=Depends(get_current_user_id), run_ids: List[int] = Query(None)):
