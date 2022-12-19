@@ -5,7 +5,7 @@ from fastapi import APIRouter, Body, Depends, HTTPException, Query
 from pony.orm import commit, db_session, select
 
 from ..middleware.api_key import check_api_key
-from ..Models import Run, Run_status, Solver, Run_Solver
+from ..Models import Run, Run_Solver, Run_status, Solver
 
 router = APIRouter(
     prefix="/minizinc",
@@ -29,8 +29,7 @@ def progress(key=Depends(check_api_key), id: str = Body(), solver: str = Body())
     if run.status != Run_status.DONE:
         run.status = Run_status.PROVING_OPTIMALITY
         run.best_solver = solver
-        run_solver: Run_Solver = run.run__solvers.select(
-            lambda s: s.id == solver.id)
+        run_solver: Run_Solver = run.run__solvers.select(lambda s: s.id == solver.id)
         if not run_solver:
             print("oh fuck oh no wrong solver supplied")
             exit()

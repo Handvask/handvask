@@ -11,12 +11,12 @@ from ..Models import (
     Dzn_instance,
     Mzn_instance,
     Run,
+    Run_Solver,
     Run_status,
     RunT,
     Solver,
     SuccessT,
     User,
-    Run_Solver
 )
 
 router = APIRouter(
@@ -143,7 +143,11 @@ def get_runs(user_id=Depends(get_current_user_id), run_ids: List[int] = Query(No
 
 @router.post("/delete/{run_id}", response_model=SuccessT)
 @db_session
-def delete_run(run_id: int, solver_ids: Optional[List[int]] = Body(embed=True), user_id=Depends(get_current_user_id)):
+def delete_run(
+    run_id: int,
+    solver_ids: Optional[List[int]] = Body(embed=True),
+    user_id=Depends(get_current_user_id),
+):
     try:
         run = Run[run_id]
     except:
