@@ -131,7 +131,7 @@ export default function Runs({
               <td>Execution time</td>
               <td>MZN status</td>
               <td>Result</td>
-              <th></th>
+              <th />
             </tr>
           </thead>
           <tbody>

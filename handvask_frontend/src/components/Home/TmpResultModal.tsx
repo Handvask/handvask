@@ -14,7 +14,7 @@ export default function TmpResultModal({ onClose, run }: TmpResultModalPropT) {
     <Modal
       title={`Inspect intermediary results for run ${run.id}`}
       onClose={onClose}
-      show={true}
+      show
       footer={
         <>
           <Button kind="secondary" onClick={onClose}>

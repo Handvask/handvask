@@ -26,7 +26,7 @@ export default function DeleteRunModal({
     run.solvers.forEach((runSolver) => {
       if (!runSolver.terminated) tmp[runSolver.solver.id] = false;
     });
-    console.log(run);
+    
     setSelectedForDeletion(tmp);
   }, [run]);
 
@@ -42,7 +42,7 @@ export default function DeleteRunModal({
     <Modal
       title={`Stopping solver(s) for run ${run.id}`}
       onClose={onClose}
-      show={true}
+      show
       footer={
         <>
           <AsyncBtn

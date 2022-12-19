@@ -17,7 +17,7 @@ export default function FinalResultModal({
     <Modal
       title={`Viewing final results for run ${run.id}`}
       onClose={onClose}
-      show={true}
+      show
       footer={
         <>
           <Button kind="secondary" onClick={onClose}>

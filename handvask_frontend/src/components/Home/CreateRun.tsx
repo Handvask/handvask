@@ -141,7 +141,7 @@ export default function CreateRun({
       },
       (r) => {
         setCreatingRun(false);
-        if (r.hasOwnProperty("id")) {
+        if (Object.prototype.hasOwnProperty.call(r, 'id')) {
           user.addRun(r.id);
         }
         if (r.success) {
