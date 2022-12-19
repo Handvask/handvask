@@ -2,7 +2,7 @@ name: Changes in backend, build
 on:
   push:
     branches:
-      - "backend_testing"
+      - "test_backend"
     paths:
       - "python_backend/**"
 jobs:
