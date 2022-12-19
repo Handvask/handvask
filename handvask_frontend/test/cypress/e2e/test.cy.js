@@ -1,169 +1,160 @@
 var random_int = Math.floor(Math.random() * 100);
 var base_url = "https://handvask.tech/";
 
-// describe('Login page', () => {
-//   it('Checks elements on page', () => {
-//     cy.visit(base_url)
+describe('Login page', () => {
+  it('Checks elements on page', () => {
+    cy.visit(base_url)
 
-//     // Username field
-//     cy.get('#userInput')
+    // Username field
+    cy.get('#userInput')
 
-//     // Password field 
-//     cy.get('#passwordInput')
+    // Password field 
+    cy.get('#passwordInput')
 
-//     // Login button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login')
-//   })
+    // Login button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .should('contain', 'Login')
 
-//   it('Check link to register page', () => {
-//     // Register button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('a')
-//       .should('contain', 'I dont have an account').click()
+    // Register button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('a')
+      .should('contain', 'I dont have an account').click()
 
-//     // Check new URL 
-//     cy.url().should('include', '/register')
+    // Check new URL 
+    cy.url().should('include', '/register')
 
-//   })
+    // Go back to login page
+    cy.visit(base_url + 'login')
 
-//   it('Check text fields', () => {
-//     // Go back to login page
-//     cy.visit(base_url + 'login')
+    // Type into username and verify
+    // that the value has been updated
+    cy.get('#userInput')
+      .type('test')
+      .should('have.value', 'test')
 
-//     // Type into username and verify
-//     // that the value has been updated
-//     cy.get('#userInput')
-//       .type('test')
-//       .should('have.value', 'test')
-
-//     // Type into password and verify
-//     // that the value has been updated
-//     cy.get('#passwordInput')
-//       .type('test')
-//       .should('have.value', 'test')
-//   })
-// })
+    // Type into password and verify
+    // that the value has been updated
+    cy.get('#passwordInput')
+      .type('test')
+      .should('have.value', 'test')
+  })
+})
   
-// describe('Register page', () => {
-//   it('Checks elements on page', () => {
-//     cy.visit(base_url + 'register')
+describe('Register page', () => {
+  it('Checks elements on page', () => {
+    cy.visit(base_url + 'register')
 
-//     // Username
-//     cy.get('#userInput')
+    // Username
+    cy.get('#userInput')
 
-//     // Password
-//     cy.get('#passwordInput')
+    // Password
+    cy.get('#passwordInput')
 
-//     // Confirm password
-//     cy.get('#confirmPasswordInput')
-//   })
+    // Confirm password
+    cy.get('#confirmPasswordInput')
 
-//   it('Check link to login page', () => {
-//     // Login
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('a')
-//       .should('contain', 'I already have an account').click()
+    // Login
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('a')
+      .should('contain', 'I already have an account').click()
 
-//   })
+    cy.visit(base_url + 'register')
 
-//   it('Checks text fields and register button', () => {
-//     cy.visit(base_url + 'register')
+    // Type username
+    cy.get('#userInput')
+      .clear()
+      .type('test_frontend' + random_int)
+      .should('have.value', 'test_frontend' + random_int)
 
-//     // Type username
-//     cy.get('#userInput')
-//       .clear()
-//       .type('test_frontend' + random_int)
-//       .should('have.value', 'test_frontend' + random_int)
+    // Type password
+    cy.get('#passwordInput')
+      .clear()
+      .type('test_frontend' + random_int)
+      .should('have.value', 'test_frontend' + random_int)
 
-//     // Type password
-//     cy.get('#passwordInput')
-//       .clear()
-//       .type('test_frontend' + random_int)
-//       .should('have.value', 'test_frontend' + random_int)
+    // Type password
+    cy.get('#confirmPasswordInput')
+      .clear()
+      .type('test_frontend' + random_int)
+      .should('have.value', 'test_frontend' + random_int)
 
-//     // Type password
-//     cy.get('#confirmPasswordInput')
-//       .clear()
-//       .type('test_frontend' + random_int)
-//       .should('have.value', 'test_frontend' + random_int)
+    // Register button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .contains('Register')
+      //.click()
+  })
+})
 
-//     // Register button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .contains('Register').click()
-//   })
-// })
+describe('Login functionality', () => {
+  it('Gets, types and asserts', () => {
+    cy.visit(base_url)
 
-// describe('Login functionality', () => {
-//   it('Gets, types and asserts', () => {
-//     cy.visit(base_url)
+    // Type wrong username
+    cy.get('#userInput')
+      .type('testwrongusername')
 
-//     // Type wrong username
-//     cy.get('#userInput')
-//       .type('testwrongusername')
+    // Type wrong password
+    cy.get('#passwordInput')
+      .type('testwrongpassword')
 
-//     // Type wrong password
-//     cy.get('#passwordInput')
-//       .type('testwrongpassword')
+    // Login button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .should('contain', 'Login').click()
 
-//     // Login button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login').click()
+    // Ensure still on log in page
+    cy.url().should('include', '/login')
 
-//     // Ensure still on log in page
-//     cy.url().should('include', '/login')
+    // Type correct username
+    cy.get('#userInput')
+      .clear()
+      .type('julie')
 
-//     // Type correct username
-//     cy.get('#userInput')
-//       .clear()
-//       .type('test_frontend' + random_int)
+    // Type correct password
+    cy.get('#passwordInput')
+      .clear()
+      .type('julie123')
 
-//     // Type correct password
-//     cy.get('#passwordInput')
-//       .clear()
-//       .type('test_frontend' + random_int)
+    // Login button
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .should('contain', 'Login').click()
 
-//     // Login button
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login').click()
-
-//       cy.url().should('not.include', '/login')
-//   })
-// })
+      cy.url().should('not.include', '/login')
+  })
+})
 
 describe("Homepage", () => {
   it("Login to page", () => {
@@ -298,468 +289,456 @@ describe("Homepage", () => {
 //   })
 // })
 
-// describe('Admin page', () => {
-//   it('Log in on admin user', () => {
-//     cy.visit(base_url)
+describe('Admin page', () => {
+  it('Log in on admin user', () => {
+    cy.visit(base_url)
 
-//     // Log in
-//     cy.get('#userInput')
-//       .type('asdf')
+    // Log in
+    cy.get('#userInput')
+      .type('asdf')
 
-//     cy.get('#passwordInput')
-//       .type('asdf')
+    cy.get('#passwordInput')
+      .type('asdf')
 
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .should('contain', 'Login').click()
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .should('contain', 'Login').click()
 
-//   })
+    cy.get('#mainNavbar')
+      .children('ul.navbar-nav.me-auto.mb-2.mb-lg-0')
+      .get('a')
+      .contains('Admin').click()
 
-//   it('Navigate to admin page and check contents', () => {
-//     cy.get('#mainNavbar')
-//       .children('ul.navbar-nav.me-auto.mb-2.mb-lg-0')
-//       .get('a')
-//       .contains('Admin').click()
+    // Check table contains IDs
+    cy.get('#__next')
+      .children('div')
+      .get('table')
+      .children('thead')
+      .get('tr')
+      .should('contain', 'ID')
 
-//     // Check table contains IDs
-//     cy.get('#__next')
-//       .children('div')
-//       .get('table')
-//       .children('thead')
-//       .get('tr')
-//       .should('contain', 'ID')
+    // Check table contains usernames
+    cy.get('#__next')
+      .children('div')
+      .get('table')
+      .children('thead')
+      .get('tr')
+      .should('contain', 'Username')
 
-//     // Check table contains usernames
-//     cy.get('#__next')
-//       .children('div')
-//       .get('table')
-//       .children('thead')
-//       .get('tr')
-//       .should('contain', 'Username')
+    // // Check table contains newly created user
+    // cy.get('#__next')
+    //   .children('div')
+    //   .get('table')
+    //   .children('tbody')
+    //   .should('contain', 'test_frontend' + random_int)
 
-//     // Check table contains newly created user
-//     cy.get('#__next')
-//       .children('div')
-//       .get('table')
-//       .children('tbody')
-//       .should('contain', 'test_frontend' + random_int)
+    // // Delete newly created user
+    // cy.get('#__next >')
+    //   .children('div')
+    //   .get('table')
+    //   .children('tbody')
+    //   .get('td.text-end')
+    //   .children('div')
+    //   .children('button')
+    //   .last().click()
+  })
+})
 
-//   })
+describe('.mzn instances page', () => {
+  it('Open page and check contents', () => {
+    cy.visit(base_url)
 
-//   it('Check delete user functionality', () => {
-//     // Delete newly created user
-//     cy.get('#__next >')
-//       .children('div')
-//       .get('table')
-//       .children('tbody')
-//       .get('td.text-end')
-//       .children('div')
-//       .children('button')
-//       .last().click()
-//   })
-// })
+    // Log in
+    cy.get('#userInput')
+      .type('julie')
 
-// describe('.mzn instances page', () => {
-//   it('Open page and check contents', () => {
-//     cy.visit(base_url)
+    cy.get('#passwordInput')
+      .type('julie123')
 
-//     // Log in
-//     cy.get('#userInput')
-//       .type('test_frontend' + random_int)
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .contains('Login').click()
 
-//     cy.get('#passwordInput')
-//       .type('test_frontend' + random_int)
+    // Click .mzn instances
+    cy.get('#__next')
+      .children('div')
+      .get('.position-relative')
+      .children('div')
+      .get('p')
+      .contains('.mzn instances').click()
 
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .contains('Login').click()
+    // Make sure table contains id
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('thead')
+      .children('tr')
+      .children('td')
+      .should('contain', 'ID')
 
-//     // Click .mzn instances
-//     cy.get('#__next')
-//       .children('div')
-//       .get('.position-relative')
-//       .children('div')
-//       .get('p')
-//       .contains('.mzn instances').click()
+    // Make sure table contains Name
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('thead')
+      .children('tr')
+      .children('td')
+      .should('contain', 'Name')
 
-//     // Make sure table contains id
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('thead')
-//       .children('tr')
-//       .children('td')
-//       .should('contain', 'ID')
+    // Add new instance
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('button')
+      .contains('Add new instance!').click()
 
-//     // Make sure table contains Name
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('thead')
-//       .children('tr')
-//       .children('td')
-//       .should('contain', 'Name')
+    // Delete instance
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .get('td.text-end')
+      .children('div')
+      .children('button.btn.btn-outline-danger').first().click()
 
-//   })
-//   it('Add, delete, and edit instance', () => {
-//     // Add new instance
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('button')
-//       .contains('Add new instance!').click()
+    // Add new instance
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('button')
+      .contains('Add new instance!').click()
 
-//     // Delete instance
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('tbody')
-//       .get('td.text-end')
-//       .children('div')
-//       .children('button.btn.btn-outline-danger').first().click()
+    // Edit instance
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .get('td.text-end')
+      .children('div')
+      .children('button.btn.btn-outline-dark').first().click()
 
-//     // Add new instance
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('button')
-//       .contains('Add new instance!').click()
+    // Type new name
+    cy.get('#nameInput').clear().type('Frontend test name')
 
-//     // Edit instance
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('tbody')
-//       .get('td.text-end')
-//       .children('div')
-//       .children('button.btn.btn-outline-dark').first().click()
+    // Type new model
+    cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
+      .children('div')
+      .get('textarea')
+      .type('Frontend test model')
 
-//     // Type new name
-//     cy.get('#nameInput').clear().type('Frontend test name')
+    // Save
+    cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
+      .children('div')
+      .children('div.modal-footer')
+      .children(' button.btn.btn-success')
+      .contains('Save').click()
 
-//     // Type new model
-//     cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
-//       .children('div')
-//       .get('textarea')
-//       .type('Frontend test model')
+    // See changes to name
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .contains('Frontend test name')
 
-//     // Save
-//     cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
-//       .children('div')
-//       .children('div.modal-footer')
-//       .children(' button.btn.btn-success')
-//       .contains('Save').click()
+    // See changes to model
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .get('td.text-end')
+      .children('div')
+      .children('button.btn.btn-outline-dark').first().click( )
 
-//     // See changes to name
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('tbody')
-//       .contains('Frontend test name')
+    cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
+      .children('div')
+      .get('textarea')
+      .contains('Frontend test model')
+  })
+})
 
-//     // See changes to model
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('tbody')
-//       .get('td.text-end')
-//       .children('div')
-//       .children('button.btn.btn-outline-dark').first().click( )
+describe('.dzn instances page', () => {
+  it('Open page and check contents', () => {
+    cy.visit(base_url)
 
-//     cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
-//       .children('div')
-//       .get('textarea')
-//       .contains('Frontend test model')
-//   })
-// })
+    // Log in
+    cy.get('#userInput')
+      .type('julie')
 
-// describe('.dzn instances page', () => {
-//   it('Open page and check contents', () => {
-//     cy.visit(base_url)
+    cy.get('#passwordInput')
+      .type('julie123')
 
-//     // Log in
-//     cy.get('#userInput')
-//       .type('test_frontend' + random_int)
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .contains('Login').click()
 
-//     cy.get('#passwordInput')
-//       .type('test_frontend' + random_int)
+    // Click .dzn instances
+    cy.get('#__next')
+      .children('div')
+      .get('.position-relative')
+      .children('div')
+      .get('p')
+      .contains('.dzn instances').click()
 
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .contains('Login').click()
+    // Make sure table contains id
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('thead')
+      .children('tr')
+      .children('td')
+      .should('contain', 'ID')
 
-//     // Click .dzn instances
-//     cy.get('#__next')
-//       .children('div')
-//       .get('.position-relative')
-//       .children('div')
-//       .get('p')
-//       .contains('.dzn instances').click()
+    // Make sure table contains Name
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('thead')
+      .children('tr')
+      .children('td')
+      .should('contain', 'Name')
 
-//     // Make sure table contains id
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('thead')
-//       .children('tr')
-//       .children('td')
-//       .should('contain', 'ID')
+    // Add new instance
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('button')
+      .contains('Add new instance!').click()
 
-//     // Make sure table contains Name
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('thead')
-//       .children('tr')
-//       .children('td')
-//       .should('contain', 'Name')
+    // Delete instance
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .get('td.text-end')
+      .children('div')
+      .children('button.btn.btn-outline-danger').first().click()
 
-//   })
-//   it('Add, delete, and edit instance', () => {
-//     // Add new instance
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('button')
-//       .contains('Add new instance!').click()
+    // Add new instance
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('button')
+      .contains('Add new instance!').click()
 
-//     // Delete instance
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('tbody')
-//       .get('td.text-end')
-//       .children('div')
-//       .children('button.btn.btn-outline-danger').first().click()
+    // Edit instance
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .get('td.text-end')
+      .children('div')
+      .children('button.btn.btn-outline-dark').first().click()
 
-//     // Add new instance
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('button')
-//       .contains('Add new instance!').click()
+    // Type new name
+    cy.get('#nameInput').clear().type('Frontend test name')
 
-//     // Edit instance
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('tbody')
-//       .get('td.text-end')
-//       .children('div')
-//       .children('button.btn.btn-outline-dark').first().click()
+    // Type new data file
+    cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
+      .children('div')
+      .get('textarea')
+      .type('Frontend test data')
 
-//     // Type new name
-//     cy.get('#nameInput').clear().type('Frontend test name')
+    // Save
+    cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
+      .children('div')
+      .children('div.modal-footer')
+      .children(' button.btn.btn-success')
+      .contains('Save').click()
 
-//     // Type new data file
-//     cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
-//       .children('div')
-//       .get('textarea')
-//       .type('Frontend test data')
+    // See changes to name
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .contains('Frontend test name')
 
-//     // Save
-//     cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
-//       .children('div')
-//       .children('div.modal-footer')
-//       .children(' button.btn.btn-success')
-//       .contains('Save').click()
+    // See changes to data file
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .get('td.text-end')
+      .children('div')
+      .children('button.btn.btn-outline-dark').first().click( )
 
-//     // See changes to name
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('tbody')
-//       .contains('Frontend test name')
+    cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
+      .children('div')
+      .get('textarea')
+      .contains('Frontend test data')
+  })
+})
 
-//     // See changes to data file
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('table')
-//       .children('tbody')
-//       .get('td.text-end')
-//       .children('div')
-//       .children('button.btn.btn-outline-dark').first().click( )
+describe('Crete new run file', () => {
+  it('Open page', () => {
+    cy.visit(base_url)
 
-//     cy.get('div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm')
-//       .children('div')
-//       .get('textarea')
-//       .contains('Frontend test data')
-//   })
-// })
+    // Log in
+    cy.get('#userInput')
+      .type('julie')
 
-// describe('Crete new run file', () => {
-//   it('Open page', () => {
-//     cy.visit(base_url)
+    cy.get('#passwordInput')
+      .type('julie123')
 
-//     // Log in
-//     cy.get('#userInput')
-//       .type('test_frontend' + random_int)
+    cy.get('#__next')
+      .children('div')
+      .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
+      .children('div')
+      .children('form')
+      .children('div')
+      .children('button')
+      .contains('Login').click()
 
-//     cy.get('#passwordInput')
-//       .type('test_frontend' + random_int)
+    // Click create new run
+    cy.get('#__next')
+      .children('div')
+      .get('.position-relative')
+      .children('div')
+      .get('p')
+      .contains('Create new run').click()
+      
+    // Open dropdown and select option
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('div')
+      .get('div')
+      .children('div')
+      .get('div.css-19bb58m').click()
+      .get('#react-select-2-option-0')
+      .click()
 
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.vw-100.d-flex.justify-content-center.align-items-center.bg-light.px-5')
-//       .children('div')
-//       .children('form')
-//       .children('div')
-//       .children('button')
-//       .contains('Login').click()
+    // Next page
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('div')
+      .children('div.card-header.d-flex.justify-content-end')
+      .children('button').click()
 
-//     // Click create new run
-//     cy.get('#__next')
-//       .children('div')
-//       .get('.position-relative')
-//       .children('div')
-//       .get('p')
-//       .contains('Create new run').click()
-//   })
+    // Open dropdown and select option
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('div')
+      .get('div')
+      .children('div')
+      .get('div.css-19bb58m').click()
+      .get('#react-select-3-option-0')
+      .click()
 
-//   it('Create new run functionality', () => {
-//     // Open dropdown and select option
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('div')
-//       .get('div')
-//       .children('div')
-//       .get('div.css-19bb58m').click()
-//       .get('#react-select-2-option-0')
-//       .click()
+    // Next page
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('div')
+      .children('div.card-header.d-flex.justify-content-between')
+      .get('button.btn.btn-primary.px.fw-bold').click()
 
-//     // Next page
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('div')
-//       .children('div.card-header.d-flex.justify-content-end')
-//       .children('button').click()
+    // Open dropdown and select option
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('div')
+      .get('div')
+      .children('div')
+      .get('div.css-19bb58m').click()
+      .get('#react-select-4-option-0')
+      .click()
 
-//     // Open dropdown and select option
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('div')
-//       .get('div')
-//       .children('div')
-//       .get('div.css-19bb58m').click()
-//       .get('#react-select-3-option-0')
-//       .click()
+    // Next page
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('div')
+      .children('div.card-header.d-flex.justify-content-between')
+      .get('button.btn.btn-primary.px.fw-bold').click()
 
-//     // Next page
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('div')
-//       .children('div.card-header.d-flex.justify-content-between')
-//       .get('button.btn.btn-primary.px.fw-bold').click()
+    // Ensure right model, data and solver is chosen
+    cy.get('#reviewMznHeader')
+      .children('button')
+      .children('span.ms-2')
+      .should('contain', 'Frontend test name').click()
 
-//     // Open dropdown and select option
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('div')
-//       .get('div')
-//       .children('div')
-//       .get('div.css-19bb58m').click()
-//       .get('#react-select-4-option-0')
-//       .click()
+    cy.get('#reviewMznHeader')
+      .get('pre')
+      .children('code')
+      .should('contain', 'Frontend test model')
 
-//     // Next page
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('div')
-//       .children('div.card-header.d-flex.justify-content-between')
-//       .get('button.btn.btn-primary.px.fw-bold').click()
+    cy.get('#reviewDznHeader')
+      .children('button')
+      .children('span.ms-2')
+      .should('contain', 'Frontend test name').click()
 
-//     // Ensure right model, data and solver is chosen
-//     cy.get('#reviewMznHeader')
-//       .children('button')
-//       .children('span.ms-2')
-//       .should('contain', 'Frontend test name').click()
+    cy.get('#reviewDznHeader')
+      .get('pre')
+      .children('code')
+      .should('contain', 'Frontend test model')
 
-//     cy.get('#reviewMznHeader')
-//       .get('pre')
-//       .children('code')
-//       .should('contain', 'Frontend test model')
+    cy.get('#reviewSolverHeader')
+      .children('button')
+      .should('contain', '1 Solver selected').click()
 
-//     cy.get('#reviewDznHeader')
-//       .children('button')
-//       .children('span.ms-2')
-//       .should('contain', 'Frontend test name').click()
+    cy.get('#reviewSolverHeader')
+      .get('ul')
+      .children('li')
+      .should('contain', 'gecode')
 
-//     cy.get('#reviewDznHeader')
-//       .get('pre')
-//       .children('code')
-//       .should('contain', 'Frontend test model')
-
-//     cy.get('#reviewSolverHeader')
-//       .children('button')
-//       .should('contain', '1 Solver selected').click()
-
-//     cy.get('#reviewSolverHeader')
-//       .get('ul')
-//       .children('li')
-//       .should('contain', 'gecode')
-
-//     // Run
-//     cy.get('#__next')
-//       .children('div')
-//       .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-//       .children('div')
-//       .children('div')
-//       .children('div.card-header.d-flex.justify-content-between')
-//       .get('button.btn.btn-success.px.fw-bold').click()
-//   })  
-// })
+    // Run
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('div')
+      .children('div.card-header.d-flex.justify-content-between')
+      .get('button.btn.btn-success.px.fw-bold').click()
+  })  
+})
