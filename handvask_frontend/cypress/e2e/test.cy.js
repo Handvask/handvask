@@ -163,7 +163,7 @@ describe('Homepage', () => {
     cy.get('#userInput')
       .type('julie')
 
-    cy.get('#passwordInput')
+    cy.get('#passwordInput')  
       .type('julie123')
 
     cy.get('#__next')
