@@ -27,8 +27,10 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v5
         with:
-          build: npm run build
-          start: npm start
+          browser: chrome
+          headed: true
+          # build: npm run build
+          # start: npm start
           record: false
           working-directory: handvask_frontend
           config-file: cypress.config.js

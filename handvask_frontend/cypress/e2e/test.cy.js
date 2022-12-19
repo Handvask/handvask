@@ -263,12 +263,12 @@ describe("Homepage", () => {
       .should("contain", "Runs");
 
     // Side menu: Create new run
-    cy.get("#__next")
-      .children("div")
-      .get(".position-relative")
-      .children("div")
-      .get("p")
-      .should("contain", "Create new run");
+    cy.get('#__next')
+      .children('div')
+      .get('.position-relative')
+      .children('div')
+      .get('p')
+      .should('contain', 'Create new run') 
 
     // Side menu: .mzn instances
     cy.get("#__next")
