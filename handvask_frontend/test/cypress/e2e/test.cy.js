@@ -191,7 +191,7 @@ describe("Homepage", () => {
     cy.get("div")
       .get("div")
       .should("contain", "Status1");
-  });
+  }); 
 
 
   //   cy.get("#__next")
