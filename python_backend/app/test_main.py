@@ -423,25 +423,6 @@ class Test_admin_update_permission:
 # Test for Runs
 
 
-class Test_create_runs:
-    @staticmethod
-    def create_runs(token, mzn_id, dzn_id, solvers):
-        access_token = "Bearer " + token
-        url = "/runs/create"
-        response = client.post(
-            url,
-            json={"mzn_id": mzn_id, "dzn_id": dzn_id, "solvers": solvers},
-            headers={"Authorization": access_token},
-        )
-        return response
-
-    # def test_create_runs_success(self, token):
-    #     return 0
-
-    # def test_create_runs_fail():
-    #     return 0
-
-
 class Test_get_runs:
     @staticmethod
     def get_runs(token, run_ids):
