@@ -16,6 +16,7 @@ from ..Models import (
     Solver,
     SuccessT,
     User,
+    Run_Solver
 )
 
 router = APIRouter(
@@ -55,12 +56,13 @@ def create_run(
         raise HTTPException(401, "Access denied")
     run = Run(
         user=user_id,
-        solvers=db_solvers,
         mzn_instance=mzn,
         dzn_instance=dzn,
         status=Run_status.SUBMITTED,
     )
     commit()
+    for solver in db_solvers:
+        Run_Solver(solver=solver, run=run, terminated=False)
     resp = requests.post(
         f"{getenv('MZN_MN_HOST')}/solve",
         json={
@@ -141,7 +143,7 @@ def get_runs(user_id=Depends(get_current_user_id), run_ids: List[int] = Query(No
 
 @router.post("/delete/{run_id}", response_model=SuccessT)
 @db_session
-def delete_run(run_id: int, user_id=Depends(get_current_user_id)):
+def delete_run(run_id: int, solver_ids: Optional[List[int]] = Body(embed=True), user_id=Depends(get_current_user_id)):
     try:
         run = Run[run_id]
     except:
