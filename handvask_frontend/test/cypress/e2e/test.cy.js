@@ -695,23 +695,23 @@ describe('Create new run', () => {
       .children('li')
       .should('contain', 'gecode')
 
-    // // Run
-    // cy.get('#__next')
-    //   .children('div')
-    //   .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-    //   .children('div')
-    //   .children('div')
-    //   .children('div.card-header.d-flex.justify-content-between')
-    //   .get('button.btn.btn-success.px.fw-bold').click()
+    // Run
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('div')
+      .children('div.card-header.d-flex.justify-content-between')
+      .get('button.btn.btn-success.px.fw-bold').click()
     
-    // cy.get('#__next')
-    //   .children('div')
-    //   .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
-    //   .children('div')
-    //   .children('table')
-    //   .children('tbody')
-    //   .get('span')
-    //   .should('contain', 'running')
+    cy.get('#__next')
+      .children('div')
+      .children('div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5')
+      .children('div')
+      .children('table')
+      .children('tbody')
+      .get('span')
+      .should('contain', 'running')
   })  
 })
 
@@ -827,10 +827,3 @@ describe('Admin page', () => {
       .last().click()
   })
 })
-
-// describe('Logs page', () => {
-//   it('Gets, types and asserts', () => {
-//     cy.visit(base_url + 'handvask')
-
-//   })
-// })
