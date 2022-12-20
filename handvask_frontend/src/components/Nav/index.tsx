@@ -47,11 +47,6 @@ export default function Nav({ user }: NavPropT) {
                 Home
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" href="/handvask">
-                Minizinc
-              </NavLink>
-            </li>
             {admin_button()}
           </ul>
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">

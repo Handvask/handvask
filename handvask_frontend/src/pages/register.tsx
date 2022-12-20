@@ -119,7 +119,7 @@ export default function Register() {
                   Register
                 </AsyncBtn>
                 <Link href="/login" className="mt-2">
-                  I already have an account
+                  I already have an account.
                 </Link>
               </div>
             </form>

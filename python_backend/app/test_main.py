@@ -2,9 +2,18 @@ import os
 
 import pytest
 from fastapi.testclient import TestClient
-from pony.orm import commit, db_session
+from pony.orm import commit, db_session, select
 
-from .Models import DBHandler, Solver, Sys_admin, User
+from .Models import (
+    DBHandler,
+    Dzn_instance,
+    Mzn_instance,
+    Run,
+    Run_status,
+    Solver,
+    Sys_admin,
+    User,
+)
 
 dbh = DBHandler()
 dbh.make_test_conn()
@@ -23,10 +32,10 @@ def db_conn():
     os.system(f"rm {os.path.dirname(__file__)}/db.sqlite")
 
 
-def test_main():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Hello From Handvask Backend!"}
+# def test_main():
+#     response = client.get("/")
+#     assert response.status_code == 200
+#     assert response.json() == {"message": "Hello From Handvask Backend!"}
 
 
 # Auth
@@ -89,10 +98,13 @@ class Test_Login:
 
 @pytest.fixture
 def token():
-    authentication = Test_Login()
-    response = authentication.login("asdf", "asdf")
-    token = dict(response.json())["access_token"]
-    return token
+    def _data(id, pwd):
+        authentication = Test_Login()
+        response = authentication.login(id, pwd)
+        token = dict(response.json())["access_token"]
+        return token
+
+    return _data
 
 
 # Instances
@@ -109,6 +121,7 @@ class Test_Create_MZN:
         return response
 
     def test_create_success(self, token):
+        token = token("asdf", "asdf")
         response = self.create_mzn(token)
         assert response.status_code == 200
         assert dict(response.json())["id"] == 1
@@ -128,6 +141,7 @@ class Test_Get_MZN:
         return response
 
     def test_get_mzn_success(self, token):
+        token = token("asdf", "asdf")
         response = self.get_mzn(1, token)
         assert response.status_code == 200
         assert dict(response.json()[0])["id"] == 1
@@ -146,11 +160,13 @@ class Test_Update_MZN:
         return response
 
     def test_update_mzn_success(self, token):
+        token = token("asdf", "asdf")
         response = self.update_mzn(1, "update_test", "", token)
         assert response.status_code == 200
         assert dict(response.json())["success"] is True
 
     def test_update_mzn_fail(self, token):
+        token = token("asdf", "asdf")
         response = self.update_mzn(2, "update_test", "", token)
         assert response.status_code == 404
 
@@ -164,11 +180,13 @@ class Test_Delete_MZN:
         return response
 
     def test_delete_mzn_success(self, token):
+        token = token("asdf", "asdf")
         response = self.delete_mzn(1, token)
         assert response.status_code == 200
         assert dict(response.json())["success"] is True
 
     def test_delete_mzn_fail(self, token):
+        token = token("asdf", "asdf")
         response = self.delete_mzn(2, token)
         assert response.status_code == 404
 
@@ -186,6 +204,7 @@ class Text_Create_DZN:
         return response
 
     def test_create_dzn_success(self, token):
+        token = token("asdf", "asdf")
         response = self.create_dzn(token)
         assert response.status_code == 200
         assert dict(response.json())["id"] == 1
@@ -205,11 +224,13 @@ class Text_Get_DZN:
         return response
 
     def test_get_dzn_success(self, token):
+        token = token("asdf", "asdf")
         response = self.get_dzn(1, token)
         assert response.status_code == 200
         assert dict(response.json()[0])["id"] == 1
 
     def test_get_dzn_fail(self, token):
+        token = token("asdf", "asdf")
         response = self.get_dzn(2, token)
         assert response.status_code == 404
 
@@ -227,11 +248,13 @@ class Text_Update_DZN:
         return response
 
     def test_update_dzn_success(self, token):
+        token = token("asdf", "asdf")
         response = self.update_dzn(1, "update_test", "", token)
         assert response.status_code == 200
         assert dict(response.json())["success"] is True
 
     def test_fail(self, token):
+        token = token("asdf", "asdf")
         response = self.update_dzn(2, "update_test", "", token)
         assert response.status_code == 404
 
@@ -245,11 +268,13 @@ class Text_Delete_DZN:
         return response
 
     def test_delete_dzn_success(self, token):
+        token = token("asdf", "asdf")
         response = self.delete_dzn(1, token)
         assert response.status_code == 200
         assert dict(response.json())["success"] is True
 
     def test_delete_dzn_fail(self, token):
+        token = token("asdf", "asdf")
         response = self.delete_dzn(2, token)
         assert response.status_code == 404
 
@@ -268,6 +293,7 @@ class Test_Solvers:
     def test_solvers_success(self, token):
         Solver(id="1", name="test_solver")
         commit()
+        token = token("asdf", "asdf")
         response = self.solvers(token)
         assert response.status_code == 200
         assert dict(response.json()[0])["id"] == 1
@@ -285,6 +311,7 @@ class Test_Get_UserInfo:
         return response
 
     def test_get_userInfo_success(self, token):
+        token = token("asdf", "asdf")
         response = self.get_userInfo(token)
         assert response.status_code == 200
         assert dict(response.json())["id"] == 1
@@ -298,6 +325,7 @@ class Test_Get_All_UserInfo:
         return response
 
     def test_get_all_userinfo_fail(self, token):
+        token = token("asdf", "asdf")
         response = self.get_all_userInfo(token)
         assert response.status_code == 401
 
@@ -305,6 +333,7 @@ class Test_Get_All_UserInfo:
     def test_get_all_userinfo_success(self, token):
         Sys_admin(id=1, user=1)
         commit()
+        token = token("asdf", "asdf")
         response = self.get_all_userInfo(token)
         assert response.status_code == 200
         assert dict(response.json()[0])["id"] == 1
@@ -321,6 +350,7 @@ class Test_Delete_User:
         return response
 
     def test_delete_user_fail(self, token):
+        token = token("asdf", "asdf")
         response = self.delete_user(1, 2, token)
         assert response.status_code == 404
 
@@ -328,6 +358,139 @@ class Test_Delete_User:
     def test_delete_user_success(self, token):
         User(username="1234", password="1234")
         commit()
+        token = token("asdf", "asdf")
         response = self.delete_user(1, 2, token)
         assert response.status_code == 200
         assert dict(response.json())["success"] is True
+
+
+# Test for Admin
+
+
+class Test_admin_update_quota:
+    @staticmethod
+    def update_quota(user_id, cpu_num, token):
+        access_token = "Bearer " + token
+        url = "/admin/user_quota"
+        response = client.post(
+            url,
+            json={"user_id": user_id, "max_cpu": cpu_num},
+            headers={"Authorization": access_token},
+        )
+        return response
+
+    def test_update_quota_success(self, token):
+        register = Test_Register()
+        register.register("1234", "1234")
+        token = token("asdf", "asdf")
+        response = self.update_quota(3, 4, token)
+        assert response.status_code == 200
+        assert dict(response.json())["success"] is True
+
+    def test_update_quota_fail(self, token):
+        token = token("asdf", "asdf")
+        response = self.update_quota(2, 4, token)
+        assert response.status_code == 404
+
+
+class Test_admin_update_permission:
+    @staticmethod
+    def update_permission(user_id, token):
+        access_token = "Bearer " + token
+        url = "/admin/user_permission/" + str(user_id)
+        response = client.post(url, headers={"Authorization": access_token})
+        return response
+
+    @db_session
+    def test_update_permission_user_to_admin(self, token):
+        token = token("asdf", "asdf")
+        response = self.update_permission(3, token)
+        assert response.status_code == 200
+        assert dict(response.json())["success"] is True
+
+    def test_update_permission_admin_to_user(self, token):
+        token = token("asdf", "asdf")
+        response = self.update_permission(3, token)
+        assert response.status_code == 200
+        assert dict(response.json())["success"] is True
+
+    def test_update_permission_fail(self, token):
+        token = token("asdf", "asdf")
+        response = self.update_permission(2, token)
+        assert response.status_code == 404
+
+
+# Test for Runs
+
+
+class Test_get_runs:
+    @staticmethod
+    def get_runs(token, run_ids):
+        access_token = "Bearer " + token
+        response = client.get(
+            "/runs",
+            params={"run_ids": run_ids},
+            headers={"Authorization": access_token},
+        )
+        return response
+
+    @staticmethod
+    @db_session
+    def make_run_data_for_test():
+        # Run status
+        Run_status(id=1, name="submitted")
+        Run_status(id=2, name="running")
+        Run_status(id=3, name="terminated(user)")
+        Run_status(id=4, name="terminated(admin)")
+        Run_status(id=5, name="done")
+        Run_status(id=6, name="exception")
+
+        # Run instance for user1
+        mzn = Mzn_instance(user=1, contents="test")
+        dzn = Dzn_instance(user=1, contents="test")
+        solver = select(s for s in Solver if s.id == 1)[:]
+        Run(
+            user=1,
+            solvers=solver,
+            mzn_instance=mzn,
+            dzn_instance=dzn,
+            status=Run_status.EXCEPTION,
+        )
+
+        # Run instance for user2
+        mzn2 = Mzn_instance(user=3, contents="test")
+        dzn2 = Dzn_instance(user=3, contents="test")
+        Run(
+            user=3,
+            solvers=solver,
+            mzn_instance=mzn2,
+            dzn_instance=dzn2,
+            status=Run_status.EXCEPTION,
+        )
+        commit()
+
+    def test_get_runs_success(self, token):
+        self.make_run_data_for_test()
+        token = token("asdf", "asdf")
+        response = self.get_runs(token, [1])
+        assert response.status_code == 200
+        assert response.json() is not None
+
+    def test_get_runs_admin(self, token):
+        # get user's run instance with admin permission
+        token = token("asdf", "asdf")
+        response = self.get_runs(token, [2])
+        assert response.status_code == 200
+        assert response.json() is not None
+
+    def test_get_runs_user(self, token):
+        # get user's run instance with user permission
+        token = token("1234", "1234")
+        response = self.get_runs(token, 1)
+        assert response.status_code == 401
+
+    def test_get_runs_fail(self, token):
+        token = token("1234", "1234")
+        response = self.get_runs(token, 5)
+        assert response.status_code == 200
+        assert response.json() == []
