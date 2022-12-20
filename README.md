@@ -5,7 +5,7 @@
            margin-left: auto;
            margin-right: auto;
            width: 30%;"
-    src="./favicon.ico"
+    src="images/favicon.ico"
     alt="Our logo">
 </img>
 
@@ -120,6 +120,46 @@ Just wait for it to prompt the "enter your password" message.
 You can either go to the [Handvask](http://127.0.0.1:3000),
 or you can go to the [FastAPI](http://localhost:8080/docs) to see the API documentation.
 
+
+## Deploy pipeline
+
+The deploy pipeline is done using GitHub actions. The pipeline is triggered when a change is pushed to the main branch. The pipeline will then build the docker images for the backend and the frontend. It will then push the images to the docker hub. The pipeline will then deploy the images to the cloud.
+
+The pipeline is split into four workflows
+
+1. Pull-request 
+
+Whether a local branch change is done, the responsible person for the branch creates a pull request to the main branch. The pull request will then be reviewed by the responsible person for the main branch.
+The pull request will also trigger the pipeline to run. It will build the docker images for which where changes were made.<br/>
+If only changes were made in the handvask_frontend, the pipeline will catch this in:
+
+```yaml
+      - name: Control if changes in handvask_frontend been made
+        uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            backend:
+              - 'handvask_frontend/**'
+```
+This is to ensure that we dont use unnecessary resources and make the pull request faster.
+If the build doesn't fail, the pull request will be review by a member of the group and then merged to the main branch.
+
+2. Integration
+
+Next up whenever a pull-request is approved and merge into main branch, the integration workflow will run. This workflow will build the docker images for the frontend and the backend. It will then push the images to the docker hub. The images will then be deployed to the cloud.
+
+The integration part have the same constraint just as above, if we dont see any changes in the handvask_frontend, the pipeline will not build the image for the frontend, but if we do see changes, it will build the image for the frontend.
+The integration in yaml format is in the file .github/workflows/frontend_CI-CD.yml<br/>
+The integration part is the second block of the image called frontend image build.
+
+![Handvask CI/CD for Frontend](images/Udklip_af_CI_og_CD.JPG)
+
+3. Deploy
+
+The deploy workflow needs the CI part of the pipeline to finish. The deploy workflow will then deploy the images to the cloud. The deploy workflow is in the file .github/workflows/frontend_CI-CD.yml
+
+
 ## How does the application work overview?
 
 The application is split into three parts, the frontend, the backend, and the minizinc.
@@ -134,7 +174,7 @@ What happens when a user submits a problem to be solved?
 4. The minizinc starts a job with the specified problem and the solver sends from the backend,
 which the backend received from the frontend. It will start a job for every solver specified.
 5. When a solver has found a solution, the minizinc sends the result back to the backend.
-Either it is the optimal solution or not.
+Whether it is the optimal solution or not.
 6. The frontend will then request updated information from the backend.
 
 ## How does the application work in detail?
