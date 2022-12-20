@@ -1,16 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { guuid } from "../functions";
 
 export type ButtonPropT = {
-  kind:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "danger"
-    | "warning"
-    | "info"
-    | "light"
-    | "dark"
-    | "link";
+  kind: bootstrapColours | "link";
   outline?: boolean;
   disabled?: boolean;
   large?: boolean;
@@ -20,6 +12,7 @@ export type ButtonPropT = {
   children?: React.ReactNode;
   type?: "button" | "submit" | "reset";
   style?: React.CSSProperties;
+  tooltip?: string;
 };
 
 export default function Button({
@@ -33,9 +26,29 @@ export default function Button({
   children = "",
   type,
   style = {},
+  tooltip,
 }: ButtonPropT) {
+  const [id, _] = useState("id-" + guuid());
+  // Initialise tooltip
+  useEffect(() => {
+    if (typeof window !== "undefined" && tooltip && !disabled) {
+      import("bootstrap/js/dist/tooltip").then((Tooltip) => {
+        const el = document.querySelector(`#${id}`);
+        if (el) new Tooltip.default(el);
+      });
+    }
+  }, [tooltip, disabled]);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && tooltip && disabled) {
+      import("bootstrap/js/dist/tooltip").then((Tooltip) => {
+        Tooltip.default.getInstance(`#${id}`)?.dispose();
+      });
+    }
+  }, [disabled]);
   return (
     <button
+      id={id}
       type={type}
       className={`btn btn-${outline ? "outline-" : ""}${kind} ${
         disabled ? "disabled" : ""
@@ -43,6 +56,14 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
       style={style}
+      {...(tooltip
+        ? {
+            "data-bs-toggle": "tooltip",
+            "data-bs-title": tooltip,
+            tabIndex: 0,
+            "data-bs-trigger": "hover",
+          }
+        : {})}
     >
       {children}
     </button>

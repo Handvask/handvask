@@ -87,6 +87,7 @@ class Run_status(db.Entity):
     TERMINATED_ADMIN = 4
     DONE = 5
     EXCEPTION = 6
+    PROVING_OPTIMALITY = 7
 
     id = PrimaryKey(int, auto=True)
     name = Required(str)
@@ -105,12 +106,17 @@ class Run(db.Entity):
     start_time = Optional(datetime)
     end_time = Optional(datetime)
     execution_time = Optional(int)
-    result = Optional(str, nullable=True)
+    result = Optional(LongStr, nullable=True)
     mzn_status = Optional(str, nullable=True)
-    solvers = Set("Solver")
+    run__solvers = Set("Run_Solver")
     mzn_instance = Required(Mzn_instance)
     dzn_instance = Optional(Dzn_instance)
     status = Required("Run_status")
+    best_solver = Optional("Solver", reverse="best_runs")
+    flag_all = Required(bool, default=False)
+    flag_json = Required(bool, default=False)
+    flag_objective = Required(bool, default=False)
+    flag_processors = Required(int, default=1)
 
     def get_resp_type(self):
         """Converts this Run into a valid response for the API
@@ -124,8 +130,20 @@ class Run(db.Entity):
         run["dzn_instance"] = (
             None if not run["dzn_instance"] else run["dzn_instance"].to_dict()
         )
-        run["solvers"] = [s.to_dict() for s in run["solvers"]]
+        run["solvers"] = [
+            {
+                "id": s.id,
+                "run": s.run.id,
+                "solver": s.solver.to_dict(),
+                "terminated": s.terminated,
+                "progress": s.progress,
+            }
+            for s in run["run__solvers"]
+        ]
         run["status"] = run["status"].to_dict()
+        run["best_solver"] = (
+            run["best_solver"].to_dict() if run["best_solver"] else None
+        )
         return run
 
 
@@ -138,10 +156,15 @@ class RunT(BaseModel):
     result: OptionalT[str]
     mzn_status: OptionalT[str]
     execution_time: OptionalT[int]
-    solvers: list["SolverT"]
+    solvers: list["Run_SolverT"]
     mzn_instance: "Mzn_instanceT_slim"
     dzn_instance: OptionalT["Dzn_instanceT_slim"]
     status: "Run_statusT"
+    best_solver: OptionalT["SolverT"]
+    flag_all: bool
+    flag_json: bool
+    flag_objective: bool
+    flag_processors: int
 
 
 class Sys_admin(db.Entity):
@@ -157,7 +180,8 @@ class Sys_AdminT(BaseModel):
 class Solver(db.Entity):
     id = PrimaryKey(int, auto=True)
     name = Optional(str)
-    runs = Set(Run)
+    run__solvers = Set("Run_Solver")
+    best_runs = Set(Run)
 
 
 class SolverT(BaseModel):
@@ -169,12 +193,29 @@ class SuccessT(BaseModel):
     success: bool
 
 
+class Run_Solver(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    run = Required(Run)
+    solver = Required(Solver)
+    terminated = Required(bool, default=0)
+    progress = Optional(LongStr)
+
+
+class Run_SolverT(BaseModel):
+    id: int
+    run: int
+    solver: SolverT
+    terminated: bool
+    progress: OptionalT[str]
+
+
 UserT.update_forward_refs()
 Mzn_instanceT.update_forward_refs()
 Dzn_instanceT.update_forward_refs()
 Sys_AdminT.update_forward_refs()
 RunT.update_forward_refs()
 SolverT.update_forward_refs()
+Run_SolverT.update_forward_refs()
 
 
 class DBHandler(object):

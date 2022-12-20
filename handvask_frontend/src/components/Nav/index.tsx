@@ -59,11 +59,6 @@ export default function Nav({ user }: NavPropT) {
                 Home
               </NavLink>
             </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" href="/handvask">
-                Minizinc
-              </NavLink>
-            </li>
             {admin_button()}
             {logs_button()}
           </ul>

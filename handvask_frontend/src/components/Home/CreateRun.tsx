@@ -8,17 +8,27 @@ import PageLoader from "../PageLoader";
 import type { SingleValue, MultiValue } from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faBullseye,
   faCalculator,
   faChevronLeft,
   faChevronRight,
+  faFileCode,
+  faListCheck,
+  faMinus,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import AsyncBtn from "../AsyncBtn";
 
 export default function CreateRun({
   user,
   setCurrentPage,
+  setNotification,
 }: HomeSubpageBasePropT & {
   setCurrentPage: (page: string) => void;
+  setNotification: (notification: {
+    message: string;
+    kind: bootstrapColours;
+  }) => void;
 }) {
   const [mznInstances, setMznInstances] = useState<MznInstance[]>();
   const [dznInstances, setDznInstances] = useState<DznInstance[]>();
@@ -29,6 +39,10 @@ export default function CreateRun({
   const [selectedDzn, setSelectedDzn] = useState<DznInstance | null>(null);
   const [selectedSolvers, setSelectedSolvers] = useState<number[]>([]);
   const [creatingRun, setCreatingRun] = useState(false);
+  const [flagAll, setFlagAll] = useState(false);
+  const [flagObjective, setFlagObjective] = useState(false);
+  const [flagJson, setFlagJson] = useState(false);
+  const [flagProcessors, setFlagProcessors] = useState(1);
 
   const mznOptions = useMemo(() => {
     if (mznInstances) {
@@ -133,12 +147,27 @@ export default function CreateRun({
         mzn_id: selectedMzn.id,
         dzn_id: selectedDzn?.id ?? null,
         solvers: selectedSolvers,
+        flag_json: flagJson,
+        flag_objective: flagObjective,
+        flag_all: flagAll,
+        flag_processors: flagProcessors,
       },
       (r) => {
         setCreatingRun(false);
-        user.addRun(r.id);
+        if (Object.prototype.hasOwnProperty.call(r, "id")) {
+          user.addRun(r.id);
+        }
         if (r.success) {
           setCurrentPage("runs");
+          setNotification({
+            message: "Succesfully created run! 🤝",
+            kind: "success",
+          });
+        } else {
+          setNotification({
+            message: "Something went wrong with creating your run. 😭",
+            kind: "danger",
+          });
         }
       }
     );
@@ -285,17 +314,81 @@ export default function CreateRun({
                 >
                   <FontAwesomeIcon icon={faChevronLeft} />
                 </Button>
-                <AsyncBtn
-                  kind="success"
-                  className="px fw-bold"
-                  onClick={submitRun}
-                  loading={creatingRun}
-                >
-                  <FontAwesomeIcon icon={faCalculator} />
-                </AsyncBtn>
+                <div>
+                  {user.max_cpu < selectedSolvers.length * flagProcessors ? (
+                    <span className="badge bg-danger me-2">
+                      ! Your selected processor and solver count is too big !
+                    </span>
+                  ) : null}
+                  <AsyncBtn
+                    kind="success"
+                    className="px fw-bold"
+                    onClick={submitRun}
+                    loading={creatingRun}
+                    disabled={
+                      user.max_cpu < selectedSolvers.length * flagProcessors
+                    }
+                  >
+                    <FontAwesomeIcon icon={faCalculator} />
+                  </AsyncBtn>
+                </div>
               </div>
               <div className="card-body">
-                <p>Review selections</p>
+                <div className="w-100 d-flex justify-content-center">
+                  <Button
+                    className="me-5"
+                    kind={flagJson ? "success" : "danger"}
+                    onClick={() => setFlagJson((v) => !v)}
+                    tooltip="--json"
+                  >
+                    <FontAwesomeIcon icon={faFileCode} />
+                  </Button>
+                  <Button
+                    className="me-5"
+                    kind={flagAll ? "success" : "danger"}
+                    onClick={() => setFlagAll((v) => !v)}
+                    tooltip={"--all"}
+                  >
+                    <FontAwesomeIcon icon={faListCheck} />
+                  </Button>
+                  <Button
+                    className="me-5"
+                    kind={flagObjective ? "success" : "danger"}
+                    onClick={() => setFlagObjective((v) => !v)}
+                    tooltip={"--objective"}
+                  >
+                    <FontAwesomeIcon icon={faBullseye} />
+                  </Button>
+                  <div className="d-flex">
+                    <Button
+                      kind={"primary"}
+                      onClick={() =>
+                        setFlagProcessors((v) => Math.max(1, v - 1))
+                      }
+                      style={{ height: 44 }}
+                      disabled={flagProcessors <= 1}
+                      tooltip="Decrease processor count for each solver"
+                    >
+                      <FontAwesomeIcon icon={faMinus} />
+                    </Button>
+                    <span
+                      className="badge bg-dark"
+                      style={{ padding: "16px 17px" }}
+                    >
+                      {flagProcessors}
+                    </span>
+                    <Button
+                      kind={"primary"}
+                      onClick={() => setFlagProcessors((v) => v + 1)}
+                      style={{ height: 44 }}
+                      tooltip="Increase processor count for each solver"
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </Button>
+                  </div>
+                </div>
+                <hr />
+                <h5 className="text-center mb-3">Review selections</h5>
                 <div className="accordion" id="reviewRunAccordion">
                   <div className="accordion-item">
                     <h2 className="accordion-header" id="reviewMznHeader">

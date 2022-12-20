@@ -13,8 +13,14 @@ def create_jobs(
     solvers: list[str],
     id: str,
     image_name: str,
+    objective: bool,
+    json: bool,
+    processors: int,
+    all: bool,
 ) -> client.V1Job:
-    for job_object in _create_job_objects(problem, data, solvers, id, image_name):
+    for job_object in _create_job_objects(
+        problem, data, solvers, id, image_name, objective, json, processors, all
+    ):
         try:
             api_instance.create_namespaced_job(body=job_object, namespace="default")
         except Exception as e:
@@ -56,7 +62,15 @@ def list_jobs(api_instance: client.BatchV1Api, id: str) -> client.V1JobList:
 
 
 def _create_job_objects(
-    problem: str, data: str, solvers: list[str], id: str, image_name: str
+    problem: str,
+    data: str,
+    solvers: list[str],
+    id: str,
+    image_name: str,
+    objective: bool,
+    json: bool,
+    processors: int,
+    all: bool,
 ):
     jobs = []
     # Configurate init container
@@ -75,11 +89,26 @@ def _create_job_objects(
 
     for solver in solvers:
         # Configurate Pod template container
+        args = [
+            "main.py",
+            id,
+            solver,
+        ]
+        if objective:
+            args.append("-o")
+        if json:
+            args.append("-j")
+        args.append("-p")
+        args.append(str(processors))
+        if all:
+            args.append("-a")
+
         container = client.V1Container(
             name="minizinc-solver",
             image=image_name,
             image_pull_policy="IfNotPresent",
-            command=["python", "main.py", id, solver],
+            command=["python"],
+            args=args,
             volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
             resources={"limits": {"cpu": "300m", "memory": "512Mi"}},
         )
@@ -109,5 +138,4 @@ def _create_job_objects(
             spec=spec,
         )
         jobs.append(job)
-
     return jobs
