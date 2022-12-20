@@ -13,21 +13,27 @@ import {
 import Button from "../components/Button";
 import PageLoader from "../components/PageLoader";
 import { SuccessResponse } from "../functions";
+
+type CustomUserT = Omit<User, "runs"> & { runs: Run[] };
+
 export default function Admin() {
   const { get, apiReady, post } = useAPI();
   const user = useUser();
-  const [data, setUsers] = useState<User[]>();
+  const [data, setUsers] = useState<CustomUserT[]>();
   const [deletingUser, setDeletingUser] = useState(false);
   const [updatingUser, setUpdatingUser] = useState(false);
   const [stoppingSolvers, setStoppingSolvers] = useState(false);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   function getAllUsers() {
-    get<User[]>(`users/getall`, (r) => {
+    setLoadingUsers(true);
+    get<CustomUserT[]>(`users/getall`, (r) => {
+      setLoadingUsers(false);
       setUsers(r);
     });
   }
 
-  function handleUserCPUChange(user: User, new_max: number) {
+  function handleUserCPUChange(user: CustomUserT, new_max: number) {
     if (data) {
       setUsers((v) => {
         if (!v) {
@@ -41,11 +47,13 @@ export default function Admin() {
     }
   }
 
-  function updateUserMaxCPU(user: User, event: ChangeEvent<HTMLInputElement>) {
+  function updateUserMaxCPU(
+    user: CustomUserT,
+    event: ChangeEvent<HTMLInputElement>
+  ) {
     const new_max = Number(event.target.value);
     if (new_max !== user.max_cpu) {
       setUpdatingUser(true);
-      console.log("Calling backend");
       post(`/admin/user_quota/${user.id}`, { max_cpu: new_max }, (r) => {
         if (r.success) {
           handleUserCPUChange(user, new_max);
@@ -55,7 +63,7 @@ export default function Admin() {
     }
   }
 
-  function handleUserPermissionChange(user: User) {
+  function handleUserPermissionChange(user: CustomUserT) {
     if (data) {
       setUsers((v) => {
         if (!v) {
@@ -69,7 +77,7 @@ export default function Admin() {
     }
   }
 
-  function updatePermissions(user: User) {
+  function updatePermissions(user: CustomUserT) {
     setUpdatingUser(true);
     post(`/admin/user_permission/${user.id}`, {}, (r) => {
       if (r.success) {
@@ -79,7 +87,7 @@ export default function Admin() {
 
     setUpdatingUser(false);
   }
-  function deleteUser(user_tbd: User) {
+  function deleteUser(user_tbd: CustomUserT) {
     setDeletingUser(true);
     post<SuccessResponse>(`users/delete_user/${user_tbd.id}`, "", (r) => {
       if (r.success) {
@@ -92,29 +100,30 @@ export default function Admin() {
     });
   }
 
-  function stopAllUserSolvers(user: User) {
+  function stopAllUserSolvers(user: CustomUserT) {
     setStoppingSolvers(true);
-    user.runs.forEach((run_id) => {
-      console.log(run_id);
-      post<SuccessResponse>(
-        `/runs/terminate`,
-        { user_id: user.id, run_id: run_id, solver_ids: null },
-        (r) => {
-          if (r.success) {
-            setUsers((v) => {
-              if (!v) {
-                return;
-              }
-              const tmp = [...v];
-              tmp[tmp.findIndex((u) => u.id === user.id)].runs = tmp[
-                tmp.findIndex((u) => u.id === user.id)
-              ].runs.filter((value, index) => value != run_id);
-              return tmp;
-            });
+    user.runs
+      .filter((run) => [2, 7].includes(run.status.id))
+      .forEach((run) => {
+        post<SuccessResponse>(
+          `/runs/terminate`,
+          { user_id: user.id, run_id: run.id, solver_ids: null },
+          (r) => {
+            if (r.success) {
+              setUsers((v) => {
+                if (!v) {
+                  return;
+                }
+                const tmp = [...v];
+                tmp[tmp.findIndex((u) => u.id === user.id)].runs = tmp[
+                  tmp.findIndex((u) => u.id === user.id)
+                ].runs.filter((value) => value.id != run.id);
+                return tmp;
+              });
+            }
           }
-        }
-      );
-    });
+        );
+      });
     setStoppingSolvers(false);
   }
 
@@ -127,29 +136,33 @@ export default function Admin() {
   }
 
   if (user.sys_admin) {
-    console.log("test");
     return (
       <Base>
-        <Button onClick={getAllUsers} kind={"link"}>
-          <FontAwesomeIcon icon={faRotate} />
-        </Button>
-        <div className="d-flex flex-column align-items-center w-100">
+        <div className="d-flex flex-column align-items-center container-fluid">
+          <AsyncBtn
+            onClick={getAllUsers}
+            kind={"primary"}
+            className="mt-4 mb-2"
+            loading={loadingUsers}
+          >
+            <FontAwesomeIcon icon={faRotate} />
+          </AsyncBtn>
           <table className="table table-striped table-hover">
             <thead>
               <tr>
-                <td>ID</td>
-                <td>Username</td>
-                <td>vCPU</td>
-                <td>Is Admin</td>
-                <td>Permissions</td>
-                <td>Stop solvers</td>
-                <td />
+                <th>ID</th>
+                <th>Username</th>
+                <th>vCPU</th>
+                <th>Is Admin</th>
+                <th>Permissions</th>
+                <th>Stop solvers</th>
+                <th />
               </tr>
             </thead>
             <tbody>
               {data === undefined ? (
                 <tr>
-                  <td colSpan={3} className="text-center">
+                  <td colSpan={7} className="text-center">
                     <FontAwesomeIcon icon={faSpinner} spin />
                   </td>
                 </tr>
@@ -209,7 +222,12 @@ export default function Admin() {
                           outline
                           onClick={() => stopAllUserSolvers(e)}
                         >
-                          Runs in progress: {e.runs.length}
+                          Runs in progress:{" "}
+                          {
+                            e.runs.filter((run) =>
+                              [2, 7].includes(run.status.id)
+                            ).length
+                          }{" "}
                           <FontAwesomeIcon icon={faBan} />
                         </AsyncBtn>
                       </div>

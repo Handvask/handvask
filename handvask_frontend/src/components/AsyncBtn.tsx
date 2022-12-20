@@ -13,7 +13,7 @@ export default function AsyncBtn({
   ...rest
 }: AsyncBtnPropT) {
   return (
-    <Button {...rest}>
+    <Button {...rest} disabled={loading}>
       {(loading && <FontAwesomeIcon icon={faSpinner} spin />) || children}
     </Button>
   );
