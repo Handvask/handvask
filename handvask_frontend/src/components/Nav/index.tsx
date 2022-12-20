@@ -20,7 +20,6 @@ export default function Nav({ user }: NavPropT) {
     }
     return <></>;
   }
-  }
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light shadow-sm"
