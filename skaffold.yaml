@@ -4,23 +4,20 @@ metadata:
   name: handvask
 build:
   artifacts:
-    - image: backend
-      context: python_backend
-      docker:
-        dockerfile: Dockerfile
-    - image: frontend
-      context: handvask_frontend
-      # sync:
-      #   manual:
-      #     - src: "src/***/*.ts"
-      #       dest: "/app/src"
-      #     - src: "src/***/*.tsx"
-      #       dest: "/app/src"
-      docker:
-        dockerfile: Dockerfile
+  - image: handvask-frontend-image
+    context: handvask_frontend
+    docker:
+      dockerfile: Dockerfile
+  - image: handvask-minizinc-app-image
+    context: minizinc/app
+    docker:
+      dockerfile: Dockerfile
+  - image: handvask-minizinc-solver-image
+    context: minizinc/solver
+    docker:
+      dockerfile: Dockerfile
 manifests:
   rawYaml:
-    - kubernetes-manifests/backend-deploy.yaml
-    - kubernetes-manifests/backend-service.yaml
-    - kubernetes-manifests/frontend-deploy.yaml
-    - kubernetes-manifests/frontend-service.yaml
+  - handvask_frontend/k8s/frontend-deploy.yaml
+  - handvask_frontend/k8s/frontend-service.yaml
+  - minizinc/k8s/deployment.yaml
