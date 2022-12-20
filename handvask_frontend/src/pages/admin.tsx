@@ -19,6 +19,7 @@ export default function Admin() {
   const [data, setUsers] = useState<User[]>();
   const [deletingUser, setDeletingUser] = useState(false);
   const [updatingUser, setUpdatingUser] = useState(false);
+  const [stoppingSolvers, setStoppingSolvers] = useState(false);
 
   function getAllUsers() {
     get<User[]>(`users/getall`, (r) => {
@@ -92,8 +93,29 @@ export default function Admin() {
   }
 
   function stopAllUserSolvers(user: User) {
-    console.log("Stopping solvers");
-    // Implement backend for this function, then call it here
+    setStoppingSolvers(true);
+    user.runs.forEach((run_id) => {
+      console.log(run_id);
+      post<SuccessResponse>(
+        `/runs/terminate`,
+        { user_id: user.id, run_id: run_id, solver_ids: null },
+        (r) => {
+          if (r.success) {
+            setUsers((v) => {
+              if (!v) {
+                return;
+              }
+              const tmp = [...v];
+              tmp[tmp.findIndex((u) => u.id === user.id)].runs = tmp[
+                tmp.findIndex((u) => u.id === user.id)
+              ].runs.filter((value, index) => value != run_id);
+              return tmp;
+            });
+          }
+        }
+      );
+    });
+    setStoppingSolvers(false);
   }
 
   useEffect(() => {
@@ -169,7 +191,7 @@ export default function Admin() {
                           <AsyncBtn
                             kind="success"
                             className=""
-                            loading={deletingUser}
+                            loading={updatingUser}
                             outline
                             onClick={() => updatePermissions(e)}
                           >
@@ -183,10 +205,11 @@ export default function Admin() {
                         <AsyncBtn
                           kind="danger"
                           className=""
-                          loading={deletingUser}
+                          loading={stoppingSolvers}
                           outline
                           onClick={() => stopAllUserSolvers(e)}
                         >
+                          Runs in progress: {e.runs.length}
                           <FontAwesomeIcon icon={faBan} />
                         </AsyncBtn>
                       </div>
