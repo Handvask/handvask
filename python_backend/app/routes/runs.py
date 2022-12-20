@@ -40,6 +40,10 @@ def create_run(
     mzn_id: int = Body(),
     dzn_id: Optional[int] = Body(default=None),
     solvers: List[int] = Body(),
+    flag_json: Optional[bool] = Body(default=False),
+    flag_objective: Optional[bool] = Body(default=False),
+    flag_all: Optional[bool] = Body(default=False),
+    flag_processors: Optional[int] = Body(default=1),
 ):
     mzn = Mzn_instance[mzn_id]
     dzn = None
@@ -57,10 +61,11 @@ def create_run(
     user = User[user_id]
 
     if (
-        len(solvers)
+        len(solvers) * flag_processors
         + sum(
             [
                 len(run.run__solvers.select(lambda runSolver: not runSolver.terminated))
+                * run.flag_processors
                 for run in select(
                     run
                     for run in Run
@@ -78,6 +83,10 @@ def create_run(
         mzn_instance=mzn,
         dzn_instance=dzn,
         status=Run_status.SUBMITTED,
+        flag_all=flag_all,
+        flag_json=flag_json,
+        flag_objective=flag_objective,
+        flag_processors=flag_processors,
     )
     commit()
     for solver in db_solvers:
@@ -89,7 +98,23 @@ def create_run(
             "problem": mzn.contents,
             "data": "" if not dzn else dzn.contents,
             "solvers": [solver.name for solver in db_solvers],
+            "all": flag_all,
+            "json": flag_json,
+            "objective": flag_objective,
+            "processors": flag_processors,
         },
+    )
+    print(
+        {
+            "id": run.id,
+            "problem": mzn.contents,
+            "data": "" if not dzn else dzn.contents,
+            "solvers": [solver.name for solver in db_solvers],
+            "all": flag_all,
+            "json": flag_json,
+            "objective": flag_objective,
+            "processors": flag_processors,
+        }
     )
     if resp.ok:
         run.start_time = datetime.now()
@@ -123,8 +148,6 @@ def terminate_run(
 
     if run.user.id != user_id and not admin:
         raise HTTPException(401, "Access denied")
-
-    print(run_id, solvers)
 
     resp = requests.post(
         f"{getenv('MZN_MN_HOST')}/delete", json={"id": run_id, "solvers": solvers}

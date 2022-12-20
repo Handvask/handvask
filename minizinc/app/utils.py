@@ -89,21 +89,26 @@ def _create_job_objects(
 
     for solver in solvers:
         # Configurate Pod template container
+        args = [
+            "main.py",
+            id,
+            solver,
+        ]
+        if objective:
+            args.append("-o")
+        if json:
+            args.append("-j")
+        args.append("-p")
+        args.append(str(processors))
+        if all:
+            args.append("-a")
+
         container = client.V1Container(
             name="minizinc-solver",
             image=image_name,
             image_pull_policy="IfNotPresent",
             command=["python"],
-            args=[
-                "main.py",
-                id,
-                solver,
-                "-o" if objective else "",
-                "-j" if json else "",
-                "-p",
-                str(processors),
-                "-a" if all else "",
-            ],
+            args=args,
             volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
             resources={"limits": {"cpu": "300m", "memory": "512Mi"}},
         )

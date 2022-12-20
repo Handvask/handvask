@@ -2,7 +2,14 @@ import { HomeSubpageBasePropT } from ".";
 import React, { useEffect, useState } from "react";
 import useAPI from "../../hooks/useAPI";
 import { listToUrlEncoded } from "../../functions";
-import { faSpinner, faStop, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBullseye,
+  faFileCode,
+  faListCheck,
+  faSpinner,
+  faStop,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AsyncBtn from "../AsyncBtn";
 import Button from "../Button";
@@ -38,18 +45,26 @@ export default function Runs({
   const [tmpRunSelected, setTmpRunSelected] = useState<Run | null>(null);
   const [finalRunSelected, setFinalRunSelected] = useState<Run | null>(null);
   const [deleteRunTarget, setDeleteRunTarget] = useState<Run | null>(null);
+  const [refreshDisabled, setRefreshDisabled] = useState(false);
 
   useEffect(() => {
     if (apiReady) {
-      if (user.mzn_instances.length > 0)
-        get<Run[]>(`runs?${listToUrlEncoded(user.runs, "run_ids")}`, (r) => {
-          setData(r);
-        });
-      else {
-        setData([]);
-      }
+      refreshData();
     }
   }, [apiReady]);
+
+  function refreshData() {
+    if (refreshDisabled) return;
+    if (user.mzn_instances.length > 0) {
+      setRefreshDisabled(true);
+      get<Run[]>(`runs?${listToUrlEncoded(user.runs, "run_ids")}`, (r) => {
+        setData(r);
+        setTimeout(() => setRefreshDisabled(false), 3000);
+      });
+    } else {
+      setData([]);
+    }
+  }
 
   function handleStopRun(run: Run) {
     if (run.solvers.length < 2) {
@@ -119,6 +134,9 @@ export default function Runs({
   return (
     <>
       <div className="d-flex flex-column align-items-center w-100">
+        <Button kind="primary" onClick={refreshData} disabled={refreshDisabled}>
+          Refresh runs
+        </Button>
         <table className="table table-striped table-hover">
           <thead>
             <tr>
@@ -126,6 +144,7 @@ export default function Runs({
               <td>ID</td>
               <td>Minizinc</td>
               <td>Data</td>
+              <td>Flags</td>
               <td>Start time</td>
               <td>End time</td>
               <td>Execution time</td>
@@ -157,6 +176,29 @@ export default function Runs({
                   <td>{e.id}</td>
                   <td>{e.mzn_instance.friendly_name}</td>
                   <td>{e.dzn_instance?.friendly_name ?? "No data"}</td>
+                  <td>
+                    <span
+                      className={`badge me-1 bg-${
+                        e.flag_json ? "success" : "danger"
+                      }`}
+                    >
+                      <FontAwesomeIcon icon={faFileCode} />
+                    </span>
+                    <span
+                      className={`badge me-1 bg-${
+                        e.flag_all ? "success" : "danger"
+                      }`}
+                    >
+                      <FontAwesomeIcon icon={faListCheck} />
+                    </span>
+                    <span
+                      className={`badge me-1 bg-${
+                        e.flag_objective ? "success" : "danger"
+                      }`}
+                    >
+                      <FontAwesomeIcon icon={faBullseye} />
+                    </span>
+                  </td>
                   <td>{e.start_time ?? "Not started"}</td>
                   <td>{e.end_time ?? "Not done"}</td>
                   <td>
