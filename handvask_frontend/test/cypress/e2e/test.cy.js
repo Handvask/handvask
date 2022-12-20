@@ -37,14 +37,12 @@ describe('Login page', () => {
     // Go back to login page
     cy.visit(base_url + 'login')
 
-    // Type into username and verify
-    // that the value has been updated
+    // Type into username and verify that the value has been updated
     cy.get('#userInput')
       .type('test')
       .should('have.value', 'test')
 
-    // Type into password and verify
-    // that the value has been updated
+    // Type into password and verify that the value has been updated
     cy.get('#passwordInput')
       .type('test')
       .should('have.value', 'test')
@@ -735,6 +733,7 @@ describe('Admin page', () => {
       .children('button')
       .should('contain', 'Login').click()
 
+    // Nagivate to admin page
     cy.get('#mainNavbar')
       .children('ul.navbar-nav.me-auto.mb-2.mb-lg-0')
       .get('a')
@@ -797,7 +796,6 @@ describe('Admin page', () => {
 
     // Check that you can update vCPU
     cy.get("#max_cpu").last()
-    // .clear().type('5').should('have.value', '5')
 
     // Check promote user button
     cy.get('#__next')
