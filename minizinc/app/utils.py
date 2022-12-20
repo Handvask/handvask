@@ -87,6 +87,16 @@ def _create_job_objects(
     # Create volume
     volume = client.V1Volume(name="input", empty_dir={})
 
+    # python3 being picky with the args part for some reason
+    args=["main.py", id, "-p", str(processors)]
+    if objective:
+        args.append( "-o" )
+    if json:
+        args.append( "-j" )
+    if all:
+        args.append( "-a" )
+
+
     for solver in solvers:
         # Configurate Pod template container
         args = [
@@ -107,8 +117,8 @@ def _create_job_objects(
             name="minizinc-solver",
             image=image_name,
             image_pull_policy="IfNotPresent",
-            command=["python"],
-            args=args,
+            command=["python3"], 
+            args=args + [solver],
             volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
             resources={"limits": {"cpu": "300m", "memory": "512Mi"}},
         )

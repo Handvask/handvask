@@ -17,7 +17,7 @@ def result2string(
     data = {v: result[v] for v in variables if result[v]}
 
     if obj:
-        data["objective"] = result.objective
+        data["_objective"] = result.objective
 
     if json:
         return str(data)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         )
 
     except Exception as e:
-        result["status"] = type(e)
+        result["status"] = type(e).__name__
         result["solution"] = str(e)
 
     requests.post(MASTER_URL + "/result", json=result)

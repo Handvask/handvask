@@ -13,15 +13,15 @@ COPY prepare.sh /app/prepare.sh
 
 RUN sh /app/prepare.sh
 
-COPY main.py /app/
-
-COPY utils.py /app/
-
 COPY requirements.txt /app/
 
 RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
+
+COPY main.py /app/
+
+COPY utils.py /app/
 
 # COPY ./.env /app/.env
 
