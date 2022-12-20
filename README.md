@@ -9,10 +9,9 @@
     alt="Our logo">
 </img>
 
-The aim of this project is to create a system that is able to solve optimization
-problems in the cloud. A users should be able to submit an optimization problem to
-be solved, select one or more solvers to use to solve it in parallel,
-and get the answer using the solver that return a solution first.
+This project aims to create a system that can solve optimization
+problems in the cloud. Users should be able to submit an optimization problem to
+be solved, select one or more solvers to use to solve it in parallel and get the answer using the solver that returns a solution first.
 
 ## Website
 
@@ -25,14 +24,14 @@ If you want to run the project locally, you will have to do the following:
 1. First create .env files in the following directories:
 
    execute the local-run.sh script in the root directory of the project. This will create the .env files for you.
-   This file should be provided in the hand-in or in the discord channel.
+   This file should be provided in the hand-in or the discord channel.
 
 ```bash
 chmod +x local_run.sh
 ./local_run.sh
 ```
 
-if these are not created, the project will not run. Env for the cloud is much more sophisticated, i'll try to explain how to run the cloud version later.
+if these are not created, the project will not run. Env for the cloud is much more sophisticated, I'll try to explain how to run the cloud version later.
 
 ## Backend
 
@@ -40,9 +39,9 @@ Starting the backend
 
 The backend is a [FastAPI](https://fastapi.tiangolo.com/) application. To start it, run:
 
-Stay in the handvask directory (home directory for the repository) and run the following commands:
+Stay in the handvask directory (the home directory for the repository) and run the following commands:
 
-1. If .env is not created create a file called `~/python_backend/.env` and add the following content, The content of these files are secret, so you will have to ask someone to get them. They will either be provided in the hand-in or in the discord channel:
+1. If .env is not created create a file called `~/python_backend/.env` and add the following content, The content of these files is secret, so you will have to ask someone to get them. They will either be provided in the hand-in or the discord channel:
 
    1. export DB_HOST="127.0.0.1"
    2. export DB_USER="username"
@@ -71,7 +70,7 @@ docker compose build
 docker compose up
 ```
 
-5. Running the backend in the cloud is allready done, so you don't have to do anything. If you would like to Integrate a new version and deploy, all you will have to do is make a change and push it to the github main branch. Github workflow will then integrate and then deploy the new version to the cloud.
+5. Running the backend in the cloud is already done, so you don't have to do anything. If you would like to Integrate a new version and deploy it, all you will have to do is make a change and push it to the GitHub main branch. GitHub workflow will then integrate and then deploy the new version to the cloud.
 
 ## Starting the frontend
 
@@ -81,22 +80,64 @@ Go to the directory `/handvask_frontend` and run:
 
 ```bash
 npm install
+npm next build
 npx next start
 ```
 
 If it doesn't work, try npx next dev.
 This will start the frontend on port 3000.
 
-### Demo
+## Starting the minizinc.
+
+First, you'll have to go into the directory /minizinc and run the following commands:
+```bash
+docker compose build
+```
+This will build the two images needed for the minizinc.
+After that, you'll need to have minikube running. If you don't have minikube installed, you can find it here: [minikube](https://minikube.sigs.k8s.io/docs/start/).<br />
+If minikube is not running, run the following command:
+```bash
+minikube start
+```
+After minikube has started, run the following command:
+```bash  
+minikube load image handvask-minizinc-image && 
+minikube load image handvask-minizinc-solver-image
+```
+These two commands make the images available to the minikube cluster.
+If this is not done the deployment will not work.
+```bash
+kubectl apply -f k8s/ 
+&& 
+minikube tunnel
+```
+This will spawn the deployment, the clusterrole, clusterrolebinding, and the service.<br/>
+Let the minikube tunnel run in the background, you might have to put in your password for it to be running.
+Just wait for it to prompt the "enter your password" message.
+
+# Demo
 
 You can either go to the [Handvask](http://127.0.0.1:3000),
 or you can go to the [FastAPI](http://localhost:8080/docs) to see the API documentation.
 
-## The deadlines
+## How does the application work overview?
 
-The deadlines can be found in the github.com/handvask/wiki.
-I would encourage you to read the wiki, and the project.md file again and then come with suggestion
-with what you can do until the next deadline.
+The application is split into three parts, the frontend, the backend, and the minizinc.
+The frontend is the part that the user interacts with. The backend is the part that handles the communication between the frontend and the minizinc.
+The minizinc is the part that handles the solving of the optimization problems.
 
-If you hit problem with the problem you want to fix, please post it in the discord channel,
-and we will try to help you.
+What happens when a user submits a problem to be solved?
+
+1. The user submits the problem to the frontend.
+2. The frontend sends the problem to the backend.
+3. The backend sends the problem to the minizinc.
+4. The minizinc starts a job with the specified problem and the solver sends from the backend,
+which the backend received from the frontend. It will start a job for every solver specified.
+5. When a solver has found a solution, the minizinc sends the result back to the backend.
+Either it is the optimal solution or not.
+6. The frontend will then request updated information from the backend.
+
+## How does the application work in detail?
+
+<!-- // TODO -->
+
