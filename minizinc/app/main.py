@@ -101,10 +101,10 @@ def delete(id: str = Body(), solvers: Optional[list[str]] = Body(default=None)):
 
 
 @app.post("/progress")
-def progress(id: str = Body(), solver: str = Body()):
+def progress(id: str = Body(), solver: str = Body(), solution: str = Body()):
     requests.post(
         BACKEND_URL + "/progress",
-        json={"id": id, "solver": solver},
+        json={"id": id, "solver": solver, "solution": solution},
         headers=HEADERS,
         timeout=30,
     )

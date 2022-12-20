@@ -106,13 +106,17 @@ class Run(db.Entity):
     start_time = Optional(datetime)
     end_time = Optional(datetime)
     execution_time = Optional(int)
-    result = Optional(str, nullable=True)
+    result = Optional(LongStr, nullable=True)
     mzn_status = Optional(str, nullable=True)
     run__solvers = Set("Run_Solver")
     mzn_instance = Required(Mzn_instance)
     dzn_instance = Optional(Dzn_instance)
     status = Required("Run_status")
     best_solver = Optional("Solver", reverse="best_runs")
+    flag_all = Required(bool, default=False)
+    flag_json = Required(bool, default=False)
+    flag_objective = Required(bool, default=False)
+    flag_processors = Required(int, default=1)
 
     def get_resp_type(self):
         """Converts this Run into a valid response for the API
@@ -157,6 +161,10 @@ class RunT(BaseModel):
     dzn_instance: OptionalT["Dzn_instanceT_slim"]
     status: "Run_statusT"
     best_solver: OptionalT["SolverT"]
+    flag_all: bool
+    flag_json: bool
+    flag_objective: bool
+    flag_processors: int
 
 
 class Sys_admin(db.Entity):
@@ -190,7 +198,7 @@ class Run_Solver(db.Entity):
     run = Required(Run)
     solver = Required(Solver)
     terminated = Required(bool, default=0)
-    progress = Optional(str)
+    progress = Optional(LongStr)
 
 
 class Run_SolverT(BaseModel):

@@ -38,6 +38,7 @@ async def find_solutions(inst: mz.Instance, obj: bool, json: bool, p: int, a: bo
 
         # inform master node that a feasible solution has been found
         if result.get("status", None) is None and r.status.has_solution():
+            result["solution"] = result2string(r, variables, obj, json)
             requests.post(MASTER_URL + "/progress", json=result)
 
         result["status"] = r.status.name

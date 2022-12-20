@@ -20,7 +20,12 @@ router = APIRouter(
 
 @router.post("/progress", response_model=str)
 @db_session
-def progress(key=Depends(check_api_key), id: str = Body(), solver: str = Body()):
+def progress(
+    key=Depends(check_api_key),
+    id: str = Body(),
+    solver: str = Body(),
+    solution: str = Body(),
+):
     run = Run[id]
     solver = select(s for s in Solver if s.name == solver)[:][0]
     if not solver:
@@ -37,7 +42,7 @@ def progress(key=Depends(check_api_key), id: str = Body(), solver: str = Body())
             print("oh fuck oh no wrong solver supplied in run_solver select")
             sys.exit()
         for run_solver in run_solvers:
-            run_solver.progress = "JA"
+            run_solver.progress = solution
 
     return "ok"
 

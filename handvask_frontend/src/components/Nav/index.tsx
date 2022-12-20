@@ -20,18 +20,6 @@ export default function Nav({ user }: NavPropT) {
     }
     return <></>;
   }
-  function logs_button() {
-    if (user.sys_admin) {
-      return (
-        <li className="nav-item">
-          <NavLink className="nav-link" href="/logs">
-            Logs
-          </NavLink>
-        </li>
-      );
-    }
-    return <></>;
-  }
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light bg-light shadow-sm"
@@ -60,7 +48,6 @@ export default function Nav({ user }: NavPropT) {
               </NavLink>
             </li>
             {admin_button()}
-            {logs_button()}
           </ul>
           <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
             <li className="nav-item dropdown" id="userDropdownMenu">

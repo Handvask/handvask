@@ -54,6 +54,10 @@ type Run = {
   };
   execution_time: string;
   mzn_status: string;
+  flag_json: boolean;
+  flag_objective: boolean;
+  flag_all: boolean;
+  flag_processors: boolean;
 };
 
 type bootstrapColours =
