@@ -26,6 +26,8 @@ export default function FinalResultModal({
         </>
       }
     >
+      <p>Best solver: {run.best_solver.name} </p>
+      <hr />
       <pre>
         <code>{run.result}</code>
       </pre>

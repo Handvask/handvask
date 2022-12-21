@@ -26,7 +26,9 @@ def result2string(
     return "\n".join(f"{k} = {v};" for k, v in data.items())
 
 
-async def find_solutions(inst: mz.Instance, obj: bool, json: bool, p: int, a: bool, tl: int):
+async def find_solutions(
+    inst: mz.Instance, obj: bool, json: bool, p: int, a: bool, tl: int
+):
     inst.analyse()
     variables = [k for k in inst.output.keys() if k != "_checker"]
 
@@ -42,8 +44,8 @@ async def find_solutions(inst: mz.Instance, obj: bool, json: bool, p: int, a: bo
         if time.perf_counter() - t0 > tl:
             result["status"] = "Timeout"
 
-            sol = result.setdefault( "solution", "" )
-            if type( sol ) is mz.Result:
+            sol = result.setdefault("solution", "")
+            if type(sol) is mz.Result:
                 result["solution"] = result2string(sol, variables, obj, json)
 
             break
@@ -52,6 +54,7 @@ async def find_solutions(inst: mz.Instance, obj: bool, json: bool, p: int, a: bo
         if result.get("status", None) is None and r.status.has_solution():
             result["solution"] = result2string(r, variables, obj, json)
             requests.post(MASTER_URL + "/progress", json=result)
+            result["solution"] = ""
 
         result["status"] = r.status.name
 
@@ -115,7 +118,7 @@ if __name__ == "__main__":
         type=int,
         action="store",
         help="The timeout for the run",
-        default=2**64
+        default=2**64,
     )
     parser.add_argument(
         "id", metavar="ID", type=str, action="store", help="The id of the run"
@@ -148,7 +151,12 @@ if __name__ == "__main__":
 
         asyncio.run(
             find_solutions(
-                instance, config.objective, config.json, config.processors, config.all, config.timeout
+                instance,
+                config.objective,
+                config.json,
+                config.processors,
+                config.all,
+                config.timeout,
             )
         )
 

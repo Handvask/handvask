@@ -57,7 +57,8 @@ spec:
     spec:
       containers:
         - name: minizinc-app
-          image: ${ARTIFACT_LOCATION_MINIZINC}:${COMMIT_SHA}
+          #image: ${ARTIFACT_LOCATION_MINIZINC}:${COMMIT_SHA}
+          image: handvask-minizinc-image
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000

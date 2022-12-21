@@ -19,6 +19,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import AsyncBtn from "../AsyncBtn";
 
+const memoryOptions = [
+  { value: 128, label: "128Mi" },
+  { value: 256, label: "256Mi" },
+  { value: 512, label: "512Mi" },
+  { value: 1024, label: "1024Mi" },
+];
+
 export default function CreateRun({
   user,
   setCurrentPage,
@@ -43,6 +50,9 @@ export default function CreateRun({
   const [flagObjective, setFlagObjective] = useState(false);
   const [flagJson, setFlagJson] = useState(false);
   const [flagProcessors, setFlagProcessors] = useState(1);
+  const [useFlagTimeout, setUseFlagTimeout] = useState(false);
+  const [flagTimeout, setFlagTimeout] = useState(60);
+  const [flagMemory, setFlagMemory] = useState(512);
 
   const mznOptions = useMemo(() => {
     if (mznInstances) {
@@ -151,6 +161,8 @@ export default function CreateRun({
         flag_objective: flagObjective,
         flag_all: flagAll,
         flag_processors: flagProcessors,
+        flag_timeout: useFlagTimeout ? flagTimeout : null,
+        flag_memory: flagMemory,
       },
       (r) => {
         setCreatingRun(false);
@@ -386,6 +398,33 @@ export default function CreateRun({
                       <FontAwesomeIcon icon={faPlus} />
                     </Button>
                   </div>
+                </div>
+                <div className="d-flex justify-content-center mt-3">
+                  <div className="input-group">
+                    <Button
+                      kind={useFlagTimeout ? "success" : "danger"}
+                      onClick={() => setUseFlagTimeout((v) => !v)}
+                      tooltip={"Use timeout"}
+                    >
+                      <FontAwesomeIcon icon={faListCheck} />
+                    </Button>
+                    <input
+                      className="form-control"
+                      type="number"
+                      value={flagTimeout}
+                      onChange={(e) => setFlagTimeout(Number(e.target.value))}
+                      disabled={!useFlagTimeout}
+                    />
+                    <span className="input-group-text">s</span>
+                  </div>
+                </div>
+                <div className="d-flex justify-content-center mt-3 align-items-center">
+                  <span className="me-2">Memory limit:</span>
+                  <Select
+                    options={memoryOptions}
+                    defaultValue={memoryOptions[1]}
+                    onChange={(e) => setFlagMemory(e?.value ?? 256)}
+                  />
                 </div>
                 <hr />
                 <h5 className="text-center mb-3">Review selections</h5>
