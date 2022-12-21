@@ -1,4 +1,4 @@
-name: Backend Deploy - Serverless
+name: Backend CI/CD (Cloud Run - Serverless)
 on:
   push:
     branches:
@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Set up actions checkout
         uses: actions/checkout@v3
-      - name: Build backend image.
+      - name: Integration of the image to artifact registry (Build)
         id: "build-image"
         run: |
           cd python_backend && \
@@ -27,9 +27,9 @@ jobs:
           DB_PASS: "${{secrets.DB_PASS}}"
           DB_NAME: "${{secrets.DB_NAME}}"
           HANDVASK_FRONTEND_ORIGIN: "https://handvask.tech/**"
-          # ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
+          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
           MZN_API_KEY: "${{secrets.API_KEY}}"
-          MZN_MN_HOST: "HVAD ER DET I GOOGLE CLOUD?? JEG HAR NO IDEA"
+          MZN_MN_HOST: "localhost:8383"
       - id: "auth"
         name: "Authenticate to Google Cloud"
         uses: "google-github-actions/auth@v1"
@@ -49,15 +49,22 @@ jobs:
           cluster_name: "handvask-cluster"
           location: "${{secrets.GKE_REGION}}"
           project_id: "${{secrets.PROJECT_ID}}"
-      - name: Tag backend image.
+      - name: Integration the image to artifact registry (Tag).
         run: |
           docker \
           tag python-backend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Push backend image.
+      - name: Integration the image to artifact registry (Push)
         run: |
           docker \
           push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
-      - name: Deploy backend image.
+  Deploy-to-Cloud-Run-Google-Serverless:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    needs: Backend-Deploy-Serverless
+    steps:
+      - name: Deploy the integrated image to the google.
         run: |
           gcloud \
           run \

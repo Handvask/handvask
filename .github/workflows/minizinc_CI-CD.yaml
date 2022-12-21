@@ -1,4 +1,4 @@
-name: minizinc deployment to Google k8s
+name: CI/CD minizinc GKE
 on:
   push:
     branches:
@@ -8,16 +8,15 @@ on:
       - "minizinc/**"
       # - ".github/**"
 jobs:
-  test-running-service:
+  Continuous-integration-and-continuous-delivery:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Test 1
+      - name: Starting
         run: |
-          echo "Still need implementation"
-
-  minizinc-images-build:
+          echo "Lets go!"
+  Integration-minizinc-image:
     needs: test-running-service
     runs-on: ubuntu-latest
     permissions:
@@ -44,12 +43,12 @@ jobs:
           compose \
           build
         env:
-         API_KEY: "${{ secrets.API_KEY }}"
-         BACKEND_HOST: "${{ secrets.BACKEND_HOST }}/minizinc"
-         SOLVER_IMAGE: "${{ secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER }}:${{ github.sha }}"
-         HOST_URL: "${{ secrets.KUBE_HOST }}"
-         CACERT: "${{ secrets.KUBE_CACERT }}"
-         TOKEN: "${{ secrets.KUBE_TOKEN }}"
+          API_KEY: "${{ secrets.API_KEY }}"
+          BACKEND_HOST: "${{ secrets.BACKEND_HOST }}/minizinc"
+          SOLVER_IMAGE: "${{ secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER }}:${{ github.sha }}"
+          HOST_URL: "${{ secrets.KUBE_HOST }}"
+          CACERT: "${{ secrets.KUBE_CACERT }}"
+          TOKEN: "${{ secrets.KUBE_TOKEN }}"
       - name: Tag DockerImage
         run: |
           docker \
@@ -59,11 +58,11 @@ jobs:
           tag handvask-minizinc-solver-image ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
       - name: Push minizinc-image
         run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }} 
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }}
       - name: Push minizinc-solver-image
         run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }} 
-  deploy-to-GKE:
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
+  Deployment-to-Google-k8s:
     needs: minizinc-images-build
     runs-on: ubuntu-latest
     permissions:
@@ -81,7 +80,7 @@ jobs:
       - name: Set up gcloud Cloud SDK environment
         uses: google-github-actions/setup-gcloud@v1
         with:
-          install_components: 'gke-gcloud-auth-plugin'
+          install_components: "gke-gcloud-auth-plugin"
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
           USE_GKE_GCLOUD_AUTH_PLUGIN: True
@@ -93,7 +92,7 @@ jobs:
         env:
           USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
-        run: | 
+        run: |
           gcloud \
           container \
           clusters \
@@ -121,4 +120,3 @@ jobs:
           rollout status deployment/minizinc-app
         env:
           USE_GKE_GCLOUD_AUTH_PLUGIN: True
-        
