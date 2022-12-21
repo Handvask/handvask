@@ -47,9 +47,6 @@ jobs:
          API_KEY: "${{ secrets.API_KEY }}"
          BACKEND_HOST: "${{ secrets.BACKEND_HOST }}/minizinc"
          SOLVER_IMAGE: "${{ secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER }}:${{ github.sha }}"
-         HOST_URL: "${{ secrets.KUBE_HOST }}"
-         CACERT: "${{ secrets.KUBE_CACERT }}"
-         TOKEN: "${{ secrets.KUBE_TOKEN }}"
       - name: Tag DockerImage
         run: |
           docker \
