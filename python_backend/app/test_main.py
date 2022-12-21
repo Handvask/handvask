@@ -371,7 +371,7 @@ class Test_admin_update_quota:
     @staticmethod
     def update_quota(user_id, cpu_num, token):
         access_token = "Bearer " + token
-        url = "/admin/user_quota/"+str(user_id)
+        url = "/admin/user_quota/" + str(user_id)
         response = client.post(
             url,
             json={"max_cpu": cpu_num},
