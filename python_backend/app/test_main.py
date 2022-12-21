@@ -371,10 +371,10 @@ class Test_admin_update_quota:
     @staticmethod
     def update_quota(user_id, cpu_num, token):
         access_token = "Bearer " + token
-        url = "/admin/user_quota"
+        url = "/admin/user_quota/"+str(user_id)
         response = client.post(
             url,
-            json={"user_id": user_id, "max_cpu": cpu_num},
+            json={"max_cpu": cpu_num},
             headers={"Authorization": access_token},
         )
         return response
@@ -383,7 +383,7 @@ class Test_admin_update_quota:
         register = Test_Register()
         register.register("1234", "1234")
         token = token("asdf", "asdf")
-        response = self.update_quota(3, 4, token)
+        response = self.update_quota(3, 5, token)
         assert response.status_code == 200
         assert dict(response.json())["success"] is True
 
@@ -451,7 +451,6 @@ class Test_get_runs:
         solver = select(s for s in Solver if s.id == 1)[:]
         Run(
             user=1,
-            solvers=solver,
             mzn_instance=mzn,
             dzn_instance=dzn,
             status=Run_status.EXCEPTION,
@@ -462,7 +461,6 @@ class Test_get_runs:
         dzn2 = Dzn_instance(user=3, contents="test")
         Run(
             user=3,
-            solvers=solver,
             mzn_instance=mzn2,
             dzn_instance=dzn2,
             status=Run_status.EXCEPTION,
