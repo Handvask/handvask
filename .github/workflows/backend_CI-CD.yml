@@ -70,7 +70,7 @@ jobs:
           run \
           services \
           update \
-          handvask \
+          --project=handvask \
           --platform=managed \
           --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
           --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }} \
