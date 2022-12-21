@@ -293,7 +293,7 @@ Make a slight change in each of the following directories (e.g. add an empty fil
 `python_backend/`
 `minizinc/`
 
-This will trigger the workflows and deploy the application
+This will trigger the workflows and deploy the application.
 
 15. Fold your hands, and pray to your diety of choice. 🙏
 
