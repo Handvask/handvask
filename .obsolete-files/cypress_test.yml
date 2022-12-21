@@ -2,7 +2,7 @@ name: cypress testing.
 on:
   push:
     branches:
-      - "cypress_frontend_testing"
+      - "master"
     # paths:
     #   - "handvask_frontend/**"
 jobs:
