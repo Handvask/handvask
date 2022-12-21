@@ -1,4 +1,4 @@
-name: Frontend deployment to Google k8s
+name: CI/CD frontend GKE
 on:
   push:
     branches:
