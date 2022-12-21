@@ -1,5 +1,5 @@
-from os.path import dirname
 from os import getenv
+from os.path import dirname
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
