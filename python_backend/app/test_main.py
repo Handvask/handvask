@@ -448,7 +448,6 @@ class Test_get_runs:
         # Run instance for user1
         mzn = Mzn_instance(user=1, contents="test")
         dzn = Dzn_instance(user=1, contents="test")
-        solver = select(s for s in Solver if s.id == 1)[:]
         Run(
             user=1,
             mzn_instance=mzn,
