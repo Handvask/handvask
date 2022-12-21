@@ -17,7 +17,7 @@ jobs:
         run: |
           echo "Starting..."
   Integration-frontend-image:
-    needs: test-running-service
+    needs: Continuous-integration-and-continuous-delivery
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -54,7 +54,7 @@ jobs:
         run: |
           docker push ${{secrets.ARTIFACT_LOCATION_FRONTEND}}:${{ github.sha }}
   Deployment-to-Google-k8s:
-    needs: frontend-image-build
+    needs: Integration-frontend-image
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
