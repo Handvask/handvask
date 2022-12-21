@@ -1,4 +1,4 @@
-name: minizinc deployment to Google k8s
+name: CI/CD minizinc GKE
 on:
   push:
     branches:
@@ -8,17 +8,16 @@ on:
       - "minizinc/**"
       # - ".github/**"
 jobs:
-  test-running-service:
+  Continuous-integration-and-continuous-delivery:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Test 1
+      - name: Starting
         run: |
-          echo "Still need implementation"
-
-  minizinc-images-build:
-    needs: test-running-service
+          echo "Lets go!"
+  Integration-minizinc-image:
+    needs: Continuous-integration-and-continuous-delivery
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -56,12 +55,12 @@ jobs:
           tag handvask-minizinc-solver-image ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
       - name: Push minizinc-image
         run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }} 
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC}}:${{ github.sha }}
       - name: Push minizinc-solver-image
         run: |
-          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }} 
-  deploy-to-GKE:
-    needs: minizinc-images-build
+          docker push ${{secrets.ARTIFACT_LOCATION_MINIZINC_SOLVER}}:${{ github.sha }}
+  Deployment-to-Google-k8s:
+    needs: Integration-minizinc-image
     runs-on: ubuntu-latest
     permissions:
       contents: "read"
@@ -78,7 +77,7 @@ jobs:
       - name: Set up gcloud Cloud SDK environment
         uses: google-github-actions/setup-gcloud@v1
         with:
-          install_components: 'gke-gcloud-auth-plugin'
+          install_components: "gke-gcloud-auth-plugin"
         env:
           PROJECT_ID: ${{ secrets.PROJECT_ID }}
           USE_GKE_GCLOUD_AUTH_PLUGIN: True
@@ -90,7 +89,7 @@ jobs:
         env:
           USE_GKE_GCLOUD_AUTH_PLUGIN: True
       - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
-        run: | 
+        run: |
           gcloud \
           container \
           clusters \
@@ -118,4 +117,3 @@ jobs:
           rollout status deployment/minizinc-app
         env:
           USE_GKE_GCLOUD_AUTH_PLUGIN: True
-        

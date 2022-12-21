@@ -17,9 +17,21 @@ def create_jobs(
     json: bool,
     processors: int,
     all: bool,
+    timeout: int,
+    memory: int,
 ) -> client.V1Job:
     for job_object in _create_job_objects(
-        problem, data, solvers, id, image_name, objective, json, processors, all
+        problem,
+        data,
+        solvers,
+        id,
+        image_name,
+        objective,
+        json,
+        processors,
+        all,
+        timeout,
+        memory,
     ):
         try:
             api_instance.create_namespaced_job(body=job_object, namespace="default")
@@ -71,6 +83,8 @@ def _create_job_objects(
     json: bool,
     processors: int,
     all: bool,
+    timeout: int,
+    memory: int,
 ):
     jobs = []
     # Configurate init container
@@ -87,30 +101,30 @@ def _create_job_objects(
     # Create volume
     volume = client.V1Volume(name="input", empty_dir={})
 
+    # Setup for solver containers
+
+    # python3 being picky with the args part for some reason
+    args = ["main.py", id, "-p", str(processors), "-t", str(timeout)]
+    if objective:
+        args.append("-o")
+    if json:
+        args.append("-j")
+    if all:
+        args.append("-a")
+
+    # Ensure the pods have the resources which were requested available
+    resources = {"cpu": f"{processors}", "memory": f"{memory}Mi"}
+
     for solver in solvers:
         # Configurate Pod template container
-        args = [
-            "main.py",
-            id,
-            solver,
-        ]
-        if objective:
-            args.append("-o")
-        if json:
-            args.append("-j")
-        args.append("-p")
-        args.append(str(processors))
-        if all:
-            args.append("-a")
-
         container = client.V1Container(
             name="minizinc-solver",
             image=image_name,
             image_pull_policy="IfNotPresent",
-            command=["python"],
-            args=args,
+            command=["python3"],
+            args=args + [solver],
             volume_mounts=[client.V1VolumeMount(mount_path="/input", name="input")],
-            resources={"limits": {"cpu": "300m", "memory": "512Mi"}},
+            resources={"limits": resources, "requests": resources},
         )
         # Create and configurate a spec section
         template = client.V1PodTemplateSpec(

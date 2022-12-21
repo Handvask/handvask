@@ -1,8 +1,10 @@
-FROM python as minizinc-solver
+FROM jonasplesner/minizinc AS minizinc-solver
 
 RUN apt-get update -y
 
-RUN apt-get install -y minizinc
+RUN apt-get install -y python3.11
+
+RUN apt-get install -y pip
 
 RUN pip install --upgrade pip
 

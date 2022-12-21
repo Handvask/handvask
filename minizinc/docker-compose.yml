@@ -15,6 +15,7 @@ services:
     ports:
       - 5000:8383
 
+
   handvask-minizinc-solver-image:
     image: handvask-minizinc-solver-image
     build:

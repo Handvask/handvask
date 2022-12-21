@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import base64
+import time
 
 import requests
 
@@ -17,7 +18,7 @@ def result2string(
     data = {v: result[v] for v in variables if result[v]}
 
     if obj:
-        data["objective"] = result.objective
+        data["_objective"] = result.objective
 
     if json:
         return str(data)
@@ -25,21 +26,32 @@ def result2string(
     return "\n".join(f"{k} = {v};" for k, v in data.items())
 
 
-async def find_solutions(inst: mz.Instance, obj: bool, json: bool, p: int, a: bool):
+async def find_solutions(
+    inst: mz.Instance, obj: bool, json: bool, p: int, a: bool, tl: int
+):
     inst.analyse()
     variables = [k for k in inst.output.keys() if k != "_checker"]
 
-    if a:
-        result["solution"] = ""
-
+    t0 = time.perf_counter()
     async for r in inst.solutions(processes=p, intermediate_solutions=True):
         if r is None:
             continue
+
+        # If solving didn't finish before the given timeout
+        if time.perf_counter() - t0 > tl:
+            result["status"] = "Timeout"
+
+            sol = result.setdefault("solution", "")
+            if type(sol) is mz.Result:
+                result["solution"] = result2string(sol, variables, obj, json)
+
+            break
 
         # inform master node that a feasible solution has been found
         if result.get("status", None) is None and r.status.has_solution():
             result["solution"] = result2string(r, variables, obj, json)
             requests.post(MASTER_URL + "/progress", json=result)
+            result["solution"] = ""
 
         result["status"] = r.status.name
 
@@ -97,6 +109,15 @@ if __name__ == "__main__":
         help="Whether all optimal/intermediate solutions should be returned (only intermediate works)",
     )
     parser.add_argument(
+        "-t",
+        "--timeout",
+        metavar="TIMEOUT",
+        type=int,
+        action="store",
+        help="The timeout for the run",
+        default=2**64,
+    )
+    parser.add_argument(
         "id", metavar="ID", type=str, action="store", help="The id of the run"
     )
     parser.add_argument(
@@ -127,12 +148,17 @@ if __name__ == "__main__":
 
         asyncio.run(
             find_solutions(
-                instance, config.objective, config.json, config.processors, config.all
+                instance,
+                config.objective,
+                config.json,
+                config.processors,
+                config.all,
+                config.timeout,
             )
         )
 
     except Exception as e:
-        result["status"] = type(e)
+        result["status"] = type(e).__name__
         result["solution"] = str(e)
 
     requests.post(MASTER_URL + "/result", json=result)

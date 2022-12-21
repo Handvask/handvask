@@ -218,7 +218,7 @@ export default function Runs({
                       >
                         Intermediary results ready
                       </Button>
-                    ) : e.status.id === 5 ? (
+                    ) : e.result ? (
                       <Button
                         kind="primary"
                         small

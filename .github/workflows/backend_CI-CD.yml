@@ -1,0 +1,70 @@
+name: Backend CI/CD (Cloud Run - Serverless)
+on:
+  push:
+    branches:
+      - "main"
+    paths:
+      - "python_backend/**"
+jobs:
+  Backend-Deploy-Serverless:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - name: Set up actions checkout
+        uses: actions/checkout@v3
+      - name: Integration of the image to artifact registry (Build)
+        id: "build-image"
+        run: |
+          cd python_backend && \
+          docker \
+          compose \
+          build
+        env:
+          DB_HOST: "${{secrets.DB_HOST}}"
+          DB_USER: "${{secrets.DB_USER}}"
+          DB_PASS: "${{secrets.DB_PASS}}"
+          DB_NAME: "${{secrets.DB_NAME}}"
+          HANDVASK_FRONTEND_ORIGIN: "https://handvask.tech/**"
+          ARTIFACT_LOCATION_BACKEND: "${{secrets.ARTIFACT_LOCATION_BACKEND}}"
+          MZN_API_KEY: "${{secrets.API_KEY}}"
+          MZN_MN_HOST: "localhost:8383"
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v1"
+        with:
+          workload_identity_provider: "projects/383672682031/locations/global/workloadIdentityPools/my-pool/providers/my-provider"
+          service_account: "morten-service@handvask.iam.gserviceaccount.com"
+      - name: "Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+      - name: "Configure Docker to use the gcloud command-line tool as a credential helper"
+        run: |
+          gcloud \
+          auth \
+          configure-docker europe-north1-docker.pkg.dev
+      - name: get-gke-credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: "handvask-cluster"
+          location: "${{secrets.GKE_REGION}}"
+          project_id: "${{secrets.PROJECT_ID}}"
+      - name: Integration the image to artifact registry (Tag).
+        run: |
+          docker \
+          tag python-backend-image ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: Integration the image to artifact registry (Push)
+        run: |
+          docker \
+          push ${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }}
+      - name: Deploy the integrated image to the google.
+        run: |
+          gcloud \
+          run \
+          services \
+          update \
+          handvask \
+          --platform=managed \
+          --image=${{secrets.ARTIFACT_LOCATION_BACKEND}}:${{ github.sha }} \
+          --labels=managed-by=gcp-cloud-build-deploy-cloud-run-from-github,commit-sha=${{ github.sha }} \
+          --region=europe-north1 \
