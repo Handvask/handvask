@@ -111,3 +111,15 @@ jobs:
           rollout status deployment/handvask-frontend
         env:
           USE_GKE_GCLOUD_AUTH_PLUGIN: True
+  frontend-deployment-test:
+    needs: Deployment-to-Google-k8s
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Test frontend deployment
+        run: |
+          cd handvask_frontend && \
+          npm install && \
+          npm install cypress --save-dev && \
+          npx cypress run --headed --project ./test

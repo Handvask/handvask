@@ -41,7 +41,7 @@ The backend is a [FastAPI](https://fastapi.tiangolo.com/) application. To start 
 
 Stay in the handvask directory (the home directory for the repository) and run the following commands:
 
-1. If .env is not created, manually create the file: `~/python_backend/.env` and add the following content, The content of these files is secret, so you will have to ask someone to get them. They will either be provided in the hand-in or the discord channel:
+1. If .env is not created create a file called `~/python_backend/.env` and add the following content:
 
    1. export DB_HOST="127.0.0.1"
    2. export DB_USER="username"
@@ -50,6 +50,8 @@ Stay in the handvask directory (the home directory for the repository) and run t
    5. export HANDVASK_FRONTEND_ORIGIN="\*"
    6. export MZN_API_KEY="1234"
    7. export MZN_MN_HOST="http://localhost:8383"
+
+Note that this example configuration assumes that a local mysql database is running on localhost.
 
 2. Run the following commands:
 
@@ -70,9 +72,19 @@ docker compose build
 docker compose up
 ```
 
+Remember! If you start the backend as a container, and you're running the database on localhost, the `DB_HOST` can't just be localhost, as the localhost will no longer be the same. Instead something like `host.docker.internal` might work.
+
+<!---
+TODO: MORTEN??
+-->
+
 5. The backend should be running in the cloud at all times, with changes pushed to the GitHub main branch automatically being integrated and deployed through a GitHub workflow.
 
 ## Starting the frontend
+
+<!---
+TODO: ENV ???
+-->
 
 The frontend is a [React](https://reactjs.org/) and [Next](https://nextjs.org/) application. To start it, go to the directory `/handvask_frontend` and run:
 
@@ -89,12 +101,16 @@ This will start the frontend on port 3000.
 
 First, navigate to the directory /minizinc and run the following commands:
 
+<!---
+TODO: ENV???
+-->
+
 ```bash
 docker compose build
 ```
 
 This will build the two images needed for the minizinc microservice.
-After that, it can be deployed with local kubernetes, e.g. minikube which you can find it here: [minikube](https://minikube.sigs.k8s.io/docs/start/).<br />
+After that, it can be deployed with local kubernetes, e.g. minikube which can be found here: [minikube](https://minikube.sigs.k8s.io/docs/start/).<br />
 If minikube is not running, run the following command:
 
 ```bash
@@ -111,35 +127,46 @@ minikube load image handvask-minizinc-solver-image
 These two commands make the images available to the minikube cluster.
 If this is not done the deployment will not work.
 
-You will need to change the image location in `minizinc/k8s/deployment.yaml`.
+To function locally the image location in `minizinc/k8s/deployment.yaml` needs to be changed.
 
-By default it will be `${ARTIFACT_LOCATION_MINIZINC}:${COMMIT_SHA}` due to how it works inside the github action workflow, but locally you will need to change it to the actual name of the image (`handvask-minizinc-solver-image`).
+By default it will be `${ARTIFACT_LOCATION_MINIZINC}:${COMMIT_SHA}` due to how it works inside the github action workflow, but locally it should be the actual name of the image (`handvask-minizinc-solver-image`).
+
+With everything in place, if using minikube open a separate terminal and run:
 
 ```bash
-kubectl apply -f k8s/
-&&
 minikube tunnel
 ```
 
-This will spawn the deployment, the clusterrole, clusterrolebinding, and the service.<br/>
-Let the `minikube tunnel` run in the background, you might have to put in your password for it to be running.
-Just wait for it to prompt the "enter your password" message.
+The `minikube tunnel` should run in the background at all times, it might be necessary to input your password, so if it doesn't run
+try to wait for a "enter your password" prompt.
+
+Then to deploy the microservice run:
+
+```bash
+kubectl apply -f k8s/
+```
+
+This will spawn the deployment, clusterrole, clusterrolebinding, and service.<br/>
 
 # Demo
 
-You can either go to the [Handvask](http://127.0.0.1:3000),
-or you can go to the [FastAPI](http://localhost:8080/docs) to see the API documentation. Additionally, when running locally, [Minizinc-app](http://localhost:8383/docs) will also be available
+The frontend should be available at [Handvask](http://127.0.0.1:3000),
+and API documentation at [FastAPI](http://localhost:8080/docs). Additionally, when running locally, [Minizinc-app](http://localhost:8383/docs) will also be available.
 
-## Deploy pipeline
+# Deploy pipeline
 
-The deploy pipeline is done using GitHub actions. The pipeline is triggered when a change is pushed to the main branch. The pipeline will then build the docker images for the backend and the frontend. It will then push the images to the docker hub. The pipeline will then deploy the images to the cloud.
+<!---
+TODO: TEST???
+-->
+
+The deploy pipeline is constructed using GitHub actions, which is triggered when a change is pushed to the main branch. The pipeline builds the docker images for the backend, frontend and minizinc, after which they are pushed to the appropriate registry. Finally, the pipeline will deploy the images in the cloud.
 
 The pipeline is split into four workflows
 
 1. Pull-request
 
-Whether a local branch change is done, the responsible person for the branch creates a pull request to the main branch. The pull request will then be reviewed by the responsible person for the main branch.
-The pull request will also trigger the pipeline to run. It will build the docker images for which where changes were made.<br/>
+Whenever a local branch change is done, the person responsible for the branch creates a pull request to the main branch. The pull request will then be reviewed by the person responsible for the main branch.
+The pull request will also trigger the pipeline to run, which will build the docker images where changes were made. Right now there is only test for the backend when the build for the backend is triggered<br/>
 If only changes were made in the handvask_frontend, the pipeline will catch this in:
 
 ```yaml
@@ -152,22 +179,22 @@ If only changes were made in the handvask_frontend, the pipeline will catch this
         - 'handvask_frontend/**'
 ```
 
-This is to ensure that we dont use unnecessary resources and make the pull request faster.
-If the build doesn't fail, the pull request will be review by a member of the group and then merged to the main branch.
+This is to save on resources when possible and make the pull requests faster.
+If the build doesn't fail, the pull request will be reviewed by a member of the group and then merged to the main branch.
 
 2. Integration
 
-Next up whenever a pull-request is approved and merge into main branch, the integration workflow will run. This workflow will build the docker images for the frontend and the backend. It will then push the images to the docker hub. The images will then be deployed to the cloud.
+Whenever a pull-request is approved and merged into the main branch, the integration workflow will run. This workflow will build the docker images for the backend, frontend and minizinc, after which they are pushed to the registry specified by env variables for the respective images, which in this case is the google cloud artifact registry for the project.
 
-The integration part have the same constraint just as above, if we dont see any changes in the handvask_frontend, the pipeline will not build the image for the frontend, but if we do see changes, it will build the image for the frontend.
-The integration in yaml format is in the file .github/workflows/frontend_CI-CD.yml<br/>
+Integration has the same constraint as pulls, where the images will only be build if there are changes made since it was built previously.
+The integration, in yaml format, can be seen in the file .github/workflows/frontend_CI-CD.yml<br/>
 The integration part is the second block of the image called frontend image build.
 
 ![Handvask CI/CD for Frontend](images/Udklip_af_CI_og_CD.JPG)
 
 3. Deploy
 
-The deploy workflow needs the CI part of the pipeline to finish. The deploy workflow will then deploy the images to the cloud. The deploy workflow is in the file .github/workflows/frontend_CI-CD.yml
+The deploy workflow is triggered whenever the CI part finishes, which then deploys the images to the cloud. The deploy workflow, in yaml format, can be seen in the file .github/workflows/frontend_CI-CD.yml
 
 ## How to deploy the pipeline.
 
@@ -177,13 +204,12 @@ You will need a google account to deploy the pipeline. You can create one here: 
 
 2. Github Account
 
-When you have create you brand new google account. You'll need to create a project in github, for this you'll need to go to the following link: [GitHub](github.com/new) and create a new repository.
+When you have created your brand new google account. You'll need to create a project in github, for this you'll need to go to the following link: [GitHub](github.com/new) and create a new repository.
 
 3. Fork [Handvask](github.com/Handvask/handvask) the repository
 4. Clone your forked repository to your local machine.
 5. Go to the settings of the repository and go to the secrets tab.
-6. Create the following secrets:
-7. Create the database in cloud console.
+6. Create the database in cloud console.
    - Browse to SQL
    - Click "Create instance"
    - Select MySQL (currently the backend is hardcoded to expect mysql.)
@@ -191,6 +217,10 @@ When you have create you brand new google account. You'll need to create a proje
    - Make sure to use the same region as everywhere else (e.g. `europe-north1`)
    - Once it's up, don't forget to create a database, and user account that can access said database.
    - Once you have a VPC created (step 14), don't forget to enable private networking for the database in edit -> connections -> private network, set the private network to the VPC.
+
+**NOTE** The database does not _have_ to be in gcloud. It can be whereever you want, as long as it's a Mysql Database, and the backend is able to access it using the specified environment variables, it will work.
+
+7. Create the following secrets:
 
 ```json
 {
