@@ -19,20 +19,6 @@ The website can be found at [Handvask](https://handvask.tech).
 
 # How to run the project
 
-To run the project locally, the following steps are required:
-
-1. First, create .env files in the following directories:
-
-   execute the local-run.sh script in the root directory of the project. This will create the .env files.
-   This file should be provided in the hand-in or the discord channel.
-
-```bash
-chmod +x local_run.sh
-./local_run.sh
-```
-
-if these are not created, the project will not run. Env for the cloud is much more sophisticated, and will be explained later in the cloud version section.
-
 ## Backend
 
 Starting the backend
@@ -43,20 +29,19 @@ Stay in the handvask directory (the home directory for the repository) and run t
 
 1. If .env is not created create a file called `~/python_backend/.env` and add the following content:
 
-   1. export DB_HOST="127.0.0.1"
-   2. export DB_USER="username"
-   3. export DB_PASS="password"
-   4. export DB_NAME="database"
-   5. export HANDVASK_FRONTEND_ORIGIN="\*"
-   6. export MZN_API_KEY="1234"
-   7. export MZN_MN_HOST="http://localhost:8383"
+   1. DB_HOST="127.0.0.1"
+   2. DB_USER="username"
+   3. DB_PASS="password"
+   4. DB_NAME="database"
+   5. HANDVASK_FRONTEND_ORIGIN="\*"
+   6. MZN_API_KEY="1234"
+   7. MZN_MN_HOST="http://localhost:8383"
 
 Note that this example configuration assumes that a local mysql database is running on localhost.
 
 2. Run the following commands:
 
 ```bash
-source /python_backend/.env
 sudo apt install mysql-server
 pip3 install -r requirements.txt
 uvicorn python_backend.app.main:app --reload
@@ -64,7 +49,7 @@ uvicorn python_backend.app.main:app --reload
 
 3. [localhost_backend](http://localhost:8080/docs) here you can see the API documentation.
 
-4. To run the backend in a docker container, run the following commands:
+4. To run the backend in a docker container, first move the environment to the local shell using export. Note that this process can be simplified by adding `export ` before each line in the .env file, and then executing `source .env` in the shell. Once the environment variables are defined, run the following:
 
 ```bash
 cd python_backend
@@ -74,21 +59,13 @@ docker compose up
 
 Remember! If you start the backend as a container, and you're running the database on localhost, the `DB_HOST` can't just be localhost, as the localhost will no longer be the same. Instead something like `host.docker.internal` might work.
 
-<!---
-TODO: MORTEN??
--->
-
-5. The backend should be running in the cloud at all times, with changes pushed to the GitHub main branch automatically being integrated and deployed through a GitHub workflow.
-
 ## Starting the frontend
-
-<!---
-TODO: ENV ???
--->
 
 The frontend is a [React](https://reactjs.org/) and [Next](https://nextjs.org/) application. To start it, go to the directory `/handvask_frontend` and run:
 
 ```bash
+touch .env
+echo "NEXT_PUBLIC_API_URL=http://127.0.0.1:8080/" > .env
 npm install
 npm next build
 npx next start
@@ -97,13 +74,21 @@ npx next start
 If it doesn't work, try npx next dev.
 This will start the frontend on port 3000.
 
+To start the frontend in a container instead of the local machine, use the `export` command to store the environment variables in the shell.
+
 ## Starting the minizinc.
 
-First, navigate to the directory /minizinc and run the following commands:
+First, navigate to the directory `/minizinc` and create the .env file in the `/app` directory:
 
-<!---
-TODO: ENV???
--->
+```bash
+touch .env
+echo "export API_KEY=\"1234\"" >> .env
+echo "export BACKEND_HOST=\"http://host.docker.internal:8080/minizinc\"" >> .env
+echo "export SOLVER_IMAGE=\"handvask-minizinc-solver-image:latest\"" >> .env
+source .env
+```
+
+Once the environment variables are set up correctly, run:
 
 ```bash
 docker compose build
@@ -155,13 +140,9 @@ and API documentation at [FastAPI](http://localhost:8080/docs). Additionally, wh
 
 # Deploy pipeline
 
-<!---
-TODO: TEST???
--->
-
 The deploy pipeline is constructed using GitHub actions, which is triggered when a change is pushed to the main branch. The pipeline builds the docker images for the backend, frontend and minizinc, after which they are pushed to the appropriate registry. Finally, the pipeline will deploy the images in the cloud.
 
-The pipeline is split into four workflows
+The pipeline is split into four workflows and three sections.
 
 1. Pull-request
 
@@ -179,7 +160,7 @@ If only changes were made in the handvask_frontend, the pipeline will catch this
         - 'handvask_frontend/**'
 ```
 
-This is to save on resources when possible and make the pull requests faster.
+This is to save on resources when possible, and produces a faster feedback loop.
 If the build doesn't fail, the pull request will be reviewed by a member of the group and then merged to the main branch.
 
 2. Integration
@@ -194,7 +175,7 @@ The integration part is the second block of the image called frontend image buil
 
 3. Deploy
 
-The deploy workflow is triggered whenever the CI part finishes, which then deploys the images to the cloud. The deploy workflow, in yaml format, can be seen in the file .github/workflows/frontend_CI-CD.yml
+The deploy workflow is triggered whenever the CI part finishes, which then deploys the images to the cloud. The deploy workflow, in yaml format, can be seen in the file .github/workflows/frontend_CI-CD.yml. After a successful rollout, the cypress tests are performed on the production website.
 
 ## How to deploy the pipeline.
 
@@ -307,14 +288,14 @@ This is the name for the cluster which should be provided in the github workflow
 
 14. Integration and deploy
 
-Make a slight change in all the directory:
-handvask_frontend/
-python_backend/
-miniznc/
+Make a slight change in each of the following directories (e.g. add an empty file):
+`handvask_frontend/`
+`python_backend/`
+`minizinc/`
 
-this will trigger the workflows and deploy the application
+This will trigger the workflows and deploy the application.
 
-15.
+15. Fold your hands, and pray to your diety of choice. 🙏
 
 ## How does the application work overview?
 
@@ -332,7 +313,3 @@ What happens when a user submits a problem to be solved?
 5. When a solver has found a solution, the minizinc sends the result back to the backend.
    Whether it is the optimal solution or not.
 6. The frontend will then request updated information from the backend.
-
-## How does the application work in detail?
-
-<!-- // TODO -->
