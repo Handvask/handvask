@@ -11,7 +11,7 @@
 
 This project aims to create a system that can solve optimization
 problems in the cloud. Users should be able to submit an optimization problem to
-be solved, select one or more solvers to use to solve it in parallel and get the answer using the solver that returns a solution first.
+be solved, select one or more solvers to solve it in parallel and get the answer along with the solver which got a solution first.
 
 ## Website
 
@@ -19,11 +19,11 @@ The website can be found at [Handvask](https://handvask.tech).
 
 # How to run the project
 
-If you want to run the project locally, you will have to do the following:
+To run the project locally, the following steps are required:
 
-1. First create .env files in the following directories:
+1. First, create .env files in the following directories:
 
-   execute the local-run.sh script in the root directory of the project. This will create the .env files for you.
+   execute the local-run.sh script in the root directory of the project. This will create the .env files.
    This file should be provided in the hand-in or the discord channel.
 
 ```bash
@@ -31,7 +31,7 @@ chmod +x local_run.sh
 ./local_run.sh
 ```
 
-if these are not created, the project will not run. Env for the cloud is much more sophisticated, I'll try to explain how to run the cloud version later.
+if these are not created, the project will not run. Env for the cloud is much more sophisticated, and will be explained later in the cloud version section.
 
 ## Backend
 
@@ -41,7 +41,7 @@ The backend is a [FastAPI](https://fastapi.tiangolo.com/) application. To start 
 
 Stay in the handvask directory (the home directory for the repository) and run the following commands:
 
-1. If .env is not created create a file called `~/python_backend/.env` and add the following content, The content of these files is secret, so you will have to ask someone to get them. They will either be provided in the hand-in or the discord channel:
+1. If .env is not created, manually create the file: `~/python_backend/.env` and add the following content, The content of these files is secret, so you will have to ask someone to get them. They will either be provided in the hand-in or the discord channel:
 
    1. export DB_HOST="127.0.0.1"
    2. export DB_USER="username"
@@ -62,7 +62,7 @@ uvicorn python_backend.app.main:app --reload
 
 3. [localhost_backend](http://localhost:8080/docs) here you can see the API documentation.
 
-4. If you rather want to run the backend in a docker container, run the following commands:
+4. To run the backend in a docker container, run the following commands:
 
 ```bash
 cd python_backend
@@ -70,13 +70,11 @@ docker compose build
 docker compose up
 ```
 
-5. Running the backend in the cloud is already done, so you don't have to do anything. If you would like to Integrate a new version and deploy it, all you will have to do is make a change and push it to the GitHub main branch. GitHub workflow will then integrate and then deploy the new version to the cloud.
+5. The backend should be running in the cloud at all times, with changes pushed to the GitHub main branch automatically being integrated and deployed through a GitHub workflow.
 
 ## Starting the frontend
 
-The frontend is a [React](https://reactjs.org/) and [Next](https://nextjs.org/) application. To start it, run:
-
-Go to the directory `/handvask_frontend` and run:
+The frontend is a [React](https://reactjs.org/) and [Next](https://nextjs.org/) application. To start it, go to the directory `/handvask_frontend` and run:
 
 ```bash
 npm install
@@ -89,14 +87,14 @@ This will start the frontend on port 3000.
 
 ## Starting the minizinc.
 
-First, you'll have to go into the directory /minizinc and run the following commands:
+First, navigate to the directory /minizinc and run the following commands:
 
 ```bash
 docker compose build
 ```
 
-This will build the two images needed for the minizinc.
-After that, you'll need to have minikube running. If you don't have minikube installed, you can find it here: [minikube](https://minikube.sigs.k8s.io/docs/start/).<br />
+This will build the two images needed for the minizinc microservice.
+After that, it can be deployed with local kubernetes, e.g. minikube which you can find it here: [minikube](https://minikube.sigs.k8s.io/docs/start/).<br />
 If minikube is not running, run the following command:
 
 ```bash
