@@ -63,6 +63,6 @@
 - [x] <ins>security (proper credential management and common standard security practices enforced)</ins>
   - Modern standards enforced, such as JWT based authentication, password salting/hashing, `minizinc-app` service and database not publicly accesible.
 - [x] <ins>provide user stories to explain how the system is intended to be use</ins>
-- [ ] <ins>provide minimal documentation to deploy and run the system</ins>
+- [x] <ins>provide minimal documentation to deploy and run the system</ins>
 - [x] <ins>fairness: if the resources do not allow to run all the solvers at the same time the jobs should be delayed and executed fairly (e.g. FIFO). User should therefore not wait indefinitely to run their jobs (optional).</ins>
   - All requests are added as jobs, fairness is handled by the kubernetes cluster
