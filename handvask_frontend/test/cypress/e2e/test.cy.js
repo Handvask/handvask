@@ -476,6 +476,16 @@ describe(".mzn instances page", () => {
       .children("div")
       .get("textarea")
       .contains("Frontend test model");
+    
+    // Save
+    cy.get(
+        "div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm"
+      )
+      .children("div")
+      .children("div.modal-footer")
+      .children(" button.btn.btn-success")
+      .contains("Save")
+      .click();
   });
 });
 
@@ -659,6 +669,16 @@ describe(".dzn instances page", () => {
       .children("div")
       .get("textarea")
       .contains("Frontend test data");
+
+    // Save
+    cy.get(
+        "div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm"
+      )
+      .children("div")
+      .children("div.modal-footer")
+      .children(" button.btn.btn-success")
+      .contains("Save")
+      .click();
   });
 });
 
@@ -683,7 +703,7 @@ describe("Create new run", () => {
       .contains("Login")
       .click();
 
-    // Click create new run
+    // Click create new run to check if selected instances are the correct ones being run
     cy.get("#__next")
       .children("div")
       .get("div")
@@ -815,18 +835,18 @@ describe("Create new run", () => {
       .children("div")
       .children("div.card-header.d-flex.justify-content-between")
       .get("button.btn.btn-success.px.fw-bold")
-      .click();
+      //.click();
 
-    cy.get("#__next")
-      .children("div")
-      .children(
-        "div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5"
-      )
-      .children("div")
-      .children("table")
-      .children("tbody")
-      .get("span")
-      .should("contain", "running");
+    // cy.get("#__next")
+    //   .children("div")
+    //   .children(
+    //     "div.container-fluid.d-flex.justify-content-center.align-items-start.shadow-sm.p-5"
+    //   )
+    //   .children("div")
+    //   .children("table")
+    //   .children("tbody")
+    //   .get("span")
+    //   .should("contain", "running");
   });
 });
 
