@@ -22,12 +22,14 @@ HEADERS = {"X-Api-Key": os.getenv("API_KEY")}
 SOLVER_NAME = os.getenv("SOLVER_IMAGE")
 
 test_problem = "int: i; array[1..2] of var 0..i: x; constraint x[1] < i /\ x[2] < i; solve :: int_search( x, input_order, indomain_min ) maximize x[1] + x[2];"
-test_data = "i = 1000;"
-test_solvers = ["gecode", "chuffed"]
+test_data = "i = 1000000;"
+test_solvers = ["gecode", "chuffed", "or-tools"]
 test_objective = True
 test_json = True
 test_processors = 2
 test_all = False
+test_timeout = 2**64
+test_memory = 512
 
 
 @app.get("/")
@@ -37,7 +39,7 @@ def hello():
 
 @app.post("/test")
 def test():
-    if not create_jobs(BATCHV1, test_problem, test_data, test_solvers, "test", SOLVER_NAME, test_objective, test_json, test_processors, test_all):
+    if not create_jobs(BATCHV1, test_problem, test_data, test_solvers, "test", SOLVER_NAME, test_objective, test_json, test_processors, test_all, test_timeout, test_memory):
         raise HTTPException(500, "Couldn't create one or more jobs")
 
     return {"message": "Succesfully started jobs"}
@@ -54,6 +56,8 @@ def solve(
     json: Optional[bool] = Body(default=False),
     processors: Optional[int] = Body(default=1),
     all: Optional[bool] = Body(default=False),
+    timeout: Optional[int] = Body(default=2**64),
+    memory: Optional[int] = Body(default=512)
 ):
     if not create_jobs(
         BATCHV1,
@@ -66,6 +70,8 @@ def solve(
         json,
         processors,
         all,
+        timeout,
+        memory
     ):
         raise HTTPException(500, "Couldn't create one or more jobs")
 
