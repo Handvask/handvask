@@ -53,6 +53,7 @@ type Run = {
     name: string;
   };
   execution_time: string;
+  best_solver: Solver;
   mzn_status: string;
   flag_json: boolean;
   flag_objective: boolean;

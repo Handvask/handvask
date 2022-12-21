@@ -44,6 +44,8 @@ def create_run(
     flag_objective: Optional[bool] = Body(default=False),
     flag_all: Optional[bool] = Body(default=False),
     flag_processors: Optional[int] = Body(default=1),
+    flag_timeout: Optional[int] = Body(default=None),
+    flag_memory: Optional[int] = Body(default=None),
 ):
     mzn = Mzn_instance[mzn_id]
     dzn = None
@@ -102,6 +104,8 @@ def create_run(
             "json": flag_json,
             "objective": flag_objective,
             "processors": flag_processors,
+            "timeout": flag_timeout,
+            "memory": flag_memory,
         },
     )
     print(
@@ -114,6 +118,8 @@ def create_run(
             "json": flag_json,
             "objective": flag_objective,
             "processors": flag_processors,
+            "timeout": flag_timeout,
+            "memory": flag_memory,
         }
     )
     if resp.ok:
