@@ -39,7 +39,20 @@ def hello():
 
 @app.post("/test")
 def test():
-    if not create_jobs(BATCHV1, test_problem, test_data, test_solvers, "test", SOLVER_NAME, test_objective, test_json, test_processors, test_all, test_timeout, test_memory):
+    if not create_jobs(
+        BATCHV1,
+        test_problem,
+        test_data,
+        test_solvers,
+        "test",
+        SOLVER_NAME,
+        test_objective,
+        test_json,
+        test_processors,
+        test_all,
+        test_timeout,
+        test_memory,
+    ):
         raise HTTPException(500, "Couldn't create one or more jobs")
 
     return {"message": "Succesfully started jobs"}
@@ -57,7 +70,7 @@ def solve(
     processors: Optional[int] = Body(default=1),
     all: Optional[bool] = Body(default=False),
     timeout: Optional[int] = Body(default=2**64),
-    memory: Optional[int] = Body(default=512)
+    memory: Optional[int] = Body(default=512),
 ):
     if not create_jobs(
         BATCHV1,
@@ -71,7 +84,7 @@ def solve(
         processors,
         all,
         timeout,
-        memory
+        memory,
     ):
         raise HTTPException(500, "Couldn't create one or more jobs")
 
