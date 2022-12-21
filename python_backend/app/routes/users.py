@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pony.orm import db_session, select
 
 from ..middleware.auth import get_current_user_id
-from ..Models import SuccessT, User, UserT
+from ..Models import RunT, SuccessT, User, UserT
 
 router = APIRouter(
     prefix="/users", tags=["Users"], responses={404: {"Description": "Not found"}}
@@ -26,7 +26,11 @@ def get_self_user(user_id: int = Depends(get_current_user_id)):
     return user.to_dict(with_collections=True)
 
 
-@router.get("/getall", response_model=List[UserT])
+class Admin_all_user_T(UserT):
+    runs: List[RunT]
+
+
+@router.get("/getall", response_model=List[Admin_all_user_T])
 @db_session
 def get_all_users(user_id: int = Depends(get_current_user_id)):
     """Fetches all users
@@ -42,7 +46,9 @@ def get_all_users(user_id: int = Depends(get_current_user_id)):
     users = select(user for user in User)
     output = []
     for user in users:
-        output.append(user.to_dict(with_collections=True))
+        tmp = user.to_dict(with_collections=True)
+        tmp["runs"] = [run.get_resp_type() for run in user.runs]
+        output.append(tmp)
     return output
 
 

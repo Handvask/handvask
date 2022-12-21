@@ -10,4 +10,4 @@ RUN npm install
 
 RUN npm install cypress --save-dev
 
-RUN npx cypress run --headed --project ./test
+RUN npx cypress run --headed --project ./test 
