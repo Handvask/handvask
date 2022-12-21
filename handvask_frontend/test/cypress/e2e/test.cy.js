@@ -476,11 +476,11 @@ describe(".mzn instances page", () => {
       .children("div")
       .get("textarea")
       .contains("Frontend test model");
-    
+
     // Save
     cy.get(
-        "div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm"
-      )
+      "div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm"
+    )
       .children("div")
       .children("div.modal-footer")
       .children(" button.btn.btn-success")
@@ -672,8 +672,8 @@ describe(".dzn instances page", () => {
 
     // Save
     cy.get(
-        "div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm"
-      )
+      "div.modal-dialog.modal-xl.modal-dialog-scrollable.modal-dialog-centered.modal-sm"
+    )
       .children("div")
       .children("div.modal-footer")
       .children(" button.btn.btn-success")
@@ -834,8 +834,8 @@ describe("Create new run", () => {
       .children("div")
       .children("div")
       .children("div.card-header.d-flex.justify-content-between")
-      .get("button.btn.btn-success.px.fw-bold")
-      //.click();
+      .get("button.btn.btn-success.px.fw-bold");
+    //.click();
 
     // cy.get("#__next")
     //   .children("div")
