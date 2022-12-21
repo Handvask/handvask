@@ -32,9 +32,6 @@ async def find_solutions(
     inst.analyse()
     variables = [k for k in inst.output.keys() if k != "_checker"]
 
-    if a:
-        result["solution"] = ""
-
     t0 = time.perf_counter()
     async for r in inst.solutions(processes=p, intermediate_solutions=True):
         if r is None:
